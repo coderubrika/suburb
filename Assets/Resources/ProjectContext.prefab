@@ -75,3 +75,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screensPathRoot: UI/Screens
+  playerCamera: {fileID: 1385441692398572342, guid: ac92c4b2c3367dd419723922aeb5dddb, type: 3}

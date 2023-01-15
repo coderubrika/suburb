@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Suburb.UI;
+using System.Collections;
 using UnityEngine;
 using Zenject;
 

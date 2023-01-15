@@ -1,3 +1,5 @@
+using Suburb.Common;
+using Suburb.Selectors;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +10,7 @@ namespace Suburb.Core
     public class MainInstaller : MonoInstaller
     {
         [SerializeField] private string screensPathRoot;
+        [SerializeField] private PlayerCamera playerCamera;
 
         public override void InstallBindings()
         {
@@ -16,6 +19,10 @@ namespace Suburb.Core
                 .AsSingle()
                 .WithArguments(screensPathRoot)
                 .NonLazy();
+
+            Container.BindInterfacesAndSelfTo<PointerService>().AsSingle();
+            Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
+            Container.Bind<InteractablesSelector>().AsSingle();
         }
     }
 }
