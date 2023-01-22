@@ -5,11 +5,11 @@ namespace Suburb.Common
 {
     public class PlayerCamera : MonoBehaviour
     {
-        [SerializeField] private Camera plauerCamera;
+        [SerializeField] private Camera playerCamera;
 
         public Camera GetCamera()
         {
-            return plauerCamera;
+            return playerCamera;
         }
     }
 }

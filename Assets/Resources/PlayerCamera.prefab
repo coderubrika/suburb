@@ -131,4 +131,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e8e3b45157201e4cbb2f01be1b8783b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plauerCamera: {fileID: 1385441692398572336}
+  playerCamera: {fileID: 1385441692398572336}

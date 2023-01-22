@@ -1,4 +1,5 @@
 using Suburb.Common;
+using Suburb.Interactables;
 using Suburb.Selectors;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Suburb.Core
     {
         [SerializeField] private string screensPathRoot;
         [SerializeField] private PlayerCamera playerCamera;
+        [SerializeField] private Rover rover;
 
         public override void InstallBindings()
         {
@@ -22,7 +24,9 @@ namespace Suburb.Core
 
             Container.BindInterfacesAndSelfTo<PointerService>().AsSingle();
             Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
-            Container.Bind<InteractablesSelector>().AsSingle();
+            Container.Bind<InteractionRepository>().AsSingle().NonLazy();
+            Container.Bind<InteractablesSelector>().AsSingle().NonLazy();
+            Container.Bind<Rover>().FromComponentInNewPrefab(rover).AsSingle();
         }
     }
 }

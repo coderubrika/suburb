@@ -6,5 +6,6 @@ namespace Suburb.Interactables
 {
     public interface IInteractable
     {
+        public void Interact();
     }
 }

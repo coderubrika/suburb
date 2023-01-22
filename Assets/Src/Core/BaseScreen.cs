@@ -7,8 +7,8 @@ public abstract class BaseScreen : MonoBehaviour
 {
     protected bool isShow;
 
-    public ReactiveCommand OnShowEnd { get; } = new();
-    public ReactiveCommand OnHideEnd { get; } = new();
+    public readonly ReactiveCommand OnShowEnd = new();
+    public readonly ReactiveCommand OnHideEnd = new();
 
     public void InitShow()
     {
