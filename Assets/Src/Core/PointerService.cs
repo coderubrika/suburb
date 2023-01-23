@@ -11,6 +11,7 @@ namespace Suburb.Core
         private readonly PointerControls pointerInput;
 
         private bool isDradding;
+        private bool isDraddingCandidate;
         private Vector2 oldPosition;
 
         public ReactiveProperty<Vector2> PointerPositionOnScreen { get; } = new();
@@ -47,6 +48,9 @@ namespace Suburb.Core
         {
             PointerPositionOnScreen.Value = pointerInput.All.PositionOnScreen.ReadValue<Vector2>();
 
+            if (isDraddingCandidate && oldPosition != PointerPositionOnScreen.Value)
+                isDradding = true;
+
             if (isDradding)
             {
                 Vector2 newPosition = PointerPositionOnScreen.Value;
@@ -60,11 +64,12 @@ namespace Suburb.Core
         {
             OnPointerDown.Execute();
 
-            isDradding = true;
+            isDraddingCandidate = true;
         }
 
         private void PointerUp(CallbackContext context)
         {
+            isDraddingCandidate = false;
             isDradding = false;
 
             OnPointerUp.Execute();
