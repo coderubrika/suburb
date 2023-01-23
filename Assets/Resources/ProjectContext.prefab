@@ -77,3 +77,6 @@ MonoBehaviour:
   screensPathRoot: UI/Screens
   playerCamera: {fileID: 1385441692398572342, guid: ac92c4b2c3367dd419723922aeb5dddb, type: 3}
   rover: {fileID: -7060855615857452809, guid: 9ed47204b99ee8543a715c2d2ecfa42c, type: 3}
+  worldCameraControllerParam:
+    MoveSpeed: 0.5
+    SmoothTime: 0.5

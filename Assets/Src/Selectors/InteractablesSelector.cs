@@ -35,7 +35,7 @@ namespace Suburb.Selectors
 
             if (this.isOn)
             {
-                pointerService.OnPointerDown
+                pointerService.OnPointerUp
                     .Subscribe(_ => CheckPoint(pointerService.PointerPositionOnScreen.Value))
                     .AddTo(disposables);
             }

@@ -6,6 +6,7 @@ using Suburb.Selectors;
 using UniRx;
 using Zenject;
 using Suburb.Interactables;
+using Suburb.Common;
 
 namespace Suburb.UI
 {
@@ -13,16 +14,24 @@ namespace Suburb.UI
     {
         private InteractablesSelector interactablesSelector;
         private Rover rover;
+        private PointerService pointerService;
+        private WorldCameraController worldCameraController;
 
         [Inject]
-        private void Construct(InteractablesSelector interactablesSelector, Rover rover)
+        private void Construct(
+            InteractablesSelector interactablesSelector,
+            Rover rover,
+            WorldCameraController worldCameraController,
+            PointerService pointerService)
         {
             this.interactablesSelector = interactablesSelector;
             this.rover = rover;
+            this.worldCameraController = worldCameraController;
         }
 
         protected override void Show()
         {
+            worldCameraController.Enable();
             rover.Install();
             interactablesSelector.SetEnableChecks(true);
             base.Show();
@@ -30,6 +39,7 @@ namespace Suburb.UI
 
         protected override void Hide()
         {
+            worldCameraController.Disable();
             rover.Uninstall();
             interactablesSelector.SetEnableChecks(false);
             base.Hide();
