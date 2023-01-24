@@ -1,3 +1,4 @@
+using Suburb.Activities;
 using Suburb.Common;
 using Suburb.Interactables;
 using Suburb.Selectors;
@@ -14,6 +15,7 @@ namespace Suburb.Core
         [SerializeField] private string screensPathRoot;
         [SerializeField] private PlayerCamera playerCamera;
         [SerializeField] private Rover rover;
+        [SerializeField] private Land land;
         [SerializeField] private SmoothTransitionParam worldCameraControllerParam;
         public override void InstallBindings()
         {
@@ -28,9 +30,12 @@ namespace Suburb.Core
             Container.Bind<InteractionRepository>().AsSingle().NonLazy();
             Container.Bind<InteractablesSelector>().AsSingle().NonLazy();
             Container.Bind<Rover>().FromComponentInNewPrefab(rover).AsSingle();
+            Container.Bind<Land>().FromComponentInNewPrefab(land).AsSingle();
             Container.BindInterfacesAndSelfTo<WorldCameraController>()
                 .AsSingle()
                 .WithArguments(worldCameraControllerParam);
+
+            Container.Bind<RoverActivity>().AsSingle();
         }
     }
 }

@@ -77,7 +77,7 @@ namespace Suburb.Selectors
             {
                 if (interactionRepository.CheckGameObject(hit.transform.gameObject, out IInteractable interactable))
                 {
-                    interactable.Interact();
+                    interactable.Interact(new BaseInteractEventData { Ray = ray, Distance = hit.distance });
                 }
             }
         }

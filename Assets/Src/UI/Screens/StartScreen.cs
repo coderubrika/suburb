@@ -14,6 +14,7 @@ namespace Suburb.UI
     {
         private InteractablesSelector interactablesSelector;
         private Rover rover;
+        private Land land;
         private PointerService pointerService;
         private WorldCameraController worldCameraController;
 
@@ -22,10 +23,12 @@ namespace Suburb.UI
             InteractablesSelector interactablesSelector,
             Rover rover,
             WorldCameraController worldCameraController,
-            PointerService pointerService)
+            PointerService pointerService,
+            Land land)
         {
             this.interactablesSelector = interactablesSelector;
             this.rover = rover;
+            this.land = land;
             this.worldCameraController = worldCameraController;
         }
 
@@ -33,6 +36,7 @@ namespace Suburb.UI
         {
             worldCameraController.Enable();
             rover.Install();
+            land.Install();
             interactablesSelector.SetEnableChecks(true);
             base.Show();
         }
@@ -41,6 +45,7 @@ namespace Suburb.UI
         {
             worldCameraController.Disable();
             rover.Uninstall();
+            land.Uninstall();
             interactablesSelector.SetEnableChecks(false);
             base.Hide();
         }

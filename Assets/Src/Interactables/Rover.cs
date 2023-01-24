@@ -1,33 +1,61 @@
-﻿using Suburb.Common;
+﻿using Suburb.Activities;
+using Suburb.Common;
+using System;
 using System.Collections;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
 namespace Suburb.Interactables
 {
-    public class Rover : MonoBehaviour, IInteractable, IInstallable
+    public class Rover : InteractableObject
     {
-        private InteractionRepository interactionRepository;
+        private RoverActivity roverActivity;
+
+        [SerializeField] private float moveSpeed;
+        [SerializeField] private float rotateSpeed;
+
+        private readonly CompositeDisposable disposables = new();
+
+        private IDisposable moveDisposable;
 
         [Inject]
-        public void Construct(InteractionRepository interactionRepository)
+        public void Construct(RoverActivity roverActivity)
         {
-            this.interactionRepository = interactionRepository;
+            this.roverActivity = roverActivity;
         }
 
-        public void Interact()
+        public override void Interact(BaseInteractEventData baseInteractEventData)
         {
-            Debug.Log("Rover interact");
+            moveDisposable?.Dispose();
+            roverActivity.SetRover(this);
         }
 
-        public void Install()
+        public override void Uninstall()
         {
-            interactionRepository.Login(gameObject, this);
+            base.Uninstall();
+            disposables.Clear();
         }
 
-        public void Uninstall()
+        public void Move(Vector3 position)
         {
-            interactionRepository.Logout(gameObject);
+            moveDisposable = Observable.EveryUpdate()
+                .Subscribe(_ =>
+                {
+                    if (transform.position != position)
+                    {
+                        Vector3 direction = position - transform.position;
+                        transform.position = Vector3.MoveTowards(transform.position, position, moveSpeed * Time.deltaTime);
+                        
+                        Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, moveSpeed * Time.deltaTime);
+                    }
+                    else
+                    {
+                        moveDisposable?.Dispose();
+                    }
+                })
+                .AddTo(disposables);
         }
     }
 }
