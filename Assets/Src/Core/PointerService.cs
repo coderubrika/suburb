@@ -9,11 +9,11 @@ namespace Suburb.Core
     public class PointerService: IInitializable, IDisposable, ITickable
     {
         private readonly PointerControls pointerInput;
+        private readonly float dragTreshold = 5;
 
         private bool isDradding;
         private bool isDraddingCandidate;
         private Vector2 oldPosition;
-
         public ReactiveProperty<Vector2> PointerPositionOnScreen { get; } = new();
         public ReactiveCommand OnPointerDown { get; } = new();
         public ReactiveCommand OnPointerUp { get; } = new();
@@ -48,8 +48,11 @@ namespace Suburb.Core
         {
             PointerPositionOnScreen.Value = pointerInput.All.PositionOnScreen.ReadValue<Vector2>();
 
-            if (isDraddingCandidate && oldPosition != PointerPositionOnScreen.Value)
+            if (isDraddingCandidate && (oldPosition - PointerPositionOnScreen.Value).sqrMagnitude > dragTreshold)
+            {
                 isDradding = true;
+                isDraddingCandidate = false;
+            }
 
             if (isDradding)
             {
