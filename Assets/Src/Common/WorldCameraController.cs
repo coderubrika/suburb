@@ -85,9 +85,7 @@ namespace Suburb.Common
                     - new Vector3(deltaPositon.x, 0f, deltaPositon.y)
                     * smoothTransitionParam.MoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
 
-            float sqrDifference = newPosition.sqrMagnitude - oldPosition.sqrMagnitude;
-
-            if (isAllowToDisposeDrag && sqrDifference <= float.Epsilon)
+            if (isAllowToDisposeDrag && newPosition.IsClose(oldPosition, float.Epsilon))
             {
                 velocity = Vector3.zero;
                 dragDisposable?.Dispose();

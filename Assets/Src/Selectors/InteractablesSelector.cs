@@ -72,11 +72,13 @@ namespace Suburb.Selectors
         private void CheckPoint(Vector2 point)
         {
             Ray ray = playerCamera.ScreenPointToRay(point);
-
+            Debug.Log($"try hit");
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
+                Debug.Log($"Hit to something {hit.transform.gameObject}");
                 if (interactionRepository.CheckGameObject(hit.transform.gameObject, out IInteractable interactable))
                 {
+                    Debug.Log($"Hit to {hit.transform.gameObject}");
                     interactable.Interact(new BaseInteractEventData { Ray = ray, Distance = hit.distance });
                 }
             }

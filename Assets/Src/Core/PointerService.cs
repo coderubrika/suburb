@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Suburb.Utils;
+using System;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -14,6 +15,7 @@ namespace Suburb.Core
         private bool isDradding;
         private bool isDraddingCandidate;
         private Vector2 oldPosition;
+
         public ReactiveProperty<Vector2> PointerPositionOnScreen { get; } = new();
         public ReactiveCommand OnPointerDown { get; } = new();
         public ReactiveCommand OnPointerUp { get; } = new();
@@ -48,34 +50,48 @@ namespace Suburb.Core
         {
             PointerPositionOnScreen.Value = pointerInput.All.PositionOnScreen.ReadValue<Vector2>();
 
-            if (isDraddingCandidate && (oldPosition - PointerPositionOnScreen.Value).sqrMagnitude > dragTreshold)
+            if (!isDraddingCandidate && !isDradding)
+                return;
+
+            if (IsWhongTouchPosition(PointerPositionOnScreen.Value))
+                return;
+
+            if (isDraddingCandidate && !oldPosition.IsClose(PointerPositionOnScreen.Value, dragTreshold))
             {
+                Debug.Log($"Check dragging");
                 isDradding = true;
                 isDraddingCandidate = false;
             }
 
             if (isDradding)
             {
-                Vector2 newPosition = PointerPositionOnScreen.Value;
-                OnDrag.Execute(newPosition - oldPosition);
+                //Debug.Log("Dragging");
+                OnDrag.Execute(PointerPositionOnScreen.Value - oldPosition);
+                oldPosition = PointerPositionOnScreen.Value;
             }
-
-            oldPosition = PointerPositionOnScreen.Value;
         }
 
         private void PointerDown(CallbackContext context)
         {
+            Debug.Log("Pointer Down");
             OnPointerDown.Execute();
 
             isDraddingCandidate = true;
+            oldPosition = PointerPositionOnScreen.Value;
         }
 
         private void PointerUp(CallbackContext context)
         {
             isDraddingCandidate = false;
             isDradding = false;
-
+            
+            //Debug.Log("Pointer Up");
             OnPointerUp.Execute();
+        }
+
+        private static bool IsWhongTouchPosition(Vector2 source)
+        {
+            return source.x < 0 || source.y < 0 || (source.x == 0 && source.y == 0);
         }
     }
 }

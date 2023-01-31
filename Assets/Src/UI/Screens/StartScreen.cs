@@ -7,6 +7,7 @@ using UniRx;
 using Zenject;
 using Suburb.Interactables;
 using Suburb.Common;
+using Suburb.Utils;
 
 namespace Suburb.UI
 {
@@ -30,6 +31,7 @@ namespace Suburb.UI
             this.rover = rover;
             this.land = land;
             this.worldCameraController = worldCameraController;
+            this.Log($"DPI {Screen.dpi}");
         }
 
         protected override void Show()
