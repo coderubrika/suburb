@@ -115,7 +115,7 @@ public partial class @PointerControls : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""14f0b81f-63f8-4647-a97a-6338cea7abc1"",
                     ""path"": ""<Touchscreen>/primaryTouch/tap"",
-                    ""interactions"": ""Press(behavior=1)"",
+                    ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": ""TouchScreen"",
                     ""action"": ""Up"",

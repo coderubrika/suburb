@@ -5,17 +5,16 @@ using UniRx;
 
 namespace Suburb.Common
 {
-    public class MouseGestureProvider
+    public class MouseGestureProvider : IGestureProvider
     {
-        private readonly PointerService pointerService;
+        public ReactiveCommand<GuestureEventData> OnPointerDown => throw new NotImplementedException();
 
-        public ReactiveCommand OnDragStart { get; } = new();
-        public ReactiveCommand OnDrag { get; } = new();
-        public ReactiveCommand OnDragEnd { get; } = new();
+        public ReactiveCommand<GuestureEventData> OnPointerUp => throw new NotImplementedException();
 
-        public MouseGestureProvider(PointerService pointerService)
-        {
-            this.pointerService = pointerService;
-        }
+        public ReactiveCommand<GuestureEventData> OnDragStart => throw new NotImplementedException();
+
+        public ReactiveCommand<GuestureEventData> OnDrag => throw new NotImplementedException();
+
+        public ReactiveCommand<GuestureEventData> OnDragEnd => throw new NotImplementedException();
     }
 }
