@@ -1,5 +1,6 @@
 ﻿using Suburb.Common;
 using Suburb.Core;
+using Suburb.Core.Inputs;
 using Suburb.Interactables;
 using System;
 using UniRx;
@@ -10,21 +11,20 @@ namespace Suburb.Selectors
     public class InteractablesSelector
     {
         private readonly Camera playerCamera;
-        private readonly PointerService pointerService;
+        private readonly IGestureProvider gestureProvider;
         private readonly InteractionRepository interactionRepository;
 
         private readonly CompositeDisposable disposables = new();
 
         private bool isOn;
-        private bool isDragging;
         public InteractablesSelector(
             PlayerCamera playerCamera,
-            PointerService pointerService,
+            IGestureProvider gestureProvider,
             InteractionRepository interactionRepository
             )
         {
             this.playerCamera = playerCamera.GetCamera();
-            this.pointerService = pointerService;
+            this.gestureProvider = gestureProvider;
             this.interactionRepository = interactionRepository;
         }
 
@@ -37,30 +37,9 @@ namespace Suburb.Selectors
 
             if (this.isOn)
             {
-                pointerService.OnPointerDown
-                    .Subscribe(_ =>
-                    {
-                        isDragging = false;
-
-                        IDisposable dragDisposable = null;
-                        dragDisposable = pointerService.OnDrag
-                            .Subscribe(_ =>
-                            {
-                                dragDisposable?.Dispose();
-                                isDragging = true;
-                            })
-                            .AddTo(disposables);
-                    })
-                    .AddTo(disposables);
-
-                
-
-                pointerService.OnPointerUp
-                    .Subscribe(_ =>
-                    {
-                        if (!isDragging)
-                            CheckPoint(pointerService.PointerPositionOnScreen.Value);
-                    })
+                gestureProvider.OnPointerUp
+                    .Where(_ => !gestureProvider.IsDragging)
+                    .Subscribe(data => CheckPoint(data.Position))
                     .AddTo(disposables);
             }
             else
@@ -72,13 +51,11 @@ namespace Suburb.Selectors
         private void CheckPoint(Vector2 point)
         {
             Ray ray = playerCamera.ScreenPointToRay(point);
-            Debug.Log($"try hit");
+
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Debug.Log($"Hit to something {hit.transform.gameObject}");
                 if (interactionRepository.CheckGameObject(hit.transform.gameObject, out IInteractable interactable))
                 {
-                    Debug.Log($"Hit to {hit.transform.gameObject}");
                     interactable.Interact(new BaseInteractEventData { Ray = ray, Distance = hit.distance });
                 }
             }

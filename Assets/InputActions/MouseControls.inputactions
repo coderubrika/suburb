@@ -1,12 +1,12 @@
 {
-    "name": "PointerControls",
+    "name": "MouseControls",
     "maps": [
         {
-            "name": "All",
+            "name": "Mouse",
             "id": "2925a955-3c52-4183-b888-1f8a6c39dd91",
             "actions": [
                 {
-                    "name": "PositionOnScreen",
+                    "name": "Position",
                     "type": "Value",
                     "id": "40f8a702-3b0b-4176-9118-f89e15bf5838",
                     "expectedControlType": "Vector2",
@@ -31,6 +31,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Id",
+                    "type": "Value",
+                    "id": "39c4196e-4602-4f51-9476-676e20275e7b",
+                    "expectedControlType": "Integer",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Delta",
+                    "type": "PassThrough",
+                    "id": "fd1a4bbd-a9ea-442e-b5e7-0541eb8f4731",
+                    "expectedControlType": "Delta",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Zoom",
+                    "type": "PassThrough",
+                    "id": "01f8ce69-e73b-4ae5-b256-47ec7980f2a9",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -41,29 +68,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse",
-                    "action": "PositionOnScreen",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4db22118-dcf8-4a4c-9512-13fd9394d627",
-                    "path": "<Touchscreen>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "TouchScreen",
-                    "action": "PositionOnScreen",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c74281b1-fca5-47bb-b12c-7c9f139926ed",
-                    "path": "<Touchscreen>/Press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "TouchScreen",
-                    "action": "Down",
+                    "action": "Position",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -91,40 +96,34 @@
                 },
                 {
                     "name": "",
-                    "id": "14f0b81f-63f8-4647-a97a-6338cea7abc1",
-                    "path": "<Touchscreen>/primaryTouch/tap",
-                    "interactions": "Press(behavior=2)",
+                    "id": "b064bd87-4e3d-4fa8-b61d-0e110ba35b7d",
+                    "path": "<Mouse>/pointerId",
+                    "interactions": "",
                     "processors": "",
-                    "groups": "TouchScreen",
-                    "action": "Up",
+                    "groups": "Mouse",
+                    "action": "Id",
                     "isComposite": false,
                     "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Mouse",
-            "id": "b71c1ac1-9d54-45b1-a5c1-451b527c637e",
-            "actions": [
-                {
-                    "name": "Scroll",
-                    "type": "Value",
-                    "id": "6f62d98d-f4ff-4f20-881a-d74ad2158307",
-                    "expectedControlType": "Delta",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                }
-            ],
-            "bindings": [
+                },
                 {
                     "name": "",
-                    "id": "e9c64947-27de-4611-a205-28cddb1e020a",
+                    "id": "0fa18843-1ece-46b2-afa1-163e77647f22",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse",
+                    "action": "Delta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e5c6a749-ba81-402f-abfc-7e79c610e4f6",
                     "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse",
-                    "action": "Scroll",
+                    "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -132,17 +131,6 @@
         }
     ],
     "controlSchemes": [
-        {
-            "name": "TouchScreen",
-            "bindingGroup": "TouchScreen",
-            "devices": [
-                {
-                    "devicePath": "<Touchscreen>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
-        },
         {
             "name": "Mouse",
             "bindingGroup": "Mouse",

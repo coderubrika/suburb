@@ -1,5 +1,6 @@
 using Suburb.Activities;
 using Suburb.Common;
+using Suburb.Core.Inputs;
 using Suburb.Interactables;
 using Suburb.Selectors;
 using Suburb.Utils;
@@ -25,7 +26,15 @@ namespace Suburb.Core
                 .WithArguments(screensPathRoot)
                 .NonLazy();
 
-            Container.BindInterfacesAndSelfTo<PointerService>().AsSingle();
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                Container.BindInterfacesAndSelfTo<TouchGestureProvider>().AsSingle();
+            }
+            else
+            {
+                Container.BindInterfacesAndSelfTo<MouseGestureProvider>().AsSingle();
+            }
+            
             Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
             Container.Bind<InteractionRepository>().AsSingle().NonLazy();
             Container.Bind<InteractablesSelector>().AsSingle().NonLazy();

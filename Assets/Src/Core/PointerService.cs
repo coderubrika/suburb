@@ -7,9 +7,9 @@ using static UnityEngine.InputSystem.InputAction;
 using UnityEngine.InputSystem;
 namespace Suburb.Core
 {
-    public class PointerService: IInitializable, IDisposable, ITickable
+    public class PointerService
     {
-        private readonly PointerControls pointerInput;
+        /*private readonly PointerControls pointerInput;
         private readonly float dragTreshold = 5;
 
         private bool isDradding;
@@ -92,7 +92,7 @@ namespace Suburb.Core
         private static bool IsWhongTouchPosition(Vector2 source)
         {
             return source.x < 0 || source.y < 0 || (source.x == 0 && source.y == 0);
-        }
+        }*/
 
         /*private void Update()
         {

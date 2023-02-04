@@ -16,7 +16,6 @@ namespace Suburb.UI
         private InteractablesSelector interactablesSelector;
         private Rover rover;
         private Land land;
-        private PointerService pointerService;
         private WorldCameraController worldCameraController;
 
         [Inject]
@@ -24,7 +23,6 @@ namespace Suburb.UI
             InteractablesSelector interactablesSelector,
             Rover rover,
             WorldCameraController worldCameraController,
-            PointerService pointerService,
             Land land)
         {
             this.interactablesSelector = interactablesSelector;

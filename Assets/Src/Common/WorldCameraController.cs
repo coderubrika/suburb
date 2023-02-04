@@ -1,4 +1,5 @@
 ﻿using Suburb.Core;
+using Suburb.Core.Inputs;
 using Suburb.Utils;
 using System;
 using UniRx;
@@ -9,13 +10,12 @@ namespace Suburb.Common
     public class WorldCameraController : IDisposable
     {
         private readonly Transform cameraTransform;
-        private readonly PointerService pointerService;
+        private readonly IGestureProvider gestureProvider;
 
         private readonly CompositeDisposable disposables = new();
 
         private IDisposable dragDisposable;
         private bool isOn;
-        private Vector3 startPosition;
         private Vector2 deltaPositon;
         private Vector3 velocity = Vector3.zero;
         private SmoothTransitionParam smoothTransitionParam;
@@ -24,12 +24,11 @@ namespace Suburb.Common
 
         public WorldCameraController(
             PlayerCamera playerCamera, 
-            PointerService pointerService, 
+            IGestureProvider gestureProvider, 
             SmoothTransitionParam smoothTransitionParam)
         {
             cameraTransform = playerCamera.transform;
-            this.pointerService = pointerService;
-            startPosition = cameraTransform.position;
+            this.gestureProvider = gestureProvider;
             this.smoothTransitionParam = smoothTransitionParam;
         }
 
@@ -40,10 +39,13 @@ namespace Suburb.Common
 
             isOn = true;
 
-            pointerService.OnDrag
-                .Subscribe(delta => deltaPositon = delta).AddTo(disposables);
+            gestureProvider.OnDrag
+                .Subscribe(data =>
+                {
+                    deltaPositon = data.Delta;
+                }).AddTo(disposables);
 
-            pointerService.OnPointerDown
+            gestureProvider.OnDragStart
                 .Subscribe(_ =>
                 {
                     dragDisposable?.Dispose();
@@ -54,7 +56,7 @@ namespace Suburb.Common
                         .AddTo(disposables);
                 }).AddTo(disposables);
 
-            pointerService.OnPointerUp
+            gestureProvider.OnDragEnd
                 .Subscribe(_ =>
                 {
                     deltaPositon = Vector3.zero;
@@ -85,16 +87,16 @@ namespace Suburb.Common
                     - new Vector3(deltaPositon.x, 0f, deltaPositon.y)
                     * smoothTransitionParam.MoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
 
-            if (isAllowToDisposeDrag && newPosition.IsClose(oldPosition, float.Epsilon))
+            if (isAllowToDisposeDrag && newPosition.IsCloseWithOther(oldPosition, float.Epsilon))
             {
                 velocity = Vector3.zero;
                 dragDisposable?.Dispose();
             }
 
             cameraTransform.position = Vector3.SmoothDamp(
-                cameraTransform.position, 
-                cameraTransform.position 
-                    - new Vector3(deltaPositon.x, 0f, deltaPositon.y) 
+                cameraTransform.position,
+                cameraTransform.position
+                    - new Vector3(deltaPositon.x, 0f, deltaPositon.y)
                     * smoothTransitionParam.MoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
 
             oldPosition = newPosition;
