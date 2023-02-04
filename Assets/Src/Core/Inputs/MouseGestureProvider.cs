@@ -77,15 +77,6 @@ namespace Suburb.Core.Inputs
                 OnDrag.Execute(GetEventData(GestureType.Drag));
                 return;
             }
-
-            if (currentGesture == GestureType.Up && isDragging)
-            {
-                currentGesture = GestureType.DragEnd;
-                isDragging = false;
-                OnDragEnd.Execute(GetEventData(GestureType.DragEnd));
-                currentGesture = GestureType.None;
-                return;
-            }
         }
 
         private void PointerDown(CallbackContext context)
@@ -98,6 +89,16 @@ namespace Suburb.Core.Inputs
         {
             currentGesture = GestureType.Up;
             OnPointerUp.Execute(GetEventData(GestureType.Up));
+
+            if (isDragging)
+            {
+                currentGesture = GestureType.DragEnd;
+                isDragging = false;
+                OnDragEnd.Execute(GetEventData(GestureType.DragEnd));
+            }
+
+            currentGesture = GestureType.None;
+            return;
         }
 
         private void Zoom(CallbackContext context)

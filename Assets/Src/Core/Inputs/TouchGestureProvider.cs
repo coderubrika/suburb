@@ -47,75 +47,60 @@ namespace Suburb.Core.Inputs
                 return;
 
             for (int touchId = 0; touchId < touchStates.Length; touchId++)
+                SetupTouch(touchId);
+        }
+
+        private void SetupTouch(int touchId)
+        {
+            bool isTouched = (int)Touchscreen.current.touches[touchId].press.ReadValue() == 1;
+
+            if (isTouched)
             {
-                SetupTouched(touchId);
+                if (touchStates[touchId] == GestureType.None)
+                {
+                    touchStates[touchId] = GestureType.Down;
+                    OnPointerDown.Execute(GetEventData(touchId, GestureType.Down));
+                    return;
+                }
 
-                if (IsTouchedDragStart(touchId))
-                    continue;
+                Vector2 delta = Touchscreen.current.touches[touchId].delta.ReadValue();
 
-                if (IsTouchedDrag(touchId))
-                    continue;
+                if (touchStates[touchId] == GestureType.Down && !delta.IsClose(dragTreshold))
+                {
+                    isDragging = true;
+                    touchStates[touchId] = GestureType.DragStart;
+                    OnDragStart.Execute(GetEventData(touchId, GestureType.DragStart));
+                    return;
+                }
+
+                if (touchStates[touchId] == GestureType.DragStart)
+                {
+                    touchStates[touchId] = GestureType.Drag;
+                    OnDrag.Execute(GetEventData(touchId, GestureType.Drag));
+                    return;
+                }
 
                 if (touchStates[touchId] == GestureType.Drag)
                 {
                     OnDrag.Execute(GetEventData(touchId, GestureType.Drag));
-                    continue;
+                    return;
                 }
+            }
+            else if (touchStates[touchId] != GestureType.None)
+            {
+                touchStates[touchId] = GestureType.Up;
+                OnPointerDown.Execute(GetEventData(touchId, GestureType.Up));
 
-                if (touchStates[touchId] == GestureType.Up && isDragging)
+                if (isDragging)
                 {
                     touchStates[touchId] = GestureType.DragEnd;
                     isDragging = false;
                     OnDragEnd.Execute(GetEventData(touchId, GestureType.DragEnd));
-                    touchStates[touchId] = GestureType.None;
-                    continue;
                 }
+
+                touchStates[touchId] = GestureType.None;
+                return;
             }
-        }
-
-        private void SetupTouched(int touchId)
-        {
-            bool isTouched = (int)Touchscreen.current.touches[touchId].press.ReadValue() == 1;
-
-            if (isTouched && touchStates[touchId] == GestureType.None)
-            {
-                touchStates[touchId] = GestureType.Down;
-                OnPointerDown.Execute(GetEventData(touchId, GestureType.Down));
-            }
-
-            if (!isTouched && touchStates[touchId] != GestureType.None && touchStates[touchId] != GestureType.Up)
-            {
-                touchStates[touchId] = GestureType.Up;
-                OnPointerDown.Execute(GetEventData(touchId, GestureType.Up));
-            }
-        }
-
-        private bool IsTouchedDragStart(int touchId)
-        {
-            Vector2 delta = Touchscreen.current.touches[touchId].delta.ReadValue();
-            
-            if (touchStates[touchId] == GestureType.Down && !delta.IsClose(dragTreshold))
-            {
-                isDragging = true;
-                touchStates[touchId] = GestureType.DragStart;
-                OnDragStart.Execute(GetEventData(touchId, GestureType.DragStart));
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool IsTouchedDrag(int touchId)
-        {
-            if (touchStates[touchId] == GestureType.DragStart)
-            {
-                touchStates[touchId] = GestureType.Drag;
-                OnDrag.Execute(GetEventData(touchId, GestureType.Drag));
-                return true;
-            }
-
-            return false;
         }
 
         private GestureEventData GetEventData(int touchId, GestureType gestureType)
