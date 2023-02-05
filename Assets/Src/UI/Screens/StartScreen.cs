@@ -30,6 +30,7 @@ namespace Suburb.UI
             this.land = land;
             this.worldCameraController = worldCameraController;
             this.Log($"DPI {Screen.dpi}");
+            Application.targetFrameRate = 120;
         }
 
         protected override void Show()
