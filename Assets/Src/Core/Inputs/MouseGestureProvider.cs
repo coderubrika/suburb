@@ -12,7 +12,7 @@ namespace Suburb.Core.Inputs
         private readonly MouseControls inputControls;
 
         // TODO move to project settings
-        private readonly float dragTreshold = 5;
+        private readonly float dragTreshold = 5f;
 
         private bool isDragging;
 
@@ -113,7 +113,7 @@ namespace Suburb.Core.Inputs
                 Id = inputControls.Mouse.Id.ReadValue<int>(),
                 Position = inputControls.Mouse.Position.ReadValue<Vector2>(),
                 Delta = inputControls.Mouse.Delta.ReadValue<Vector2>(),
-                ZoomDelta = inputControls.Mouse.Zoom.ReadValue<Vector2>(),
+                ZoomDelta = inputControls.Mouse.Zoom.ReadValue<Vector2>() / 360,
                 Type = gestureType
             };
         }

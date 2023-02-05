@@ -14,6 +14,14 @@ namespace Suburb.Common
 
         private readonly CompositeDisposable disposables = new();
 
+        // TODO move to project settings
+        private readonly float zoomToScaleFactor = 5f;
+        private readonly float maxScale = 50f;
+        private readonly float minScale = -14f;
+
+        private float currentScale = 1f;
+        private float originaTransformPositionY;
+
         private IDisposable dragDisposable;
         private bool isOn;
         private Vector2 deltaPositon;
@@ -30,6 +38,7 @@ namespace Suburb.Common
             cameraTransform = playerCamera.transform;
             this.gestureProvider = gestureProvider;
             this.smoothTransitionParam = smoothTransitionParam;
+            originaTransformPositionY = cameraTransform.position.y;
         }
 
         public void Enable()
@@ -52,7 +61,7 @@ namespace Suburb.Common
                     velocity = Vector3.zero;
                     isAllowToDisposeDrag = false;
                     dragDisposable = Observable.EveryUpdate()
-                        .Subscribe(Update)
+                        .Subscribe(UpdateMove)
                         .AddTo(disposables);
                 }).AddTo(disposables);
 
@@ -62,6 +71,10 @@ namespace Suburb.Common
                     deltaPositon = Vector3.zero;
                     isAllowToDisposeDrag = true;
                 }).AddTo(disposables);
+
+            gestureProvider.OnZoom.
+                Subscribe(UpdateScale)
+                .AddTo(disposables);
         }
 
         public void Disable()
@@ -79,7 +92,7 @@ namespace Suburb.Common
             disposables.Dispose();
         }
 
-        private void Update(long _)
+        private void UpdateMove(long _)
         {
             Vector3 newPosition = Vector3.SmoothDamp(
                 cameraTransform.position,
@@ -100,6 +113,19 @@ namespace Suburb.Common
                     * smoothTransitionParam.MoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
 
             oldPosition = newPosition;
+        }
+
+        private void UpdateScale(GestureEventData data)
+        {
+            float oldScale = currentScale;
+            currentScale = Mathf.Clamp(currentScale - data.ZoomDelta.y * zoomToScaleFactor, minScale, maxScale);
+            this.Log($"currentScale: {currentScale}");
+            float realScale = currentScale - oldScale;
+
+            Vector3 currentPosition = cameraTransform.position;
+            Vector3 newPosition = currentPosition - cameraTransform.forward * realScale;
+
+            cameraTransform.position = newPosition;
         }
     }
 }
