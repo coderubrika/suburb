@@ -9,5 +9,17 @@ namespace Suburb.Core.Inputs
         public Vector2 Delta;
         public Vector2 ZoomDelta;
         public GestureType Type;
+
+        public GestureEventData CopyWithType(GestureType Type)
+        {
+            return new GestureEventData()
+            {
+                Id = Id,
+                Position = Position,
+                Delta = Delta,
+                ZoomDelta = ZoomDelta,
+                Type = Type
+            };
+        }
     }
 }

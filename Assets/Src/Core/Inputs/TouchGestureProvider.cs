@@ -16,6 +16,7 @@ namespace Suburb.Core.Inputs
 
         private bool isDragging;
         private bool isEnabled;
+        private GestureEventData lastData;
 
         public ReactiveCommand<GestureEventData> OnPointerDown { get; } = new();
 
@@ -59,7 +60,8 @@ namespace Suburb.Core.Inputs
                 if (touchStates[touchId] == GestureType.None)
                 {
                     touchStates[touchId] = GestureType.Down;
-                    OnPointerDown.Execute(GetEventData(touchId, GestureType.Down));
+                    lastData = GetEventData(touchId, GestureType.Down);
+                    OnPointerDown.Execute(lastData);
                     return;
                 }
 
@@ -69,33 +71,38 @@ namespace Suburb.Core.Inputs
                 {
                     isDragging = true;
                     touchStates[touchId] = GestureType.DragStart;
-                    OnDragStart.Execute(GetEventData(touchId, GestureType.DragStart));
+                    lastData = GetEventData(touchId, GestureType.DragStart);
+                    OnDragStart.Execute(lastData);
                     return;
                 }
 
                 if (touchStates[touchId] == GestureType.DragStart)
                 {
                     touchStates[touchId] = GestureType.Drag;
-                    OnDrag.Execute(GetEventData(touchId, GestureType.Drag));
+                    lastData = GetEventData(touchId, GestureType.Drag);
+                    OnDrag.Execute(lastData);
                     return;
                 }
 
                 if (touchStates[touchId] == GestureType.Drag)
                 {
-                    OnDrag.Execute(GetEventData(touchId, GestureType.Drag));
+                    lastData = GetEventData(touchId, GestureType.Drag);
+                    OnDrag.Execute(lastData);
                     return;
                 }
             }
             else if (touchStates[touchId] != GestureType.None)
             {
                 touchStates[touchId] = GestureType.Up;
-                OnPointerDown.Execute(GetEventData(touchId, GestureType.Up));
+                lastData = lastData.CopyWithType(GestureType.Up);
+                OnPointerUp.Execute(lastData);
 
                 if (isDragging)
                 {
                     touchStates[touchId] = GestureType.DragEnd;
                     isDragging = false;
-                    OnDragEnd.Execute(GetEventData(touchId, GestureType.DragEnd));
+                    lastData = lastData.CopyWithType(GestureType.DragEnd);
+                    OnDragEnd.Execute(lastData);
                 }
 
                 touchStates[touchId] = GestureType.None;
