@@ -11,15 +11,19 @@ namespace Suburb.Common
     {
         private readonly Transform cameraTransform;
         private readonly IGestureProvider gestureProvider;
-
+        private readonly Vector3 cameraForward;
+        private readonly Vector3 initialCameraPosition;
         private readonly CompositeDisposable disposables = new();
 
         // TODO move to project settings
-        private readonly float zoomToScaleFactor = 5f;
-        private readonly float maxScale = 50f;
-        private readonly float minScale = -14f;
+        private readonly float zoomFactor = 5f;
+        private readonly float maxZoom = 15f;
+        private readonly float minZoom = -15f;
+        private readonly float maxMoveSensivityFactor = 3f;
+        private readonly float minMoveSensivity = 0.3333f;
 
-        private float currentScale = 1f;
+        private float currentZoom = 0f;
+        // i need keep real camera position equal 0 current zoom
         private float originaTransformPositionY;
 
         private IDisposable dragDisposable;
@@ -36,6 +40,8 @@ namespace Suburb.Common
             SmoothTransitionParam smoothTransitionParam)
         {
             cameraTransform = playerCamera.transform;
+            cameraForward = cameraTransform.forward;
+            initialCameraPosition = cameraTransform.position;
             this.gestureProvider = gestureProvider;
             this.smoothTransitionParam = smoothTransitionParam;
             originaTransformPositionY = cameraTransform.position.y;
@@ -94,11 +100,12 @@ namespace Suburb.Common
 
         private void UpdateMove(long _)
         {
+            float currentMoveSpeed = GetMoveSpeed();
             Vector3 newPosition = Vector3.SmoothDamp(
                 cameraTransform.position,
                 cameraTransform.position
                     - new Vector3(deltaPositon.x, 0f, deltaPositon.y)
-                    * smoothTransitionParam.MoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
+                    * currentMoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
 
             if (isAllowToDisposeDrag && newPosition.IsCloseWithOther(oldPosition, float.Epsilon))
             {
@@ -110,22 +117,34 @@ namespace Suburb.Common
                 cameraTransform.position,
                 cameraTransform.position
                     - new Vector3(deltaPositon.x, 0f, deltaPositon.y)
-                    * smoothTransitionParam.MoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
+                    * currentMoveSpeed, ref velocity, smoothTransitionParam.SmoothTime);
 
             oldPosition = newPosition;
         }
 
         private void UpdateScale(GestureEventData data)
         {
-            float oldScale = currentScale;
-            currentScale = Mathf.Clamp(currentScale - data.ZoomDelta.y * zoomToScaleFactor, minScale, maxScale);
-            this.Log($"currentScale: {currentScale}");
-            float realScale = currentScale - oldScale;
+            float zoomDelta = data.ZoomDelta.y * zoomFactor;
+            currentZoom += zoomDelta;
 
-            Vector3 currentPosition = cameraTransform.position;
-            Vector3 newPosition = currentPosition - cameraTransform.forward * realScale;
+            this.Log($"currentZoom: {currentZoom}");
 
-            cameraTransform.position = newPosition;
+            if (currentZoom > maxZoom || currentZoom < minZoom)
+            {
+                currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+                return;
+            }
+
+            cameraTransform.position += cameraForward * zoomDelta;
+        }
+
+        private float GetMoveSpeed()
+        {
+            float currentZoomNormalized = Mathf.InverseLerp(minZoom, maxZoom, currentZoom);
+            float currentZoomNormalizedInversed = 1 - currentZoomNormalized;
+            float currentMoveSpeedFactor = Mathf.Lerp(minMoveSensivity, maxMoveSensivityFactor, currentZoomNormalizedInversed);
+            float currentMoveSpeed = smoothTransitionParam.MoveSpeed * currentMoveSpeedFactor;
+            return currentMoveSpeed;
         }
     }
 }
