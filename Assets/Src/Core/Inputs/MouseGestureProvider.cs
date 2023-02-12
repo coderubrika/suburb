@@ -30,7 +30,10 @@ namespace Suburb.Core.Inputs
 
         public ReactiveCommand<GestureEventData> OnZoom { get; } = new();
 
-        public bool IsDragging => isDragging;
+        public bool IsDragging(int pointerId)
+        {
+            return isDragging;
+        }
 
         public MouseGestureProvider()
         {

@@ -39,7 +39,7 @@ namespace Suburb.Selectors
             if (this.isOn)
             {
                 gestureProvider.OnPointerUp
-                    .Where(_ => !gestureProvider.IsDragging)
+                    .Where(data => !gestureProvider.IsDragging(data.Id))
                     .Subscribe(data => CheckPoint(data.Position))
                     .AddTo(disposables);
             }

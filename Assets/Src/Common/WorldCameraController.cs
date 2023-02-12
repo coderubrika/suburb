@@ -33,6 +33,7 @@ namespace Suburb.Common
         private SmoothTransitionParam smoothTransitionParam;
         private Vector3 oldPosition;
         private bool isAllowToDisposeDrag;
+        private int currentPointerId = -1;
 
         public WorldCameraController(
             PlayerCamera playerCamera, 
@@ -57,23 +58,30 @@ namespace Suburb.Common
             gestureProvider.OnDrag
                 .Subscribe(data =>
                 {
+                    if (data.Id != currentPointerId)
+                        return;
+
                     deltaPositon = data.Delta;
                 }).AddTo(disposables);
 
             gestureProvider.OnDragStart
-                .Subscribe(_ =>
+                .Subscribe(data =>
                 {
-                    dragDisposable?.Dispose();
-                    velocity = Vector3.zero;
-                    isAllowToDisposeDrag = false;
+                    currentPointerId = data.Id;
+
+                    ClearLastDrag();
+
                     dragDisposable = Observable.EveryUpdate()
                         .Subscribe(UpdateMove)
                         .AddTo(disposables);
                 }).AddTo(disposables);
 
             gestureProvider.OnDragEnd
-                .Subscribe(_ =>
+                .Subscribe(data =>
                 {
+                    if (currentPointerId != data.Id)
+                        return;
+
                     deltaPositon = Vector3.zero;
                     isAllowToDisposeDrag = true;
                 }).AddTo(disposables);
@@ -109,8 +117,10 @@ namespace Suburb.Common
 
             if (isAllowToDisposeDrag && newPosition.IsCloseWithOther(oldPosition, float.Epsilon))
             {
+                currentPointerId = -1;
                 velocity = Vector3.zero;
                 dragDisposable?.Dispose();
+                return;
             }
 
             cameraTransform.position = Vector3.SmoothDamp(
@@ -126,8 +136,6 @@ namespace Suburb.Common
         {
             float zoomDelta = data.ZoomDelta.y * zoomFactor;
             currentZoom += zoomDelta;
-
-            this.Log($"currentZoom: {currentZoom}");
 
             if (currentZoom > maxZoom || currentZoom < minZoom)
             {
@@ -145,6 +153,13 @@ namespace Suburb.Common
             float currentMoveSpeedFactor = Mathf.Lerp(minMoveSensivity, maxMoveSensivityFactor, currentZoomNormalizedInversed);
             float currentMoveSpeed = smoothTransitionParam.MoveSpeed * currentMoveSpeedFactor;
             return currentMoveSpeed;
+        }
+
+        private void ClearLastDrag()
+        {
+            dragDisposable?.Dispose();
+            velocity = Vector3.zero;
+            isAllowToDisposeDrag = false;
         }
     }
 }
