@@ -19,15 +19,10 @@ namespace Suburb.Core.Inputs
         private GestureType currentGesture = GestureType.None;
 
         public ReactiveCommand<GestureEventData> OnPointerDown { get; } = new();
-
         public ReactiveCommand<GestureEventData> OnPointerUp { get; } = new();
-
         public ReactiveCommand<GestureEventData> OnDragStart { get; } = new();
-
         public ReactiveCommand<GestureEventData> OnDrag { get; } = new();
-
         public ReactiveCommand<GestureEventData> OnDragEnd { get; } = new();
-
         public ReactiveCommand<GestureEventData> OnZoom { get; } = new();
 
         public bool IsDragging(int pointerId)

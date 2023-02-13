@@ -34,6 +34,7 @@ namespace Suburb.Common
         private Vector3 oldPosition;
         private bool isAllowToDisposeDrag;
         private int currentPointerId = -1;
+        private bool isPinchDragEnabled;
 
         public WorldCameraController(
             PlayerCamera playerCamera, 
@@ -55,40 +56,10 @@ namespace Suburb.Common
 
             isOn = true;
 
-            gestureProvider.OnDrag
-                .Subscribe(data =>
-                {
-                    if (data.Id != currentPointerId)
-                        return;
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+                SubscribeOnMobileEvents();
 
-                    deltaPositon = data.Delta;
-                }).AddTo(disposables);
-
-            gestureProvider.OnDragStart
-                .Subscribe(data =>
-                {
-                    currentPointerId = data.Id;
-
-                    ClearLastDrag();
-
-                    dragDisposable = Observable.EveryUpdate()
-                        .Subscribe(UpdateMove)
-                        .AddTo(disposables);
-                }).AddTo(disposables);
-
-            gestureProvider.OnDragEnd
-                .Subscribe(data =>
-                {
-                    if (currentPointerId != data.Id)
-                        return;
-
-                    deltaPositon = Vector3.zero;
-                    isAllowToDisposeDrag = true;
-                }).AddTo(disposables);
-
-            gestureProvider.OnZoom.
-                Subscribe(UpdateScale)
-                .AddTo(disposables);
+            SubscribeOnGeneralEvents();
         }
 
         public void Disable()
@@ -160,6 +131,69 @@ namespace Suburb.Common
             dragDisposable?.Dispose();
             velocity = Vector3.zero;
             isAllowToDisposeDrag = false;
+        }
+
+        private void SubscribeOnMobileEvents()
+        {
+            TouchGestureProvider touchGestureProvider = gestureProvider as TouchGestureProvider;
+            
+            if (touchGestureProvider == null)
+                return;
+
+            touchGestureProvider.OnDragStartWithDoubleTouch
+                .Subscribe(_ => isPinchDragEnabled = true)
+                .AddTo(disposables);
+
+            touchGestureProvider.OnDragEndWithDoubleTouch
+                .Subscribe(_ => isPinchDragEnabled = false)
+                .AddTo(disposables);
+
+            touchGestureProvider.OnDragWithDoubleTouch
+                .Subscribe(data =>
+                {
+                    if (!isPinchDragEnabled)
+                        return;
+
+                    deltaPositon = data.Delta;
+                }).AddTo(disposables);
+        }
+
+        private void SubscribeOnGeneralEvents()
+        {
+            gestureProvider.OnDrag
+                .Subscribe(data =>
+                {
+                    if (data.Id != currentPointerId || isPinchDragEnabled)
+                        return;
+
+                    deltaPositon = data.Delta;
+                }).AddTo(disposables);
+
+            gestureProvider.OnDragStart
+                .Subscribe(data =>
+                {
+                    currentPointerId = data.Id;
+
+                    ClearLastDrag();
+
+                    dragDisposable = Observable.EveryUpdate()
+                        .Subscribe(UpdateMove)
+                        .AddTo(disposables);
+                }).AddTo(disposables);
+
+            gestureProvider.OnDragEnd
+                .Subscribe(data =>
+                {
+                    if (currentPointerId != data.Id)
+                        return;
+
+                    deltaPositon = Vector3.zero;
+                    isAllowToDisposeDrag = true;
+                }).AddTo(disposables);
+
+            gestureProvider.OnZoom.
+                Subscribe(UpdateScale)
+                .AddTo(disposables);
         }
     }
 }
