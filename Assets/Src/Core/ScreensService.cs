@@ -29,8 +29,8 @@ namespace Suburb.Core
         public TScreen GoTo<TScreen>()
             where TScreen : BaseScreen
         {
-            previousScreen?.InitHide();
             previousScreen = currentScreen;
+            previousScreen?.InitHide();
 
             currentScreen = GetOrCreateScreen<TScreen>();
             currentScreen.InitShow();

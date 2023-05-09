@@ -13,41 +13,25 @@ namespace Suburb.UI
 {
     public class StartScreen : BaseScreen
     {
-        private InteractablesSelector interactablesSelector;
-        private Rover rover;
-        private Land land;
-        private WorldCameraController worldCameraController;
+        private ScreensService screensService;
 
         [Inject]
-        private void Construct(
-            InteractablesSelector interactablesSelector,
-            Rover rover,
-            WorldCameraController worldCameraController,
-            Land land)
+        private void Construct(ScreensService screensService)
         {
-            this.interactablesSelector = interactablesSelector;
-            this.rover = rover;
-            this.land = land;
-            this.worldCameraController = worldCameraController;
-            this.Log($"DPI {Screen.dpi}");
+            this.screensService = screensService;
+
             Application.targetFrameRate = 120;
         }
 
         protected override void Show()
         {
-            worldCameraController.Enable();
-            rover.Install();
-            land.Install();
-            interactablesSelector.SetEnableChecks(true);
             base.Show();
+
+            screensService.GoTo<MainMenuScreen>();
         }
 
         protected override void Hide()
         {
-            worldCameraController.Disable();
-            rover.Uninstall();
-            land.Uninstall();
-            interactablesSelector.SetEnableChecks(false);
             base.Hide();
         }
     }
