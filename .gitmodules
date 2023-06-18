@@ -1,0 +1,3 @@
+[submodule "Assets/Src/Screens"]
+	path = Assets/Src/Screens
+	url = https://github.com/coderubrika/UnityScreens
