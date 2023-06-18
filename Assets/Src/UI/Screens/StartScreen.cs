@@ -1,13 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Suburb.Core;
-using Suburb.Selectors;
-using UniRx;
 using Zenject;
-using Suburb.Interactables;
-using Suburb.Common;
-using Suburb.Utils;
+using Suburb.Screens;
 
 namespace Suburb.UI
 {

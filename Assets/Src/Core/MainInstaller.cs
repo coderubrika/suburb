@@ -2,10 +2,9 @@ using Suburb.Activities;
 using Suburb.Common;
 using Suburb.Core.Inputs;
 using Suburb.Interactables;
+using Suburb.Screens;
 using Suburb.Selectors;
 using Suburb.Utils;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
