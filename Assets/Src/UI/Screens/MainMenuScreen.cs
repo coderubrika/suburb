@@ -9,14 +9,26 @@ namespace Suburb.UI
 {
     public class MainMenuScreen : BaseScreen
     {
+        private ScreensService screensService;
+
         [SerializeField] private Button newGameButton;
+        [SerializeField] private Button saveButton;
+        [SerializeField] private Button loadButton;
         [SerializeField] private Button quitButton;
 
         [Inject]
-        public void Construct()
+        public void Construct(ScreensService screensService)
         {
+            this.screensService = screensService;
+
             quitButton.OnClickAsObservable()
                 .Subscribe(_ => Application.Quit())
+                .AddTo(this);
+
+            Observable.Merge(
+                    saveButton.OnClickAsObservable(),
+                    loadButton.OnClickAsObservable())
+                .Subscribe(_ => screensService.GoTo<SavesScreen>())
                 .AddTo(this);
         }
     }
