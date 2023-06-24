@@ -24,6 +24,8 @@ namespace Suburb.Common
 
         public void Start()
         {
+            // нужно поработать над репозиториями, я создам некий репозиторий ресурсов уровней, где их можно получить по списку
+            // и тут просто вызову install 
             rover.Install();
             land.Install();
             worldCameraController.Enable();
