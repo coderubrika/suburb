@@ -2,7 +2,7 @@ using UnityEngine;
 using Zenject;
 using Suburb.Screens;
 
-namespace Suburb.UI
+namespace Suburb.UI.Screens
 {
     public class StartScreen : BaseScreen
     {
@@ -13,7 +13,7 @@ namespace Suburb.UI
         {
             this.screensService = screensService;
 
-            Application.targetFrameRate = 120;
+            
         }
 
         protected override void Show()

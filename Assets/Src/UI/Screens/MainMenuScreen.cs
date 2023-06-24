@@ -5,13 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Suburb.UI
+namespace Suburb.UI.Screens
 {
     public class MainMenuScreen : BaseScreen
     {
         private ScreensService screensService;
 
         [SerializeField] private Button newGameButton;
+        [SerializeField] private Button continueButton;
         [SerializeField] private Button saveButton;
         [SerializeField] private Button loadButton;
         [SerializeField] private Button quitButton;
@@ -29,6 +30,12 @@ namespace Suburb.UI
                     saveButton.OnClickAsObservable(),
                     loadButton.OnClickAsObservable())
                 .Subscribe(_ => screensService.GoTo<SavesScreen>())
+                .AddTo(this);
+
+            Observable.Merge(
+                    newGameButton.OnClickAsObservable(),
+                    continueButton.OnClickAsObservable())
+                .Subscribe(_ => screensService.GoTo<GameScreen>())
                 .AddTo(this);
         }
     }

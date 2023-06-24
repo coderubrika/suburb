@@ -1967,6 +1967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   newGameButton: {fileID: 8838649514643452557}
+  continueButton: {fileID: 2011503022858617361}
   saveButton: {fileID: 2054752746279769587}
   loadButton: {fileID: 5682734763648769403}
   quitButton: {fileID: 6984850355953572040}

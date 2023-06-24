@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Suburb.UI
+namespace Suburb.UI.Screens
 {
     public class SavesScreen : BaseScreen
     {

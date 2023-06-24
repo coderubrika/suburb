@@ -26,17 +26,14 @@ namespace Suburb.Core
                 .NonLazy();
 
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-            {
                 Container.BindInterfacesAndSelfTo<TouchGestureProvider>().AsSingle();
-            }
             else
-            {
                 Container.BindInterfacesAndSelfTo<MouseGestureProvider>().AsSingle();
-            }
-            
+
             Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
             Container.Bind<InteractionRepository>().AsSingle().NonLazy();
             Container.Bind<InteractablesSelector>().AsSingle().NonLazy();
+            Container.Bind<GameControllerGodObject>().AsSingle().NonLazy();
             Container.Bind<Rover>().FromComponentInNewPrefab(rover).AsSingle();
             Container.Bind<Land>().FromComponentInNewPrefab(land).AsSingle();
             Container.BindInterfacesAndSelfTo<WorldCameraController>()

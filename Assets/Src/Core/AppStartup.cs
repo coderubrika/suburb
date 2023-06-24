@@ -1,6 +1,6 @@
 ﻿using Suburb.Screens;
-using Suburb.UI;
-using Suburb.Screens;
+using Suburb.UI.Screens;
+using UnityEngine;
 using Zenject;
 
 namespace Suburb.Core
@@ -15,7 +15,8 @@ namespace Suburb.Core
 
         public void Initialize()
         {
-            screensService.GoTo<StartScreen>();
+            Application.targetFrameRate = 120;
+            screensService.GoTo<MainMenuScreen>();
         }
     }
 }
