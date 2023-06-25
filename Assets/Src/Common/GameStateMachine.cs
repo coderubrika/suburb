@@ -8,6 +8,7 @@ namespace Suburb.Common
     {
         private readonly SavesService savesService;
         private readonly InjectCreator injectCreator;
+        private readonly ContentPlacer contentPlacer;
 
         private readonly Dictionary<Type, IGameState> states = new();
 
@@ -17,10 +18,12 @@ namespace Suburb.Common
 
         public GameStateMachine(
             SavesService savesService, 
-            InjectCreator injectCreator)
+            InjectCreator injectCreator,
+            ContentPlacer contentPlacer)
         {
             this.savesService = savesService;
             this.injectCreator = injectCreator;
+            this.contentPlacer = contentPlacer;
         }
 
         public void SwitchTo<T>()
@@ -35,11 +38,14 @@ namespace Suburb.Common
         public void Start()
         {
             CurrentConfig = savesService.GetLast();
+            contentPlacer.Place(CurrentConfig);
+            contentPlacer.Show();
             SwitchTo<TravelingState>();
         }
 
         public void Pause()
         {
+            contentPlacer.Hide();
             savesService.Update(CurrentConfig.Id);
             currentState.Disable();
         }

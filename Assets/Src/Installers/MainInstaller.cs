@@ -3,7 +3,7 @@ using Suburb.Core.Inputs;
 using Suburb.Interactables;
 using Suburb.Scenarios;
 using Suburb.Screens;
-using Suburb.Selectors;
+using Suburb.Detectors;
 using Suburb.Utils;
 using UnityEngine;
 using Zenject;
@@ -33,7 +33,7 @@ namespace Suburb.Installers
             Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
             Container.Bind<InteractablesStore>().AsSingle().NonLazy();
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
-            Container.Bind<PickSelector>().AsSingle().NonLazy();
+            Container.Bind<PickDetector>().AsSingle().NonLazy();
             Container.Bind<GameStateMachine>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<WorldCameraController>()
                 .AsSingle()

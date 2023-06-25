@@ -2,8 +2,9 @@
 
 namespace Suburb.Interactables
 {
-    public class BaseInteractEventData
+    public class PickEventData
     {
+        public GameObject GameObject;
         public Ray Ray;
         public float Distance;
     }
