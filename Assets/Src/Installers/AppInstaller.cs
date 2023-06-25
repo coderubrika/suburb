@@ -1,7 +1,7 @@
-using UnityEngine;
+using Suburb.Core;
 using Zenject;
 
-namespace Suburb.Core
+namespace Suburb.Installers
 {
     public class AppInstaller : MonoInstaller
     {

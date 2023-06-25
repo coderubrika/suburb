@@ -1,5 +1,4 @@
-﻿using Suburb.Activities;
-using Suburb.Common;
+﻿using Suburb.Common;
 using System;
 using System.Collections;
 using UniRx;
@@ -8,10 +7,8 @@ using Zenject;
 
 namespace Suburb.Interactables
 {
-    public class Rover : InteractableObject
+    public class Rover : MonoBehaviour, IInteractable, IUninstalable
     {
-        private RoverActivity roverActivity;
-
         [SerializeField] private float moveSpeed;
         [SerializeField] private float rotateSpeed;
 
@@ -19,21 +16,13 @@ namespace Suburb.Interactables
 
         private IDisposable moveDisposable;
 
-        [Inject]
-        public void Construct(RoverActivity roverActivity)
-        {
-            this.roverActivity = roverActivity;
-        }
-
-        public override void Interact(BaseInteractEventData baseInteractEventData)
+        public void Interact(BaseInteractEventData baseInteractEventData)
         {
             moveDisposable?.Dispose();
-            roverActivity.SetRover(this);
         }
 
-        public override void Uninstall()
+        public void Uninstall()
         {
-            base.Uninstall();
             disposables.Clear();
         }
 

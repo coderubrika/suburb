@@ -1,5 +1,5 @@
-﻿using Suburb.Screens;
-using System.Collections;
+﻿using Suburb.Common;
+using Suburb.Screens;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +10,7 @@ namespace Suburb.UI.Screens
     public class MainMenuScreen : BaseScreen
     {
         private ScreensService screensService;
+        private SavesService savesService;
 
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
@@ -18,9 +19,12 @@ namespace Suburb.UI.Screens
         [SerializeField] private Button quitButton;
 
         [Inject]
-        public void Construct(ScreensService screensService)
+        public void Construct(
+            ScreensService screensService,
+            SavesService savesService)
         {
             this.screensService = screensService;
+            this.savesService = savesService;
 
             quitButton.OnClickAsObservable()
                 .Subscribe(_ => Application.Quit())
@@ -32,11 +36,29 @@ namespace Suburb.UI.Screens
                 .Subscribe(_ => screensService.GoTo<SavesScreen>())
                 .AddTo(this);
 
-            Observable.Merge(
-                    newGameButton.OnClickAsObservable(),
-                    continueButton.OnClickAsObservable())
-                .Subscribe(_ => screensService.GoTo<GameScreen>())
+            newGameButton.OnClickAsObservable()
+                .Subscribe(_ => 
+                {
+                    var config = savesService.Create();
+                    savesService.Select(config.Id);
+                    screensService.GoTo<GameScreen>();
+                })
                 .AddTo(this);
+
+            continueButton.OnClickAsObservable()
+                .Subscribe(_ =>
+                {
+                    var config = savesService.GetLast();
+                    savesService.Select(config.Id);
+                    screensService.GoTo<GameScreen>();
+                })
+                .AddTo(this);
+        }
+
+        protected override void Show()
+        {
+            base.Show();
+            continueButton.gameObject.SetActive(savesService.SavesCount > 0);
         }
     }
 }

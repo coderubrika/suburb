@@ -9,20 +9,19 @@ using UnityEngine;
 
 namespace Suburb.Selectors
 {
-    public class InteractablesSelector
+    public class PickSelector
     {
         private readonly Camera playerCamera;
         private readonly IGestureProvider gestureProvider;
-        private readonly InteractionRepository interactionRepository;
+        private readonly InteractablesStore interactionRepository;
 
         private readonly CompositeDisposable disposables = new();
 
         private bool isOn;
-        public InteractablesSelector(
+        public PickSelector(
             PlayerCamera playerCamera,
             IGestureProvider gestureProvider,
-            InteractionRepository interactionRepository
-            )
+            InteractablesStore interactionRepository)
         {
             this.playerCamera = playerCamera.GetCamera();
             this.gestureProvider = gestureProvider;
@@ -44,9 +43,7 @@ namespace Suburb.Selectors
                     .AddTo(disposables);
             }
             else
-            {
                 disposables.Clear();
-            }
         }
 
         private void CheckPoint(Vector2 point)

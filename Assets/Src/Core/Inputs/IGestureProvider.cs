@@ -12,5 +12,8 @@ namespace Suburb.Core.Inputs
         public ReactiveCommand<GestureEventData> OnZoom { get; }
 
         public bool IsDragging(int pointerId);
+
+        public void Disable();
+        public void Enable();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Suburb.Activities;
+﻿using Suburb.Common;
 using Suburb.Utils;
 using System.Collections;
 using UnityEngine;
@@ -6,19 +6,13 @@ using Zenject;
 
 namespace Suburb.Interactables
 {
-    public class Land : InteractableObject
+    public class Land : MonoBehaviour, IInteractable
     {
-        private RoverActivity roverActivity;
+        public Vector3 ContactPosition { get; private set; }
 
-        [Inject]
-        public void Construct(RoverActivity roverActivity)
+        public void Interact(BaseInteractEventData data)
         {
-            this.roverActivity = roverActivity;
-        }
-
-        public override void Interact(BaseInteractEventData data)
-        {
-            roverActivity.SetPositon(data.Ray.GetPoint(data.Distance));
+            ContactPosition = data.Ray.GetPoint(data.Distance);
         }
     }
 }

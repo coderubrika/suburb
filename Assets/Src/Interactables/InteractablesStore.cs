@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Suburb.Interactables
 {
-    public class InteractionRepository
+    public class InteractablesStore
     {
         private readonly Dictionary<GameObject, IInteractable> interactables = new();
 

@@ -9,6 +9,5 @@ namespace Suburb.Common
     public interface IInstallable
     {
         public void Install();
-        public void Uninstall();
     }
 }

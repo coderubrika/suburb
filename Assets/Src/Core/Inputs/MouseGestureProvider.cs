@@ -1,19 +1,19 @@
-﻿using System;
-using UniRx;
+﻿using UniRx;
 using UnityEngine;
-using Zenject;
 using static UnityEngine.InputSystem.InputAction;
 using Suburb.Utils;
+using System;
 
 namespace Suburb.Core.Inputs
 {
-    public class MouseGestureProvider : IGestureProvider, IInitializable, IDisposable, ITickable
+    public class MouseGestureProvider : IGestureProvider
     {
         private readonly MouseControls inputControls;
 
         // TODO move to project settings
         private readonly float dragTreshold = 5f;
 
+        private IDisposable updateDisposable;
         private bool isDragging;
 
         private GestureType currentGesture = GestureType.None;
@@ -39,17 +39,23 @@ namespace Suburb.Core.Inputs
             inputControls.Mouse.Zoom.performed += Zoom;
         }
 
-        public void Dispose()
+        public void Disable()
         {
+            updateDisposable?.Dispose();
             inputControls.Disable();
         }
 
-        public void Initialize()
+        public void Enable()
         {
+            updateDisposable?.Dispose();
+
             inputControls.Enable();
+
+            updateDisposable = Observable.EveryUpdate()
+                .Subscribe(_ => Update());
         }
 
-        public void Tick()
+        private void Update()
         {
             if (currentGesture == GestureType.None)
                 return;

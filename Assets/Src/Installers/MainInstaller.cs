@@ -1,14 +1,14 @@
-using Suburb.Activities;
 using Suburb.Common;
 using Suburb.Core.Inputs;
 using Suburb.Interactables;
+using Suburb.Scenarios;
 using Suburb.Screens;
 using Suburb.Selectors;
 using Suburb.Utils;
 using UnityEngine;
 using Zenject;
 
-namespace Suburb.Core
+namespace Suburb.Installers
 {
     public class MainInstaller : MonoInstaller
     {
@@ -31,16 +31,15 @@ namespace Suburb.Core
                 Container.BindInterfacesAndSelfTo<MouseGestureProvider>().AsSingle();
 
             Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
-            Container.Bind<InteractionRepository>().AsSingle().NonLazy();
-            Container.Bind<InteractablesSelector>().AsSingle().NonLazy();
-            Container.Bind<GameControllerGodObject>().AsSingle().NonLazy();
-            Container.Bind<Rover>().FromComponentInNewPrefab(rover).AsSingle();
-            Container.Bind<Land>().FromComponentInNewPrefab(land).AsSingle();
+            Container.Bind<InteractablesStore>().AsSingle().NonLazy();
+            Container.Bind<InjectCreator>().AsSingle().NonLazy();
+            Container.Bind<PickSelector>().AsSingle().NonLazy();
+            Container.Bind<GameStateMachine>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<WorldCameraController>()
                 .AsSingle()
                 .WithArguments(worldCameraControllerParam);
 
-            Container.Bind<RoverActivity>().AsSingle();
+            Container.Bind<RoverScenario>().AsSingle();
         }
     }
 }

@@ -5,22 +5,20 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem.Utilities;
-using Zenject;
 
 namespace Suburb.Core.Inputs
 {
-    public class TouchGestureProvider : IGestureProvider, ITickable, IInitializable, IDisposable
+    public class TouchGestureProvider : IGestureProvider
     {
         private readonly GestureType[] touchStates = Enumerable.Repeat(GestureType.None, Touchscreen.current.touches.Count).ToArray();
         // TODO move to project settings
         private readonly float dragTreshold = 5;
         private readonly float zoomFactor = 0.01f;
         private bool[] isDraggings = new bool[Touchscreen.current.touches.Count];
-        private bool isEnabled;
         private bool isDoubleTouchDragging;
         private Vector2 middlePoint;
         private float doubleTouchDistance;
+        private IDisposable updateDisposable;
 
         public ReactiveCommand<GestureEventData> OnPointerDown { get; } = new();
         public ReactiveCommand<GestureEventData> OnPointerUp { get; } = new();
@@ -37,21 +35,21 @@ namespace Suburb.Core.Inputs
             return isDraggings[touchId];
         }
 
-        public void Dispose()
+        public void Disable()
         {
-            isEnabled = false;
+            updateDisposable?.Dispose();
         }
 
-        public void Initialize()
+        public void Enable()
         {
-            isEnabled = true;
+            updateDisposable?.Dispose();
+
+            updateDisposable = Observable.EveryUpdate()
+                .Subscribe(_ => Update());
         }
 
-        public void Tick()
+        public void Update()
         {
-            if (!isEnabled)
-                return;
-
             for(int touchId = 0; touchId < touchStates.Length; touchId++)
                 SetupTouch(touchId);
 

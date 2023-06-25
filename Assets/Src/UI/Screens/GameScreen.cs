@@ -9,23 +9,23 @@ namespace Suburb.UI.Screens
 {
     public class GameScreen : BaseScreen
     {
-        private GameControllerGodObject gameController;
         private ScreensService screensService;
+        private GameStateMachine gameStateMachine;
 
         [SerializeField] private Button menuButton;
 
         [Inject]
         public void Construct(
-            GameControllerGodObject gameController,
-            ScreensService screensService)
+            ScreensService screensService,
+            GameStateMachine gameStateMachine)
         {
             this.screensService = screensService;
-            this.gameController = gameController;
+            this.gameStateMachine = gameStateMachine;
 
             menuButton.OnClickAsObservable()
                 .Subscribe(_ =>
                 {
-                    gameController.Stop();
+                    gameStateMachine.Pause();
                     screensService.GoToPrevious();
                 })
                 .AddTo(this);
@@ -34,7 +34,7 @@ namespace Suburb.UI.Screens
         protected override void Show()
         {
             base.Show();
-            gameController.Start();
+            gameStateMachine.Start();
         }
     }
 }
