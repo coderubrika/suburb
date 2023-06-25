@@ -40,18 +40,13 @@ namespace Suburb.UI.Screens
                 .Subscribe(_ => 
                 {
                     var config = savesService.Create();
-                    savesService.Select(config.Id);
+                    savesService.Select(config.UID);
                     screensService.GoTo<GameScreen>();
                 })
                 .AddTo(this);
 
             continueButton.OnClickAsObservable()
-                .Subscribe(_ =>
-                {
-                    var config = savesService.GetLast();
-                    savesService.Select(config.Id);
-                    screensService.GoTo<GameScreen>();
-                })
+                .Subscribe(_ => screensService.GoTo<GameScreen>())
                 .AddTo(this);
         }
 

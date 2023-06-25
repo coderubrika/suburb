@@ -12,7 +12,7 @@ namespace Suburb.Common
 
         private readonly Dictionary<Type, IGameState> states = new();
 
-        public GameCollectedConfig CurrentConfig { get; private set; }
+        public GameCollectedData CollectedData { get; private set; }
 
         private IGameState currentState;
 
@@ -37,8 +37,8 @@ namespace Suburb.Common
 
         public void Start()
         {
-            CurrentConfig = savesService.GetLast();
-            contentPlacer.Place(CurrentConfig);
+            CollectedData = savesService.GetSelectedData();
+            contentPlacer.Place(CollectedData);
             contentPlacer.Show();
             SwitchTo<TravelingState>();
         }
@@ -46,7 +46,7 @@ namespace Suburb.Common
         public void Pause()
         {
             contentPlacer.Hide();
-            savesService.Update(CurrentConfig.Id);
+            savesService.Update(CollectedData.UID);
             currentState.Disable();
         }
 

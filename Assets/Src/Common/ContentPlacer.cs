@@ -7,7 +7,7 @@
 
         }
 
-        public void Place(GameCollectedConfig gameCollectedConfig)
+        public void Place(GameCollectedData saveData)
         {
 
         }

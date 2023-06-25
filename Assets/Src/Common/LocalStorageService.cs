@@ -23,7 +23,7 @@ namespace Suburb.Common
             File.Delete(path);
         }
 
-        public IObservable<T> LoadFromStreaming<T>(string filePath)
+        private IObservable<T> LoadFromStreaming<T>(string filePath)
         {
             string fullPath = Path.Combine(Application.streamingAssetsPath, filePath);
             this.Log($"Load from streaming {fullPath}");
@@ -46,7 +46,7 @@ namespace Suburb.Common
             SaveTo(fullPath, data);
         }
 
-        private void SaveToPersistent<T>(string filePath, T data)
+        public void SaveToPersistent<T>(string filePath, T data)
         {
             string fullPath = Path.Combine(Application.persistentDataPath, filePath);
             SaveTo(fullPath, data);

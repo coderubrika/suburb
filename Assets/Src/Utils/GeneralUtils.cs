@@ -9,5 +9,12 @@ namespace Suburb.Utils
         {
             return Observable.Start(() => defaultValue);
         }
+
+        public static string GetUID()
+        {
+            return DateTimeOffset.Now
+                .ToUnixTimeMilliseconds()
+                .ToString();
+        }
     }
 }
