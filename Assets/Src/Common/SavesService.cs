@@ -1,5 +1,4 @@
 ﻿using Suburb.Utils;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -47,7 +46,7 @@ namespace Suburb.Common
             var gameData = new GameCollectedData()
             {
                 UID = uid,
-                SaveTime = DateTimeUtils.GetNow(),
+                SaveTime = DateTimeUtils.GetDetailNow(),
                 Name = "Новое сохранение",
                 FileName = "save_" + uid + ".json"
             };
@@ -106,7 +105,7 @@ namespace Suburb.Common
                 return null;
 
             return saves.Values
-                .OrderBy(data => data.UID)
+                .OrderBy(data => data.SaveTime)
                 .LastOrDefault();
         }
     }

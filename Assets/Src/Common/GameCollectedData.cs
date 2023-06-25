@@ -26,7 +26,7 @@ namespace Suburb.Common
 
         public void UpdateSaveTime()
         {
-            SaveTime = DateTimeUtils.GetNow();
+            SaveTime = DateTimeUtils.GetDetailNow();
         }
     }
 }
