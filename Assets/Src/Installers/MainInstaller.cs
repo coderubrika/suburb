@@ -31,7 +31,6 @@ namespace Suburb.Installers
                 Container.BindInterfacesAndSelfTo<MouseGestureProvider>().AsSingle();
 
             Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
-            Container.Bind<InteractablesStore>().AsSingle().NonLazy();
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
             Container.Bind<PickDetector>().AsSingle().NonLazy();
             Container.Bind<GameStateMachine>().AsSingle().NonLazy();

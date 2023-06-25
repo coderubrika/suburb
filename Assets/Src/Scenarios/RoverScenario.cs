@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Suburb.Scenarios
 {
-    public class RoverScenario : BaseScenario
+    public class RoverScenario
     {
         
     }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Suburb.Interactables
+namespace Suburb.Detectors
 {
     public class PickEventData
     {

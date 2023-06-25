@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Suburb.Interactables
 {
-    public class Rover : MonoBehaviour, IInteractable, IUninstalable
+    public class Rover : MonoBehaviour
     {
         [SerializeField] private float moveSpeed;
         [SerializeField] private float rotateSpeed;
@@ -16,12 +16,12 @@ namespace Suburb.Interactables
 
         private IDisposable moveDisposable;
 
-        public void Interact(BaseInteractEventData baseInteractEventData)
+        public void Pick()
         {
             moveDisposable?.Dispose();
         }
 
-        public void Uninstall()
+        public void Hide()
         {
             disposables.Clear();
         }
