@@ -39,8 +39,7 @@ namespace Suburb.UI.Screens
             newGameButton.OnClickAsObservable()
                 .Subscribe(_ => 
                 {
-                    var config = savesService.Create();
-                    savesService.Select(config.UID);
+                    savesService.Create();
                     screensService.GoTo<GameScreen>();
                 })
                 .AddTo(this);
@@ -53,7 +52,7 @@ namespace Suburb.UI.Screens
         protected override void Show()
         {
             base.Show();
-            continueButton.gameObject.SetActive(savesService.SavesCount > 0);
+            continueButton.gameObject.SetActive(savesService.SelectedData != null);
         }
     }
 }

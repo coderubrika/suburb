@@ -8,22 +8,20 @@ namespace Suburb.Common
     {
         private readonly SavesService savesService;
         private readonly InjectCreator injectCreator;
-        private readonly ContentPlacer contentPlacer;
+        private readonly WorldMapService WorldMapService;
 
         private readonly Dictionary<Type, IGameState> states = new();
-
-        public GameCollectedData CollectedData { get; private set; }
 
         private IGameState currentState;
 
         public GameStateMachine(
             SavesService savesService, 
             InjectCreator injectCreator,
-            ContentPlacer contentPlacer)
+            WorldMapService WorldMapService)
         {
             this.savesService = savesService;
             this.injectCreator = injectCreator;
-            this.contentPlacer = contentPlacer;
+            this.WorldMapService = WorldMapService;
         }
 
         public void SwitchTo<T>()
@@ -37,16 +35,14 @@ namespace Suburb.Common
 
         public void Start()
         {
-            CollectedData = savesService.GetSelectedData();
-            contentPlacer.Place(CollectedData);
-            contentPlacer.Show();
+            WorldMapService.Generate();
+            WorldMapService.Show();
             SwitchTo<TravelingState>();
         }
 
         public void Pause()
         {
-            contentPlacer.Hide();
-            savesService.Update(CollectedData.UID);
+            WorldMapService.Hide();
             currentState.Disable();
         }
 

@@ -1,7 +1,5 @@
 using Suburb.Common;
 using Suburb.Core.Inputs;
-using Suburb.Interactables;
-using Suburb.Scenarios;
 using Suburb.Screens;
 using Suburb.Detectors;
 using Suburb.Utils;
@@ -12,33 +10,33 @@ namespace Suburb.Installers
 {
     public class MainInstaller : MonoInstaller
     {
-        [SerializeField] private string screensPathRoot;
         [SerializeField] private PlayerCamera playerCamera;
-        [SerializeField] private Rover rover;
-        [SerializeField] private Land land;
-        [SerializeField] private SmoothTransitionParam worldCameraControllerParam;
+        [SerializeField] private string uiRoot;
         public override void InstallBindings()
         {
             Container.BindIFactory<string, BaseScreen>().FromFactory<PrefabResourceFactory<BaseScreen>>();
+            
             Container.Bind<ScreensService>()
                 .AsSingle()
-                .WithArguments(screensPathRoot)
+                .WithArguments(uiRoot)
                 .NonLazy();
 
-            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-                Container.BindInterfacesAndSelfTo<TouchGestureProvider>().AsSingle();
-            else
-                Container.BindInterfacesAndSelfTo<MouseGestureProvider>().AsSingle();
+            Container.Bind<SavesService>().AsSingle().NonLazy();
+            Container.Bind<InjectCreator>().AsSingle().NonLazy();
+            Container.Bind<LocalStorageService>().AsSingle().NonLazy();
+            Container.Bind<WebClientService>().AsSingle().NonLazy();
 
             Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
-            Container.Bind<InjectCreator>().AsSingle().NonLazy();
-            Container.Bind<PickDetector>().AsSingle().NonLazy();
-            Container.Bind<GameStateMachine>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<WorldCameraController>()
-                .AsSingle()
-                .WithArguments(worldCameraControllerParam);
+            Container.Bind<GameStateMachine>().AsSingle();
+            Container.Bind<WorldMapService>().AsSingle();
 
-            Container.Bind<RoverScenario>().AsSingle();
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+                Container.Bind<TouchGestureProvider>().AsSingle();
+            else
+                Container.Bind<MouseGestureProvider>().AsSingle();
+
+            Container.Bind<PickDetector>().AsSingle();
+            Container.Bind<WorldCameraController>().AsSingle();
         }
     }
 }

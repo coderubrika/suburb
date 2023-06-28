@@ -9,22 +9,17 @@ namespace Suburb.Common
 {
     public class WorldCameraController : IDisposable
     {
-        private readonly Transform cameraTransform;
         private readonly IGestureProvider gestureProvider;
+        private readonly PlayerCamera playerCamera;
+        private readonly GameSettingsRepository gameSettingsRepository;
+        private readonly SavesService savesService;
+
+        private readonly Transform cameraTransform;
         private readonly Vector3 cameraForward;
-        private readonly Vector3 initialCameraPosition;
         private readonly CompositeDisposable disposables = new();
+        private readonly WorldCameraControllerSettings settings;
 
-        // TODO move to project settings
-        private readonly float zoomFactor = 5f;
-        private readonly float maxZoom = 15f;
-        private readonly float minZoom = -15f;
-        private readonly float maxMoveSensivityFactor = 3f;
-        private readonly float minMoveSensivity = 0.3333f;
-
-        private float currentZoom = 0f;
-        // i need keep real camera position equal 0 current zoom
-        private float originaTransformPositionY;
+        private float currentZoom;
 
         private IDisposable dragDisposable;
         private bool isOn;
@@ -38,21 +33,28 @@ namespace Suburb.Common
 
         public WorldCameraController(
             PlayerCamera playerCamera, 
-            IGestureProvider gestureProvider, 
-            SmoothTransitionParam smoothTransitionParam)
+            IGestureProvider gestureProvider,
+            GameSettingsRepository gameSettingsRepository,
+            SavesService savesService)
         {
+            this.gestureProvider = gestureProvider;
+            this.playerCamera = playerCamera;
+            this.gameSettingsRepository = gameSettingsRepository;
+            this.savesService = savesService;
+
+            settings = gameSettingsRepository.WorldCameraControllerSettings;
             cameraTransform = playerCamera.transform;
             cameraForward = cameraTransform.forward;
-            initialCameraPosition = cameraTransform.position;
-            this.gestureProvider = gestureProvider;
-            this.smoothTransitionParam = smoothTransitionParam;
-            originaTransformPositionY = cameraTransform.position.y;
         }
 
         public void Enable()
         {
             if (isOn)
                 return;
+
+            var data = savesService.SelectedData.WorldCameraControllerData;
+            currentZoom = data.Zoom;
+            cameraTransform.position = data.Position.ToVector3();
 
             isOn = true;
 
@@ -66,6 +68,12 @@ namespace Suburb.Common
         {
             if (!isOn)
                 return;
+
+            savesService.SelectedData.UpdateWorldCameraControllerData(new WorldCameraControllerData
+            {
+                Zoom = currentZoom,
+                Position = cameraTransform.position.ToVector3Data(),
+            });
 
             isOn = false;
 
@@ -105,12 +113,12 @@ namespace Suburb.Common
 
         private void UpdateScale(GestureEventData data)
         {
-            float zoomDelta = data.ZoomDelta.y * zoomFactor;
+            float zoomDelta = data.ZoomDelta.y * settings.ZoomFactor;
             currentZoom += zoomDelta;
 
-            if (currentZoom > maxZoom || currentZoom < minZoom)
+            if (currentZoom > settings.MaxZoom || currentZoom < settings.MinZoom)
             {
-                currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+                currentZoom = Mathf.Clamp(currentZoom, settings.MinZoom, settings.MaxZoom);
                 return;
             }
 
@@ -119,9 +127,9 @@ namespace Suburb.Common
 
         private float GetMoveSpeed()
         {
-            float currentZoomNormalized = Mathf.InverseLerp(minZoom, maxZoom, currentZoom);
+            float currentZoomNormalized = Mathf.InverseLerp(settings.MinZoom, settings.MaxZoom, currentZoom);
             float currentZoomNormalizedInversed = 1 - currentZoomNormalized;
-            float currentMoveSpeedFactor = Mathf.Lerp(minMoveSensivity, maxMoveSensivityFactor, currentZoomNormalizedInversed);
+            float currentMoveSpeedFactor = Mathf.Lerp(settings.MinMoveSensivity, settings.MaxMoveSensivityFactor, currentZoomNormalizedInversed);
             float currentMoveSpeed = smoothTransitionParam.MoveSpeed * currentMoveSpeedFactor;
             return currentMoveSpeed;
         }
@@ -135,9 +143,7 @@ namespace Suburb.Common
 
         private void SubscribeOnMobileEvents()
         {
-            TouchGestureProvider touchGestureProvider = gestureProvider as TouchGestureProvider;
-            
-            if (touchGestureProvider == null)
+            if (gestureProvider is not TouchGestureProvider touchGestureProvider)
                 return;
 
             touchGestureProvider.OnDragStartWithDoubleTouch

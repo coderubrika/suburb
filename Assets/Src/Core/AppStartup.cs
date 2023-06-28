@@ -1,11 +1,7 @@
-﻿using Suburb.Resources;
-using Suburb.Screens;
+﻿using Suburb.Screens;
 using Suburb.UI.Screens;
 using UnityEngine;
 using Zenject;
-using System.Linq;
-using Suburb.Utils;
-using Suburb.Common;
 
 namespace Suburb.Core
 {

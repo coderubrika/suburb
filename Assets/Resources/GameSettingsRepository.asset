@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a68a1a53ba421f64fbec46d99b3a464b, type: 3}
+  m_Name: GameSettingsRepository
+  m_EditorClassIdentifier: 
+  worldCameraControllerSettings:
+    smoothTransitionParam:
+      MoveSpeed: 0.5
+      SmoothTime: 0.5
+    zoomFactor: 5
+    maxZoom: 15
+    minZoom: -15
+    maxMoveSensivityFactor: 3
+    minMoveSensivity: 0.3333
+  defaultSaveData:
+    UID: 
+    Name: "\u041D\u043E\u0432\u043E\u0435 \u0441\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u0438\u0435"
+    SaveTime: 
+    FileName: 
+    WorldCameraControllerData:
+      Position:
+        X: 0
+        Y: 13.5
+        Z: -20
+      Zoom: 0
+    GameResourcesData:
+      RoversData:
+        Name: Rover
+        AssetsList:
+        - Position:
+            X: 0
+            Y: 0
+            Z: 0
+          Rotation:
+            X: 0
+            Y: 0
+            Z: 0

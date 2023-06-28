@@ -5,6 +5,7 @@ namespace Suburb.Common
 {
     public class TravelingState : IGameState
     {
+        private readonly GameStateMachine gameStateMachine;
         private readonly IGestureProvider gestureProvider;
         private readonly WorldCameraController worldCameraController;
         private readonly PickDetector pickDetector;
@@ -12,11 +13,13 @@ namespace Suburb.Common
         public TravelingState(
             IGestureProvider gestureProvider,
             WorldCameraController worldCameraController,
-            PickDetector pickDetector)
+            PickDetector pickDetector,
+            GameStateMachine gameStateMachine)
         {
             this.gestureProvider = gestureProvider;
             this.worldCameraController = worldCameraController;
             this.pickDetector = pickDetector;
+            this.gameStateMachine = gameStateMachine;
         }
 
         public void Disable()

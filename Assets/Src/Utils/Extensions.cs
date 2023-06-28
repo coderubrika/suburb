@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System;
+using System.Collections.Generic;
 
 namespace Suburb.Utils
 {
@@ -44,6 +44,24 @@ namespace Suburb.Utils
         public static void LogError<T>(this T obj, string message, string filter = "")
         {
             Debug.LogError($"{filter}[{typeof(T).Name}] {message}");
+        }
+
+        public static Vector3Data ToVector3Data(this Vector3 obj)
+        {
+            return new Vector3Data { X = obj.x, Y = obj.y, Z = obj.z };
+        }
+
+        public static void SetActiveGameObjects<T>(this IEnumerable<T> objects, bool isActive)
+            where T : Component
+        {
+            foreach (T obj in objects)
+                obj.gameObject.SetActive(isActive);
+        }
+
+        public static void SetActiveGameObjects(this IEnumerable<GameObject> objects, bool isActive)
+        {
+            foreach (GameObject obj in objects)
+                obj.SetActive(isActive);
         }
     }
 }

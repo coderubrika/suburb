@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Suburb.Utils;
 using System;
+using System.Collections.Generic;
 
 namespace Suburb.Common
 {
@@ -19,6 +20,12 @@ namespace Suburb.Common
         [JsonProperty("file_name")]
         public string FileName;
 
+        [JsonProperty("world_camera_controller_data")]
+        public WorldCameraControllerData WorldCameraControllerData;
+
+        [JsonProperty("game_resources_data")]
+        public GameResourcesData GameResourcesData;
+
         public void Rename(string name)
         {
             Name = name;
@@ -27,6 +34,17 @@ namespace Suburb.Common
         public void UpdateSaveTime()
         {
             SaveTime = DateTimeUtils.GetDetailNow();
+        }
+
+        public void Replace(GameCollectedData donar)
+        {
+            Name = donar.Name;
+            WorldCameraControllerData = donar.WorldCameraControllerData;
+        }
+
+        public void UpdateWorldCameraControllerData(WorldCameraControllerData data)
+        {
+            WorldCameraControllerData = data;
         }
     }
 }

@@ -8,23 +8,25 @@ namespace Suburb.Common
     public class SavesService
     {
         private readonly LocalStorageService localStorageService;
+        private readonly GameSettingsRepository gameSettingsRepository;
 
         private readonly Dictionary<string, GameCollectedData> saves;
-        private readonly HashSet<string> changedDatasUIDs = new();
         private readonly HashSet<string> savesFileNames;
 
         private static string SAVES_FOLDER = "saves";
-        private static string SAVES_LIST_FILE_PATH = Path.Combine(SAVES_FOLDER, "savesList.json");
+        private static string SAVES_DATA_PATH = Path.Combine(SAVES_FOLDER, "savesData.json");
 
-        private GameCollectedData selectedData;
+        public GameCollectedData SelectedData { get; private set; }
 
-        public SavesService(LocalStorageService localStorageService)
+        public SavesService(
+            LocalStorageService localStorageService,
+            GameSettingsRepository gameSettingsRepository)
         {
             this.localStorageService = localStorageService;
+            this.gameSettingsRepository = gameSettingsRepository;
 
-            var savesNamesArray = localStorageService
-                .LoadFromPersistent<string[]>(SAVES_LIST_FILE_PATH);
-            savesFileNames = savesNamesArray == null ? new() : savesNamesArray.ToHashSet();
+            var savesData = localStorageService.LoadFromPersistent<SavesData>(SAVES_DATA_PATH);
+            savesFileNames = savesData == null || savesData.FileNames == null ? new() : savesData.FileNames.ToHashSet();
 
             saves = savesFileNames
                 .Select(fileName =>
@@ -35,78 +37,74 @@ namespace Suburb.Common
                 })
                 .ToDictionary(item => item.UID, item => item);
 
-            Select(GetLast().UID);
+            if (savesData == null || string.IsNullOrEmpty(savesData.LastSaveUID))
+                return;
+
+            if (saves.TryGetValue(savesData.LastSaveUID, out GameCollectedData data))
+                SelectedData = data;
         }
 
-        public int SavesCount { get => saves.Count; }
-
-        public GameCollectedData Create()
+        public void Create()
         {
             string uid = GeneralUtils.GetUID();
             var gameData = new GameCollectedData()
             {
                 UID = uid,
                 SaveTime = DateTimeUtils.GetDetailNow(),
-                Name = "Новое сохранение",
                 FileName = "save_" + uid + ".json"
             };
 
-            saves.Add(gameData.UID, gameData);
-            changedDatasUIDs.Add(gameData.UID);
-            savesFileNames.Add(gameData.FileName);
+            gameData.Replace(gameSettingsRepository.DefaultSaveData);
 
-            return gameData;
-        }
-
-        public GameCollectedData GetSelectedData()
-        {
-            return selectedData;
-        }
-
-        public void Select(string configUID)
-        {
-            selectedData = saves[configUID];
-        }
-
-        public void Update(string uid)
-        {
-            saves[uid].UpdateSaveTime();
+            SelectedData = gameData;
         }
 
         public void Save()
         {
-            foreach (var uid in changedDatasUIDs)
-            {
-                GameCollectedData data = saves[uid];
-                localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, data.FileName), data);
-            }
+            if (SelectedData == null)
+                return;
 
-            localStorageService.SaveToPersistent(SAVES_LIST_FILE_PATH, savesFileNames);
+            SelectedData.UpdateSaveTime();
+            saves[SelectedData.UID] = SelectedData;
+
+            savesFileNames.Add(SelectedData.FileName);
+            localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, SelectedData.FileName), SelectedData);
+        }
+
+        public void SaveAs(string uid)
+        {
+            if (SelectedData == null)
+                return;
+
+            if (!saves.TryGetValue(uid, out GameCollectedData recipientData))
+                return;
+
+            recipientData.Replace(SelectedData);
+            recipientData.UpdateSaveTime();
+            SelectedData = recipientData;
+            localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, recipientData.FileName), recipientData);
         }
 
         public void Delete(string uid)
         {
-            saves.Remove(uid);
-            changedDatasUIDs.Remove(uid);
-            savesFileNames.Remove(uid);
+            if (!saves.TryGetValue(uid, out GameCollectedData deletingData))
+                return;
 
-            localStorageService.RemoveFile(SAVES_LIST_FILE_PATH);
-            localStorageService.SaveToPersistent(SAVES_LIST_FILE_PATH, savesFileNames);
+            saves.Remove(uid);
+            savesFileNames.Remove(uid);
+            localStorageService.RemoveFile(Path.Combine(SAVES_FOLDER, deletingData.FileName));
+        }
+
+        public void SyncData()
+        {
+            localStorageService.SaveToPersistent(
+                SAVES_DATA_PATH,
+                new SavesData { FileNames = savesFileNames.ToArray(), LastSaveUID = SelectedData.UID });
         }
 
         public void Rename(string uid, string name)
         {
             saves[uid].Rename(name);
-        }
-
-        private GameCollectedData GetLast()
-        {
-            if (SavesCount == 0)
-                return null;
-
-            return saves.Values
-                .OrderBy(data => data.SaveTime)
-                .LastOrDefault();
         }
     }
 }

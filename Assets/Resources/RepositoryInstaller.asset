@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: RepositoryInstaller
   m_EditorClassIdentifier: 
   resourcesRepository: {fileID: 11400000, guid: d679731cc4166924ab8233cd99c8abf8, type: 2}
+  gameSettingsRepository: {fileID: 11400000, guid: d8c1c26b9fe72b443a5856a69ef180ae, type: 2}
