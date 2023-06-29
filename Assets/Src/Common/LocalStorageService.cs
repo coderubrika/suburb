@@ -52,6 +52,13 @@ namespace Suburb.Common
             SaveTo(fullPath, data);
         }
 
+        public void CreatePersistentFolder(string folderPath)
+        {
+            string fullPath = Path.Combine(Application.persistentDataPath, folderPath);
+            if (!Directory.Exists(fullPath))
+                Directory.CreateDirectory(fullPath);
+        }
+
         private void SaveTo<T>(string fullPath, T data)
         {
             if (File.Exists(fullPath))

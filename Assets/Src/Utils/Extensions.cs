@@ -63,5 +63,24 @@ namespace Suburb.Utils
             foreach (GameObject obj in objects)
                 obj.SetActive(isActive);
         }
+
+        public static void DestroyGameObjects<T>(this IEnumerable<T> objects)
+            where T : Component
+        {
+            foreach (T obj in objects)
+                Object.Destroy(obj.gameObject);
+
+            if (objects is List<T> listObjects)
+                listObjects.Clear();
+        }
+
+        public static void DestroyGameObjects(this IEnumerable<GameObject> objects)
+        {
+            foreach (GameObject obj in objects)
+                Object.Destroy(obj);
+
+            if (objects is List<GameObject> listObjects)
+                listObjects.Clear();
+        }
     }
 }

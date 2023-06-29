@@ -25,6 +25,8 @@ namespace Suburb.Common
             this.localStorageService = localStorageService;
             this.gameSettingsRepository = gameSettingsRepository;
 
+            localStorageService.CreatePersistentFolder(SAVES_FOLDER);
+
             var savesData = localStorageService.LoadFromPersistent<SavesData>(SAVES_DATA_PATH);
             savesFileNames = savesData == null || savesData.FileNames == null ? new() : savesData.FileNames.ToHashSet();
 
@@ -69,6 +71,18 @@ namespace Suburb.Common
 
             savesFileNames.Add(SelectedData.FileName);
             localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, SelectedData.FileName), SelectedData);
+            SyncData();
+        }
+
+        public void SaveAsNew()
+        {
+            if (SelectedData == null)
+                return;
+
+            GameCollectedData oldSelectedData = SelectedData;
+            Create();
+            SelectedData.Replace(oldSelectedData);
+            Save();
         }
 
         public void SaveAs(string uid)
@@ -93,18 +107,29 @@ namespace Suburb.Common
             saves.Remove(uid);
             savesFileNames.Remove(uid);
             localStorageService.RemoveFile(Path.Combine(SAVES_FOLDER, deletingData.FileName));
+            SyncData();
         }
 
         public void SyncData()
         {
             localStorageService.SaveToPersistent(
                 SAVES_DATA_PATH,
-                new SavesData { FileNames = savesFileNames.ToArray(), LastSaveUID = SelectedData.UID });
+                new SavesData { FileNames = savesFileNames.ToArray(), LastSaveUID = SelectedData?.UID });
         }
 
         public void Rename(string uid, string name)
         {
             saves[uid].Rename(name);
+        }
+
+        public GameCollectedData[] GetSaves()
+        {
+            return saves.Values.ToArray();
+        }
+
+        public void Select(GameCollectedData data)
+        {
+            SelectedData = data;
         }
     }
 }

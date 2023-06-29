@@ -15,8 +15,8 @@ namespace Suburb.UI.Screens
 
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
-        [SerializeField] private Button saveButton;
-        [SerializeField] private Button loadButton;
+        [SerializeField] private Button savesButton;
+
         [SerializeField] private Button quitButton;
 
         [Inject]
@@ -33,9 +33,7 @@ namespace Suburb.UI.Screens
                 .Subscribe(_ => Application.Quit())
                 .AddTo(this);
 
-            Observable.Merge(
-                    saveButton.OnClickAsObservable(),
-                    loadButton.OnClickAsObservable())
+            savesButton.OnClickAsObservable()
                 .Subscribe(_ => screensService.GoTo<SavesScreen>())
                 .AddTo(this);
 

@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Suburb.Utils
 {
     public class DateTimeUtils
     {
-        private static string DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-        private static string DETAIL_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss-fff";
+        public static string DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+        public static string DETAIL_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss-fff";
+        public static string SHORT_DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm";
 
         public static string GetNow(string dateFormat = null)
         {
@@ -16,6 +18,17 @@ namespace Suburb.Utils
         public static string GetDetailNow()
         {
             return DateTime.Now.ToString(DETAIL_DATE_TIME_FORMAT);
+        }
+
+        public static string ParseAndFormat(string dateString, string parseFormat = null, string dateFormat = null)
+        {
+            parseFormat ??= DEFAULT_DATE_TIME_FORMAT;
+            dateFormat ??= DEFAULT_DATE_TIME_FORMAT;
+
+            if (DateTime.TryParseExact(dateString, parseFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime date))
+                return date.ToString(dateFormat);
+
+            return null;
         }
     }
 }
