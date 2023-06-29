@@ -43,6 +43,7 @@ namespace Suburb.Common
             this.savesService = savesService;
 
             settings = gameSettingsRepository.WorldCameraControllerSettings;
+            smoothTransitionParam = settings.SmoothTransitionParam;
             cameraTransform = playerCamera.transform;
             cameraForward = cameraTransform.forward;
         }
