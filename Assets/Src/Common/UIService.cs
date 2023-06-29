@@ -4,6 +4,14 @@ namespace Suburb.Common
 {
     public class UIService
     {
-        // create modal for saving alerts
+        public void ShowModal()
+        {
+
+        }
+
+        public void ShowModalConfirm()
+        {
+
+        }
     }
 }

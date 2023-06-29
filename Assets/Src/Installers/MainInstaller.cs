@@ -5,6 +5,7 @@ using Suburb.Detectors;
 using Suburb.Utils;
 using UnityEngine;
 using Zenject;
+using System;
 
 namespace Suburb.Installers
 {
@@ -14,12 +15,8 @@ namespace Suburb.Installers
         [SerializeField] private string uiRoot;
         public override void InstallBindings()
         {
-            Container.BindIFactory<string, BaseScreen>().FromFactory<PrefabResourceFactory<BaseScreen>>();
-            
-            Container.Bind<ScreensService>()
-                .AsSingle()
-                .WithArguments(uiRoot)
-                .NonLazy();
+            Container.Bind<ScreensFactory>().AsSingle().WithArguments(uiRoot).NonLazy();
+            Container.Bind<ScreensService>().AsSingle().NonLazy();
 
             Container.Bind<SavesService>().AsSingle().NonLazy();
             Container.Bind<InjectCreator>().AsSingle().NonLazy();

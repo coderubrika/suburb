@@ -32,6 +32,9 @@ namespace Suburb.Common
 
             assetsRoot = new GameObject("AssetsRoot").transform;
             assetsPoolRoot = new GameObject("AssetsPoolRoot").transform;
+
+            GameObject.DontDestroyOnLoad(assetsRoot.gameObject);
+            GameObject.DontDestroyOnLoad(assetsPoolRoot.gameObject);
         }
 
         public void Generate()
