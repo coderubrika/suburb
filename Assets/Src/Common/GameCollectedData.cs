@@ -40,6 +40,7 @@ namespace Suburb.Common
         {
             Name = donar.Name;
             WorldCameraControllerData = donar.WorldCameraControllerData;
+            GameResourcesData = donar.GameResourcesData;
         }
 
         public void UpdateWorldCameraControllerData(WorldCameraControllerData data)

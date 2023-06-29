@@ -31,9 +31,9 @@ namespace Suburb.Installers
             Container.Bind<WorldMapService>().AsSingle();
 
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-                Container.Bind<TouchGestureProvider>().AsSingle();
+                Container.Bind<IGestureProvider>().To<TouchGestureProvider>().AsSingle().NonLazy();
             else
-                Container.Bind<MouseGestureProvider>().AsSingle();
+                Container.Bind<IGestureProvider>().To<MouseGestureProvider>().AsSingle().NonLazy();
 
             Container.Bind<PickDetector>().AsSingle();
             Container.Bind<WorldCameraController>().AsSingle();
