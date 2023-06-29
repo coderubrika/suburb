@@ -11,6 +11,7 @@ namespace Suburb.UI.Screens
     {
         private ScreensService screensService;
         private SavesService savesService;
+        private GameStateMachine gameStateMachine;
 
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
@@ -21,10 +22,12 @@ namespace Suburb.UI.Screens
         [Inject]
         public void Construct(
             ScreensService screensService,
-            SavesService savesService)
+            SavesService savesService,
+            GameStateMachine gameStateMachine)
         {
             this.screensService = screensService;
             this.savesService = savesService;
+            this.gameStateMachine = gameStateMachine;
 
             quitButton.OnClickAsObservable()
                 .Subscribe(_ => Application.Quit())
@@ -39,8 +42,21 @@ namespace Suburb.UI.Screens
             newGameButton.OnClickAsObservable()
                 .Subscribe(_ => 
                 {
+                    gameStateMachine.CloseGame();
                     savesService.Create();
                     screensService.GoTo<GameScreen>();
+                    return;
+
+                    // after save screen + localization + modal 
+                    if (!savesService.SelectedData.IsDataHasChanges)
+                    {
+                        gameStateMachine.CloseGame();
+                        savesService.Create();
+                        screensService.GoTo<GameScreen>();
+                        return;
+                    }
+
+
                 })
                 .AddTo(this);
 

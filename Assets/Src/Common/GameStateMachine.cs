@@ -1,6 +1,7 @@
 ﻿using Suburb.Utils;
 using System;
 using System.Collections.Generic;
+using UniRx;
 
 namespace Suburb.Common
 {
@@ -13,9 +14,10 @@ namespace Suburb.Common
         private readonly Dictionary<Type, IGameState> states = new();
 
         private IGameState currentState;
+        private bool isGameplayInited;
 
         public GameStateMachine(
-            SavesService savesService, 
+            SavesService savesService,
             InjectCreator injectCreator,
             WorldMapService WorldMapService)
         {
@@ -28,6 +30,10 @@ namespace Suburb.Common
             where T : IGameState
         {
             IGameState newGameState = GetOrCreateGameState<T>();
+
+            if (newGameState == currentState)
+                return;
+
             currentState?.Disable();
             currentState = newGameState;
             currentState.Enable();
@@ -35,15 +41,27 @@ namespace Suburb.Common
 
         public void Start()
         {
-            WorldMapService.Generate();
+            if (!isGameplayInited)
+            {
+                WorldMapService.Generate();
+                isGameplayInited = true;
+                SwitchTo<TravelingState>();
+            }
+
+            currentState.Continue();
             WorldMapService.Show();
-            SwitchTo<TravelingState>();
         }
 
         public void Pause()
         {
             WorldMapService.Hide();
-            currentState.Disable();
+            currentState.Pause();
+        }
+
+        public void CloseGame()
+        {
+            isGameplayInited = false;
+            WorldMapService.Clear();
         }
 
         private IGameState GetOrCreateGameState<T>()

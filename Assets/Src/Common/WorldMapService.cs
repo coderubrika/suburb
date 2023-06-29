@@ -12,8 +12,13 @@ namespace Suburb.Common
         private readonly InjectCreator injectCreator;
 
         private readonly Transform assetsRoot;
-        private readonly List<GameObject> assetsList = new();
-        
+        private readonly Transform assetsPoolRoot;
+        private readonly HashSet<GameObject> activeAssets = new();
+
+        private readonly Dictionary<string, Stack<GameObject>> assetsPool = new();
+        private readonly int poolStepCount = 1;
+
+        private bool isPoolWarmedUp;
         private GameResourcesData gameResourcesData;
 
         public WorldMapService(
@@ -26,10 +31,17 @@ namespace Suburb.Common
             this.injectCreator = injectCreator;
 
             assetsRoot = new GameObject("AssetsRoot").transform;
+            assetsPoolRoot = new GameObject("AssetsPoolRoot").transform;
         }
 
         public void Generate()
         {
+            if (!isPoolWarmedUp)
+            {
+                WarmUpPool();
+                isPoolWarmedUp = true;
+            }
+
             gameResourcesData = savesService.SelectedData.GameResourcesData;
 
             SetupLand();
@@ -38,20 +50,44 @@ namespace Suburb.Common
 
         public void Show()
         {
-            assetsList.SetActiveGameObjects(true);
+            activeAssets.SetActiveGameObjects(true);
         }
 
         public void Hide()
         {
-            assetsList.SetActiveGameObjects(false);
+            activeAssets.SetActiveGameObjects(false);
+        }
+
+        public void Clear()
+        {
+            if (!isPoolWarmedUp)
+                return;
+
+            foreach (var asset in activeAssets.ToArray())
+            {
+                Stack<GameObject> pool = assetsPool[asset.name];
+
+                if (pool.Count >= poolStepCount)
+                    Object.Destroy(asset);
+
+                asset.SetActive(false);
+                asset.transform.SetParent(assetsPoolRoot, true);
+                pool.Push(asset);
+            }
+
+            activeAssets.Clear();
+
+            foreach (Stack<GameObject> poop in assetsPool.Values)
+                while (poop.Count > poolStepCount)
+                    Object.Destroy(poop.Pop());
         }
 
         private void SetupLand()
         {
-            GameObject landPrefab = resourcesRepository.Items.FirstOrDefault(item => item.name == "Land");
-            GameObject landObject = injectCreator.Create(landPrefab, assetsRoot);
+            GameObject landObject = GetFromPool("Land");
             landObject.SetActive(false);
-            assetsList.Add(landObject);
+            landObject.transform.SetParent(assetsRoot, true);
+            activeAssets.Add(landObject);
         }
 
         private void SetupRovers()
@@ -59,16 +95,48 @@ namespace Suburb.Common
             AssetsCategory<RoverData> data = gameResourcesData.RoversData;
             RoverData[] roversDatas = data.AssetsList;
 
-            GameObject roverPrefab  = resourcesRepository.Items.FirstOrDefault(item => item.name == data.Name);
-
             foreach(RoverData roverData in roversDatas)
             {
-                GameObject roverObject = injectCreator.Create(roverPrefab, assetsRoot);
-
+                GameObject roverObject = GetFromPool(data.Name);
+                roverObject.transform.SetParent(assetsRoot, true);
                 roverObject.transform.position = roverData.Position.ToVector3();
                 roverObject.transform.localRotation = Quaternion.Euler(roverData.Rotation.ToVector3());
                 roverObject.SetActive(false);
-                assetsList.Add(roverObject);
+                activeAssets.Add(roverObject);
+            }
+        }
+
+        private GameObject GetFromPool(string name)
+        {
+            Stack<GameObject> poolStore = assetsPool[name];
+            
+            if (poolStore.Count == 0)
+            {
+                GameObject prefab = resourcesRepository.Items.FirstOrDefault(item => item.name == name);
+                WarmUpPoolFor(prefab);
+            }
+
+            return poolStore.Pop();
+        }
+
+        private void WarmUpPool()
+        {
+            foreach (var prefab in resourcesRepository.Items)
+            {
+                assetsPool[prefab.name] = new();
+                WarmUpPoolFor(prefab);
+            }
+        }
+
+        private void WarmUpPoolFor(GameObject prefab)
+        {
+            for (int i = 0; i < poolStepCount; i++)
+            {
+                Stack<GameObject> pool = assetsPool[prefab.name];
+                GameObject asset = injectCreator.Create(prefab, assetsPoolRoot);
+                asset.SetActive(false);
+                asset.name = prefab.name;
+                pool.Push(asset);
             }
         }
     }

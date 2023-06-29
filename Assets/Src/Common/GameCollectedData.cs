@@ -26,18 +26,24 @@ namespace Suburb.Common
         [JsonProperty("game_resources_data")]
         public GameResourcesData GameResourcesData;
 
+        [JsonIgnore]
+        public bool IsDataHasChanges { get; private set; }
+
         public void Rename(string name)
         {
+            IsDataHasChanges = true;
             Name = name;
         }
 
         public void UpdateSaveTime()
         {
+            IsDataHasChanges = false;
             SaveTime = DateTimeUtils.GetDetailNow();
         }
 
         public void Replace(GameCollectedData donar)
         {
+            IsDataHasChanges = true;
             Name = donar.Name;
             WorldCameraControllerData = donar.WorldCameraControllerData;
             GameResourcesData = donar.GameResourcesData;
@@ -45,6 +51,7 @@ namespace Suburb.Common
 
         public void UpdateWorldCameraControllerData(WorldCameraControllerData data)
         {
+            IsDataHasChanges = true;
             WorldCameraControllerData = data;
         }
     }

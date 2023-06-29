@@ -22,6 +22,20 @@ namespace Suburb.Common
             this.gameStateMachine = gameStateMachine;
         }
 
+        public void Continue()
+        {
+            gestureProvider.Enable();
+            worldCameraController.Enable();
+            pickDetector.Enable();
+        }
+
+        public void Pause()
+        {
+            gestureProvider.Disable();
+            worldCameraController.Disable();
+            pickDetector.Disable();
+        }
+
         public void Disable()
         {
             gestureProvider.Disable();
