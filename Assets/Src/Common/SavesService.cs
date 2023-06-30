@@ -1,4 +1,5 @@
 ﻿using Suburb.Utils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,6 @@ namespace Suburb.Common
         private readonly GameSettingsRepository gameSettingsRepository;
 
         private readonly Dictionary<string, GameCollectedData> saves;
-        private readonly HashSet<string> savesFileNames;
 
         private static string SAVES_FOLDER = "saves";
         private static string SAVES_DATA_PATH = Path.Combine(SAVES_FOLDER, "savesData.json");
@@ -28,9 +28,14 @@ namespace Suburb.Common
             localStorageService.CreatePersistentFolder(SAVES_FOLDER);
 
             var savesData = localStorageService.LoadFromPersistent<SavesData>(SAVES_DATA_PATH);
-            savesFileNames = savesData == null || savesData.FileNames == null ? new() : savesData.FileNames.ToHashSet();
+            
+            if (savesData == null || savesData.FileNames == null)
+            {
+                saves = new();
+                return;
+            }
 
-            saves = savesFileNames
+            saves = savesData.FileNames
                 .Select(fileName =>
                 {
                     var data = localStorageService
@@ -39,7 +44,7 @@ namespace Suburb.Common
                 })
                 .ToDictionary(item => item.UID, item => item);
 
-            if (savesData == null || string.IsNullOrEmpty(savesData.LastSaveUID))
+            if (string.IsNullOrEmpty(savesData.LastSaveUID))
                 return;
 
             if (saves.TryGetValue(savesData.LastSaveUID, out GameCollectedData data))
@@ -68,8 +73,6 @@ namespace Suburb.Common
 
             SelectedData.UpdateSaveTime();
             saves[SelectedData.UID] = SelectedData;
-
-            savesFileNames.Add(SelectedData.FileName);
             localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, SelectedData.FileName), SelectedData);
             SyncData();
         }
@@ -105,16 +108,19 @@ namespace Suburb.Common
                 return;
 
             saves.Remove(uid);
-            savesFileNames.Remove(uid);
             localStorageService.RemoveFile(Path.Combine(SAVES_FOLDER, deletingData.FileName));
             SyncData();
         }
 
         public void SyncData()
         {
+            string[] fileNames = saves.Values
+                .Select(item => item.FileName)
+                .ToArray();
+
             localStorageService.SaveToPersistent(
                 SAVES_DATA_PATH,
-                new SavesData { FileNames = savesFileNames.ToArray(), LastSaveUID = SelectedData?.UID });
+                new SavesData { FileNames = fileNames, LastSaveUID = SelectedData?.UID });
         }
 
         public void Rename(string uid, string name)

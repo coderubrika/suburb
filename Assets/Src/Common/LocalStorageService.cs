@@ -17,10 +17,11 @@ namespace Suburb.Common
 
         public void RemoveFile(string path)
         {
-            if (!File.Exists(path))
+            string fullPath = Path.Combine(Application.persistentDataPath, path);
+            if (!File.Exists(fullPath))
                 return;
 
-            File.Delete(path);
+            File.Delete(fullPath);
         }
 
         private IObservable<T> LoadFromStreaming<T>(string filePath)
