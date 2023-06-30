@@ -26,7 +26,7 @@ namespace Suburb.UI.Screens
                 .Subscribe(_ =>
                 {
                     gameStateMachine.Pause();
-                    screensService.GoToPrevious();
+                    screensService.GoToPrevious<MainMenuScreen>();
                 })
                 .AddTo(this);
         }

@@ -45,7 +45,7 @@ namespace Suburb.Common
                 isPoolWarmedUp = true;
             }
 
-            gameResourcesData = savesService.SelectedData.GameResourcesData;
+            gameResourcesData = savesService.TmpData.GameResourcesData;
 
             SetupLand();
             SetupRovers();

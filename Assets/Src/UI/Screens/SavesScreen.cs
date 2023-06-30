@@ -49,7 +49,7 @@ namespace Suburb.UI.Screens
 
         protected override void Show()
         {
-            newSaveButton.interactable = savesService.SelectedData != null;
+            newSaveButton.interactable = savesService.HasSelectedSave;
             RenderList();
 
             base.Show();

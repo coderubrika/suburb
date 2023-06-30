@@ -41,15 +41,15 @@ namespace Suburb.UI.Screens
                 .Subscribe(_ => 
                 {
                     gameStateMachine.CloseGame();
-                    savesService.Create();
+                    savesService.CreateNewSave();
                     screensService.GoTo<GameScreen>();
                     return;
 
                     // after save screen + localization + modal 
-                    if (!savesService.SelectedData.IsDataHasChanges)
+                    if (!savesService.TmpData.IsDataHasChanges)
                     {
                         gameStateMachine.CloseGame();
-                        savesService.Create();
+                        savesService.CreateNewSave();
                         screensService.GoTo<GameScreen>();
                         return;
                     }
@@ -66,7 +66,7 @@ namespace Suburb.UI.Screens
         protected override void Show()
         {
             base.Show();
-            continueButton.gameObject.SetActive(savesService.SelectedData != null);
+            continueButton.gameObject.SetActive(savesService.HasSelectedSave);
         }
     }
 }

@@ -13,10 +13,13 @@ namespace Suburb.Common
 
         private readonly Dictionary<string, GameCollectedData> saves;
 
-        private static string SAVES_FOLDER = "saves";
-        private static string SAVES_DATA_PATH = Path.Combine(SAVES_FOLDER, "savesData.json");
+        private const string SAVES_FOLDER = "saves";
+        private const string SAVES_DATA_PATH = "saves/savesData.json";
 
-        public GameCollectedData SelectedData { get; private set; }
+        private GameCollectedData selectedData;
+
+        public GameCollectedData TmpData { get; } = new GameCollectedData();
+        public bool HasSelectedSave { get => selectedData != null; }
 
         public SavesService(
             LocalStorageService localStorageService,
@@ -48,57 +51,31 @@ namespace Suburb.Common
                 return;
 
             if (saves.TryGetValue(savesData.LastSaveUID, out GameCollectedData data))
-                SelectedData = data;
-        }
-
-        public void Create()
-        {
-            string uid = GeneralUtils.GetUID();
-            var gameData = new GameCollectedData()
-            {
-                UID = uid,
-                SaveTime = DateTimeUtils.GetDetailNow(),
-                FileName = "save_" + uid + ".json"
-            };
-
-            gameData.Replace(gameSettingsRepository.DefaultSaveData);
-
-            SelectedData = gameData;
-        }
-
-        public void Save()
-        {
-            if (SelectedData == null)
-                return;
-
-            SelectedData.UpdateSaveTime();
-            saves[SelectedData.UID] = SelectedData;
-            localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, SelectedData.FileName), SelectedData);
-            SyncData();
+                 Select(data);
         }
 
         public void SaveAsNew()
         {
-            if (SelectedData == null)
+            if (!HasSelectedSave)
                 return;
 
-            GameCollectedData oldSelectedData = SelectedData;
-            Create();
-            SelectedData.Replace(oldSelectedData);
+            GameCollectedData newSelectedData = Create();
+            newSelectedData.Replace(TmpData);
+            Select(newSelectedData);
             Save();
         }
 
         public void SaveAs(string uid)
         {
-            if (SelectedData == null)
+            if (!HasSelectedSave)
                 return;
 
             if (!saves.TryGetValue(uid, out GameCollectedData recipientData))
                 return;
 
-            recipientData.Replace(SelectedData);
+            recipientData.Replace(selectedData);
             recipientData.UpdateSaveTime();
-            SelectedData = recipientData;
+            Select(recipientData);
             localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, recipientData.FileName), recipientData);
         }
 
@@ -112,17 +89,6 @@ namespace Suburb.Common
             SyncData();
         }
 
-        public void SyncData()
-        {
-            string[] fileNames = saves.Values
-                .Select(item => item.FileName)
-                .ToArray();
-
-            localStorageService.SaveToPersistent(
-                SAVES_DATA_PATH,
-                new SavesData { FileNames = fileNames, LastSaveUID = SelectedData?.UID });
-        }
-
         public void Rename(string uid, string name)
         {
             saves[uid].Rename(name);
@@ -130,12 +96,54 @@ namespace Suburb.Common
 
         public GameCollectedData[] GetSaves()
         {
-            return saves.Values.ToArray();
+            return saves.Values.Reverse().ToArray();
+        }
+
+        public void CreateNewSave()
+        {
+            Select(Create());
         }
 
         public void Select(GameCollectedData data)
         {
-            SelectedData = data;
+            selectedData = data;
+            TmpData.Replace(selectedData);
+        }
+
+        private GameCollectedData Create()
+        {
+            string uid = GeneralUtils.GetUID();
+            var gameData = new GameCollectedData()
+            {
+                UID = uid,
+                SaveTime = DateTimeUtils.GetDetailNow(),
+                FileName = "save_" + uid + ".json"
+            };
+
+            gameData.Replace(gameSettingsRepository.DefaultSaveData);
+            return gameData;
+        }
+
+        private void Save()
+        {
+            if (!HasSelectedSave)
+                return;
+
+            selectedData.UpdateSaveTime();
+            saves[selectedData.UID] = selectedData;
+            localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, selectedData.FileName), selectedData);
+            SyncData();
+        }
+
+        private void SyncData()
+        {
+            string[] fileNames = saves.Values
+                .Select(item => item.FileName)
+                .ToArray();
+
+            localStorageService.SaveToPersistent(
+                SAVES_DATA_PATH,
+                new SavesData { FileNames = fileNames, LastSaveUID = selectedData?.UID });
         }
     }
 }

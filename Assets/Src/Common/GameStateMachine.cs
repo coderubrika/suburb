@@ -61,6 +61,8 @@ namespace Suburb.Common
         public void CloseGame()
         {
             isGameplayInited = false;
+            currentState?.Disable();
+            currentState = null;
             WorldMapService.Clear();
         }
 

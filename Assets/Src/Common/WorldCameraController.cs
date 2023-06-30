@@ -53,7 +53,7 @@ namespace Suburb.Common
             if (isOn)
                 return;
 
-            var data = savesService.SelectedData.WorldCameraControllerData;
+            var data = savesService.TmpData.WorldCameraControllerData;
             currentZoom = data.Zoom;
             cameraTransform.position = data.Position.ToVector3();
 
@@ -70,7 +70,7 @@ namespace Suburb.Common
             if (!isOn)
                 return;
 
-            savesService.SelectedData.UpdateWorldCameraControllerData(new WorldCameraControllerData
+            savesService.TmpData.UpdateWorldCameraControllerData(new WorldCameraControllerData
             {
                 Zoom = currentZoom,
                 Position = cameraTransform.position.ToVector3Data(),
