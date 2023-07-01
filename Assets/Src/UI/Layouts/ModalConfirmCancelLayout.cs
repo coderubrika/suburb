@@ -22,9 +22,8 @@ namespace Suburb.UI.Layouts
 
         public override void Init(ModalConfirmInput input)
         {
-            base.Init(input);
-
             cancelText.text = input.CancelIndex;
+            base.Init(input);
         }
     }
 }
