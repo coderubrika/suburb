@@ -12,11 +12,14 @@ namespace Suburb.Installers
     public class MainInstaller : MonoInstaller
     {
         [SerializeField] private PlayerCamera playerCamera;
-        [SerializeField] private string uiRoot;
+        [SerializeField] private string screensRoot;
+        [SerializeField] private string layoutsRoot;
         public override void InstallBindings()
         {
-            Container.Bind<ScreensFactory>().AsSingle().WithArguments(uiRoot).NonLazy();
+            Container.Bind<ScreensFactory>().AsSingle().WithArguments(screensRoot).NonLazy();
             Container.Bind<ScreensService>().AsSingle().NonLazy();
+            Container.Bind<LayoutsFactory>().AsSingle().WithArguments(layoutsRoot).NonLazy();
+            Container.BindInterfacesAndSelfTo<LayoutService>().AsSingle().NonLazy();
 
             Container.Bind<SavesService>().AsSingle().NonLazy();
             Container.Bind<InjectCreator>().AsSingle().NonLazy();

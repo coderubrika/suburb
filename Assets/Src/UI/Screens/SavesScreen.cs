@@ -63,8 +63,11 @@ namespace Suburb.UI.Screens
             foreach (var data in saveDatas)
             {
                 var newItem = injectCreator.Create<SaveViewListItem>(saveViewListItemPrefab, itemsMount, new object[] { data });
-                newItem.RemoveButton.OnClickAsObservable()
-                    .Subscribe(_ => RenderList())
+                newItem.OnRemove
+                    .Subscribe(_ =>
+                    {
+                        RenderList();
+                    })
                     .AddTo(newItem);
                 saveViews.Add(newItem);
             }

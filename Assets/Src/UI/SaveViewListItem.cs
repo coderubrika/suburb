@@ -7,26 +7,34 @@ using Suburb.Utils;
 using UniRx;
 using Suburb.Screens;
 using Suburb.UI.Screens;
+using Suburb.UI.Layouts;
 
 namespace Suburb.UI
 {
     public class SaveViewListItem : ItemWithButton<GameCollectedData>
     {
+        private ScreensService screensService;
         private SavesService savesService;
+        private LayoutService layoutService;
+        private GameStateMachine gameStateMachine;
 
         [SerializeField] private TMP_Text header;
         [SerializeField] private TMP_Text dateTime;
         [SerializeField] private Button removeButton;
 
-        public Button RemoveButton => removeButton;
+        public ReactiveCommand OnRemove = new();
 
         [Inject]
         public void Construct(
             SavesService savesService, 
             ScreensService screensService,
-            GameStateMachine gameStateMachine)
+            GameStateMachine gameStateMachine,
+            LayoutService layoutService)
         {
+            this.screensService = screensService;
             this.savesService = savesService;
+            this.gameStateMachine = gameStateMachine;
+            this.layoutService = layoutService;
 
             header.text = Item.Name;
             dateTime.text = DateTimeUtils.ParseAndFormat(
@@ -44,7 +52,19 @@ namespace Suburb.UI
                 .AddTo(this);
 
             removeButton.OnClickAsObservable()
-                .Subscribe(_ => savesService.Delete(Item.UID))
+                .Subscribe(_ =>
+                {
+                    layoutService.Setup<(string, string), bool, ModalConfirmLayout>(("a", "a"))
+                        .Subscribe(isConfirm =>
+                        {
+                            if (isConfirm)
+                            {
+                                savesService.Delete(Item.UID);
+                                OnRemove.Execute();
+                            }
+                        })
+                        .AddTo(this);
+                })
                 .AddTo(this);
         }
     }

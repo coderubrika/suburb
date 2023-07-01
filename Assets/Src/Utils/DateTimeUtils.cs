@@ -5,9 +5,9 @@ namespace Suburb.Utils
 {
     public class DateTimeUtils
     {
-        public static string DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-        public static string DETAIL_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss-fff";
-        public static string SHORT_DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm";
+        public const string DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+        public const string DETAIL_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss-fff";
+        public const string SHORT_DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm";
 
         public static string GetNow(string dateFormat = null)
         {
