@@ -23,17 +23,11 @@ namespace Suburb.UI.Layouts
             Observable.Merge(
                     closeButton.OnClickAsObservable(),
                     closeZoneButton.OnClickAsObservable())
-                .Subscribe(_ =>
-                {
-                    OnResponce.Execute(false);
-                })
+                .Subscribe(_ => OnResponce.Execute(false))
                 .AddTo(this);
 
             confirmButton.OnClickAsObservable()
-                .Subscribe(_ =>
-                {
-                    OnResponce.Execute(true);
-                })
+                .Subscribe(_ => OnResponce.Execute(true))
                 .AddTo(this);
         }
 

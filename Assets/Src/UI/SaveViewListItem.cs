@@ -54,7 +54,7 @@ namespace Suburb.UI
             removeButton.OnClickAsObservable()
                 .Subscribe(_ =>
                 {
-                    layoutService.Setup<(string, string), bool, ModalConfirmLayout>(("a", "a"))
+                    layoutService.Setup<(string, string), bool, ModalConfirmLayout>(("Удаление сохранения", "Вы дейстивительно хотите удалить сохранение? Весь прогресс будет удален."))
                         .Subscribe(isConfirm =>
                         {
                             if (isConfirm)
