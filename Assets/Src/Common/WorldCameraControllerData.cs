@@ -5,12 +5,17 @@ using System;
 namespace Suburb.Common
 {
     [Serializable]
-    public class WorldCameraControllerData
+    public class WorldCameraControllerData : IEquatable<WorldCameraControllerData>
     {
         [JsonProperty("position")]
         public Vector3Data Position;
 
         [JsonProperty("zoom")]
         public float Zoom;
+
+        public bool Equals(WorldCameraControllerData other)
+        {
+            return Position == other.Position && Zoom == other.Zoom;
+        }
     }
 }

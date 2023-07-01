@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Suburb.Utils
 {
     [Serializable]
-    public class Vector3Data
+    public class Vector3Data : IEquatable<Vector3Data>
     {
         [JsonProperty("x")]
         public float X;
@@ -15,6 +15,11 @@ namespace Suburb.Utils
 
         [JsonProperty("z")]
         public float Z;
+
+        public bool Equals(Vector3Data other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
 
         public Vector3 ToVector3()
         {

@@ -108,6 +108,7 @@ namespace Suburb.Common
         {
             selectedData = data;
             TmpData.Replace(selectedData);
+            TmpData.UpdateSaveTime();
         }
 
         private GameCollectedData Create()
