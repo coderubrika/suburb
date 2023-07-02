@@ -51,7 +51,7 @@ namespace Suburb.Common
 
         public void UpdateWorldCameraControllerData(WorldCameraControllerData data)
         {
-            if (data == WorldCameraControllerData)
+            if (data.Equals(WorldCameraControllerData))
                 return;
 
             IsDataHasChanges = true;

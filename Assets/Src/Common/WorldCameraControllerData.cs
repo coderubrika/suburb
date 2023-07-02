@@ -15,7 +15,7 @@ namespace Suburb.Common
 
         public bool Equals(WorldCameraControllerData other)
         {
-            return Position == other.Position && Zoom == other.Zoom;
+            return Position.Equals(other.Position) && Zoom.Equals(other.Zoom);
         }
     }
 }
