@@ -1,5 +1,8 @@
 ﻿using Suburb.Common;
 using Suburb.Screens;
+using Suburb.UI.Layouts;
+using Suburb.Utils;
+using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +15,7 @@ namespace Suburb.UI.Screens
         private ScreensService screensService;
         private SavesService savesService;
         private GameStateMachine gameStateMachine;
+        private LayoutService layoutService;
 
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
@@ -23,7 +27,8 @@ namespace Suburb.UI.Screens
         public void Construct(
             ScreensService screensService,
             SavesService savesService,
-            GameStateMachine gameStateMachine)
+            GameStateMachine gameStateMachine,
+            LayoutService layoutService)
         {
             this.screensService = screensService;
             this.savesService = savesService;
@@ -40,12 +45,6 @@ namespace Suburb.UI.Screens
             newGameButton.OnClickAsObservable()
                 .Subscribe(_ => 
                 {
-                    gameStateMachine.CloseGame();
-                    savesService.CreateNewSave();
-                    screensService.GoTo<GameScreen>();
-                    return;
-
-                    // after save screen + localization + modal 
                     if (!savesService.TmpData.IsDataHasChanges)
                     {
                         gameStateMachine.CloseGame();
@@ -54,7 +53,32 @@ namespace Suburb.UI.Screens
                         return;
                     }
 
+                    IDisposable responseDisposable = null;
+                    responseDisposable = layoutService.Setup<ModalConfirmInput, ExitStatus, ModalConfirmCancelLayout>(new ModalConfirmInput
+                    {
+                        HeaderIndex = "Есть несохраненные изменения",
+                        BodyIndex = "Хотите сохранить изменения?",
+                        CancelIndex = "Нет",
+                        ConfirmIndex = "Да"
+                    })
+                    .Subscribe(status =>
+                    {
+                        responseDisposable.Dispose();
+                        if (status == ExitStatus.Cancel)
+                        {
+                            gameStateMachine.CloseGame();
+                            savesService.CreateNewSave();
+                            screensService.GoTo<GameScreen>();
+                        }
 
+                        if (status == ExitStatus.Confirm)
+                        {
+                                // еще не готово, гдесь надо вызвать еще одну модалку,
+                                // ту что служит для создания нового сохранения
+                                // перед этим надо настроить локализацию и сверстать адаптивные модалки, создать Input типы и параметры по умолчанию
+                        }
+                    })
+                    .AddTo(this);
                 })
                 .AddTo(this);
 

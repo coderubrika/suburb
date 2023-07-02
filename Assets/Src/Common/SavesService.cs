@@ -61,8 +61,8 @@ namespace Suburb.Common
 
             GameCollectedData newSelectedData = Create();
             newSelectedData.Replace(TmpData);
-            Select(newSelectedData);
-            Save();
+            TmpData.UpdateSaveTime();
+            Save(newSelectedData);
         }
 
         public void SaveAs(string uid)
@@ -83,6 +83,9 @@ namespace Suburb.Common
         {
             if (!saves.TryGetValue(uid, out GameCollectedData deletingData))
                 return;
+
+            if (selectedData != null && selectedData.UID == uid)
+                selectedData = saves.Select(item => item.Value).LastOrDefault();
 
             saves.Remove(uid);
             localStorageService.RemoveFile(Path.Combine(SAVES_FOLDER, deletingData.FileName));
@@ -125,14 +128,14 @@ namespace Suburb.Common
             return gameData;
         }
 
-        private void Save()
+        private void Save(GameCollectedData data)
         {
             if (!HasSelectedSave)
                 return;
 
-            selectedData.UpdateSaveTime();
-            saves[selectedData.UID] = selectedData;
-            localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, selectedData.FileName), selectedData);
+            data.UpdateSaveTime();
+            saves[data.UID] = data;
+            localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, data.FileName), data);
             SyncData();
         }
 
