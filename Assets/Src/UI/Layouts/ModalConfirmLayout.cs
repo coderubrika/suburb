@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Suburb.UI.Layouts
 {
-    public class ModalConfirmLayout : BaseLayout<(string, string)[], string>
+    public class ModalConfirmLayout : BaseLayout<IEnumerable<(string, string)>, string>
     {
         [SerializeField] private TMP_Text header;
         [SerializeField] private TMP_Text body;
@@ -44,7 +44,7 @@ namespace Suburb.UI.Layouts
                 .AddTo(this);
         }
 
-        public override void Init((string, string)[] input)
+        public override void Init(IEnumerable<(string, string)> input)
         {
             foreach (var inputItem in input)
                 labels[inputItem.Item1].text = inputItem.Item2;

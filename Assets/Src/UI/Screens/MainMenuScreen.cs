@@ -3,6 +3,7 @@ using Suburb.Screens;
 using Suburb.UI.Layouts;
 using Suburb.Utils;
 using System;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,13 +55,7 @@ namespace Suburb.UI.Screens
                     }
 
                     IDisposable responseDisposable = null;
-                    responseDisposable = layoutService.Setup<(string, string)[], string, ModalConfirmCancelLayout>(new (string, string)[]
-                    {
-                        (ModalConfirmLayout.HEADER_LABEL, "Есть несохраненные изменения"),
-                        (ModalConfirmLayout.BODY_LABEL, "Хотите сохранить изменения?"),
-                        (ModalConfirmLayout.CONFIRM_LABEL, "Да"),
-                        (ModalConfirmCancelLayout.CANCEL_LABEL, "Нет")
-                    })
+                    responseDisposable = layoutService.Setup<IEnumerable<(string, string)>, string, ModalConfirmCancelLayout>(ModalUtils.HaveSaveChangesCancelInput)
                     .Subscribe(status =>
                     {
                         responseDisposable.Dispose();
@@ -73,9 +68,8 @@ namespace Suburb.UI.Screens
 
                         if (status == ModalConfirmLayout.CONFIRM_STATUS)
                         {
-                                // еще не готово, гдесь надо вызвать еще одну модалку,
-                                // ту что служит для создания нового сохранения
-                                // перед этим надо настроить локализацию и сверстать адаптивные модалки, создать Input типы и параметры по умолчанию
+                            SavesScreen screen = screensService.GoTo<SavesScreen>();
+                            screen.SwitchToSave();
                         }
                     })
                     .AddTo(this);

@@ -24,6 +24,8 @@ namespace Suburb.UI.Screens
 
         private readonly List<SaveViewListItem> saveViews = new();
 
+        private bool isSaveMode;
+
         [Inject]
         public void Construct(
             ScreensService screensService, 
@@ -49,6 +51,7 @@ namespace Suburb.UI.Screens
 
         protected override void Show()
         {
+            isSaveMode = false;
             newSaveButton.interactable = savesService.HasSelectedSave;
             RenderList();
 
@@ -62,7 +65,7 @@ namespace Suburb.UI.Screens
 
             foreach (var data in saveDatas)
             {
-                var newItem = injectCreator.Create<SaveViewListItem>(saveViewListItemPrefab, itemsMount, new object[] { data });
+                var newItem = injectCreator.Create<SaveViewListItem>(saveViewListItemPrefab, itemsMount, new object[] { data, isSaveMode });
                 newItem.OnRemove
                     .Subscribe(_ =>
                     {
@@ -77,6 +80,11 @@ namespace Suburb.UI.Screens
             scrollRect.verticalScrollbar.gameObject.SetActive(saveDatas.Length != 0);
 
             UIUtils.UpdateContent(itemsMount);
+        }
+
+        public void SwitchToSave()
+        {
+            isSaveMode = true;
         }
     }
 }

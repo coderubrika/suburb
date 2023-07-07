@@ -73,9 +73,10 @@ namespace Suburb.Common
             if (!saves.TryGetValue(uid, out GameCollectedData recipientData))
                 return;
 
-            recipientData.Replace(selectedData);
+            recipientData.Replace(TmpData);
             recipientData.UpdateSaveTime();
-            Select(recipientData);
+            TmpData.UpdateSaveTime();
+
             localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, recipientData.FileName), recipientData);
         }
 

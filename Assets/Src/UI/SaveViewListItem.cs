@@ -9,6 +9,7 @@ using Suburb.Screens;
 using Suburb.UI.Screens;
 using Suburb.UI.Layouts;
 using System;
+using System.Collections.Generic;
 
 namespace Suburb.UI
 {
@@ -30,7 +31,8 @@ namespace Suburb.UI
             SavesService savesService, 
             ScreensService screensService,
             GameStateMachine gameStateMachine,
-            LayoutService layoutService)
+            LayoutService layoutService,
+            bool isSaveMode)
         {
             this.screensService = screensService;
             this.savesService = savesService;
@@ -46,37 +48,16 @@ namespace Suburb.UI
             Button.OnClickAsObservable()
                 .Subscribe(_ =>
                 {
-                    if (savesService.TmpData.IsDataHasChanges)
+                    if (isSaveMode)
                     {
-                        IDisposable responseDisposable = null;
-                        responseDisposable = layoutService.Setup<(string, string)[], string, ModalConfirmCancelLayout>(new (string, string)[]
-                        {
-                            (ModalConfirmLayout.HEADER_LABEL, "Есть несохраненные изменения"),
-                            (ModalConfirmLayout.BODY_LABEL, "Хотите сохранить изменения?"),
-                            (ModalConfirmLayout.CONFIRM_LABEL, "Да"),
-                            (ModalConfirmCancelLayout.CANCEL_LABEL, "Нет")
-                        })
-                            .Subscribe(status =>
-                        {
-                            responseDisposable.Dispose();
-                            if (status == ModalConfirmCancelLayout.CANCEL_STATUS)
-                            {
-                                gameStateMachine.CloseGame();
-                                savesService.Select(Item);
-                                screensService.GoTo<GameScreen>();
-                            }
-
-                            if (status == ModalConfirmLayout.CONFIRM_STATUS)
-                            {
-                                // еще не готово, гдесь надо вызвать еще одну модалку,
-                                // ту что служит для создания нового сохранения
-                                // перед этим надо настроить локализацию и сверстать адаптивные модалки, создать Input типы и параметры по умолчанию
-                            }
-                        })
-                        .AddTo(this);
-
+                        ShowModalToRewrite();
                         return;
                     }
+
+                    ShowModalToLoad();
+
+                    if (savesService.TmpData.IsDataHasChanges)
+                        return;
 
                     gameStateMachine.CloseGame();
                     savesService.Select(Item);
@@ -85,26 +66,66 @@ namespace Suburb.UI
                 .AddTo(this);
 
             removeButton.OnClickAsObservable()
-                .Subscribe(_ =>
+                .Subscribe(_ => ShowModalToRemove())
+                .AddTo(this);
+        }
+
+        private void ShowModalToRewrite()
+        {
+            if (!savesService.TmpData.IsDataHasChanges)
+                return;
+
+            IDisposable responseDisposable = null;
+            responseDisposable = layoutService.Setup<IEnumerable<(string, string)>, string, ModalConfirmLayout>(ModalUtils.AskRewriteSaveInput)
+                .Subscribe(status =>
                 {
-                    IDisposable responseDisposable = null;
-                    responseDisposable = layoutService.Setup<(string, string)[], string, ModalConfirmLayout>(new (string, string)[]
-                    {
-                        (ModalConfirmLayout.HEADER_LABEL, "Есть несохраненные изменения"),
-                        (ModalConfirmLayout.BODY_LABEL, "Хотите сохранить изменения?"),
-                        (ModalConfirmLayout.CONFIRM_LABEL, "Да"),
-                    })
-                    .Subscribe(status =>
-                        {
-                            responseDisposable.Dispose();
-                            if (status == ModalConfirmLayout.CONFIRM_STATUS)
-                            {
-                                savesService.Delete(Item.UID);
-                                OnRemove.Execute();
-                            }
-                        })
-                        .AddTo(this);
+                    responseDisposable.Dispose();
+
+                    if (status == ModalConfirmLayout.CONFIRM_STATUS)
+                        savesService.SaveAs(Item.UID);
                 })
+            .AddTo(this);
+        }
+
+        private void ShowModalToLoad()
+        {
+            if (!savesService.TmpData.IsDataHasChanges)
+                return;
+
+            IDisposable responseDisposable = null;
+            responseDisposable = layoutService.Setup<IEnumerable<(string, string)>, string, ModalConfirmCancelLayout>(ModalUtils.HaveSaveChangesCancelInput)
+                .Subscribe(status =>
+                {
+                    responseDisposable.Dispose();
+                    if (status == ModalConfirmCancelLayout.CANCEL_STATUS)
+                    {
+                        gameStateMachine.CloseGame();
+                        savesService.Select(Item);
+                        screensService.GoTo<GameScreen>();
+                    }
+
+                    if (status == ModalConfirmLayout.CONFIRM_STATUS)
+                    {
+                        SavesScreen screen = screensService.GoTo<SavesScreen>();
+                        screen.SwitchToSave();
+                    }
+                })
+            .AddTo(this);
+        }
+
+        private void ShowModalToRemove()
+        {
+            IDisposable responseDisposable = null;
+            responseDisposable = layoutService.Setup<IEnumerable<(string, string)>, string, ModalConfirmLayout>(ModalUtils.HaveSaveChangesInput)
+            .Subscribe(status =>
+            {
+                responseDisposable.Dispose();
+                if (status == ModalConfirmLayout.CONFIRM_STATUS)
+                {
+                    savesService.Delete(Item.UID);
+                    OnRemove.Execute();
+                }
+            })
                 .AddTo(this);
         }
     }
