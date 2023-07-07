@@ -54,24 +54,24 @@ namespace Suburb.UI.Screens
                     }
 
                     IDisposable responseDisposable = null;
-                    responseDisposable = layoutService.Setup<ModalConfirmInput, ExitStatus, ModalConfirmCancelLayout>(new ModalConfirmInput
+                    responseDisposable = layoutService.Setup<(string, string)[], string, ModalConfirmCancelLayout>(new (string, string)[]
                     {
-                        HeaderIndex = "Есть несохраненные изменения",
-                        BodyIndex = "Хотите сохранить изменения?",
-                        CancelIndex = "Нет",
-                        ConfirmIndex = "Да"
+                        (ModalConfirmLayout.HEADER_LABEL, "Есть несохраненные изменения"),
+                        (ModalConfirmLayout.BODY_LABEL, "Хотите сохранить изменения?"),
+                        (ModalConfirmLayout.CONFIRM_LABEL, "Да"),
+                        (ModalConfirmCancelLayout.CANCEL_LABEL, "Нет")
                     })
                     .Subscribe(status =>
                     {
                         responseDisposable.Dispose();
-                        if (status == ExitStatus.Cancel)
+                        if (status == ModalConfirmCancelLayout.CANCEL_STATUS)
                         {
                             gameStateMachine.CloseGame();
                             savesService.CreateNewSave();
                             screensService.GoTo<GameScreen>();
                         }
 
-                        if (status == ExitStatus.Confirm)
+                        if (status == ModalConfirmLayout.CONFIRM_STATUS)
                         {
                                 // еще не готово, гдесь надо вызвать еще одну модалку,
                                 // ту что служит для создания нового сохранения

@@ -1,5 +1,6 @@
 ﻿using Suburb.Screens;
 using Suburb.Utils;
+using System.Collections.Generic;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Suburb.UI.Layouts
 {
-    public class ModalConfirmLayout : BaseLayout<ModalConfirmInput, ExitStatus>
+    public class ModalConfirmLayout : BaseLayout<(string, string)[], string>
     {
         [SerializeField] private TMP_Text header;
         [SerializeField] private TMP_Text body;
@@ -17,24 +18,36 @@ namespace Suburb.UI.Layouts
         [SerializeField] private Button closeZoneButton;
         [SerializeField] private RectTransform root;
 
+        protected readonly Dictionary<string, TMP_Text> labels = new();
+
+        public const string HEADER_LABEL = "HEADER_LABEL";
+        public const string BODY_LABEL = "BODY_LABEL";
+        public const string CONFIRM_LABEL = "CONFIRM_LABEL";
+
+        public const string CLOSE_STATUS = "CLOSE_STATUS";
+        public const string CONFIRM_STATUS = "CONFIRM_STATUS";
+
         protected virtual void Awake()
         {
+            labels.Add(HEADER_LABEL, header);
+            labels.Add(BODY_LABEL, body);
+            labels.Add(CONFIRM_LABEL, confirmText);
+
             Observable.Merge(
                     closeButton.OnClickAsObservable(),
                     closeZoneButton.OnClickAsObservable())
-                .Subscribe(_ => OnResponce.Execute(ExitStatus.Close))
+                .Subscribe(_ => OnResponce.Execute(CLOSE_STATUS))
                 .AddTo(this);
 
             confirmButton.OnClickAsObservable()
-                .Subscribe(_ => OnResponce.Execute(ExitStatus.Confirm))
+                .Subscribe(_ => OnResponce.Execute(CONFIRM_STATUS))
                 .AddTo(this);
         }
 
-        public override void Init(ModalConfirmInput input)
+        public override void Init((string, string)[] input)
         {
-            header.text = input.HeaderIndex;
-            body.text = input.BodyIndex;
-            confirmText.text = input.ConfirmIndex;
+            foreach (var inputItem in input)
+                labels[inputItem.Item1].text = inputItem.Item2;
         }
 
         protected override void Show()

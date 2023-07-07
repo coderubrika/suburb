@@ -49,24 +49,24 @@ namespace Suburb.UI
                     if (savesService.TmpData.IsDataHasChanges)
                     {
                         IDisposable responseDisposable = null;
-                        responseDisposable = layoutService.Setup<ModalConfirmInput, ExitStatus, ModalConfirmCancelLayout>(new ModalConfirmInput
+                        responseDisposable = layoutService.Setup<(string, string)[], string, ModalConfirmCancelLayout>(new (string, string)[]
                         {
-                            HeaderIndex = "Есть несохраненные изменения",
-                            BodyIndex = "Хотите сохранить изменения?",
-                            CancelIndex = "Нет",
-                            ConfirmIndex = "Да"
+                            (ModalConfirmLayout.HEADER_LABEL, "Есть несохраненные изменения"),
+                            (ModalConfirmLayout.BODY_LABEL, "Хотите сохранить изменения?"),
+                            (ModalConfirmLayout.CONFIRM_LABEL, "Да"),
+                            (ModalConfirmCancelLayout.CANCEL_LABEL, "Нет")
                         })
-                        .Subscribe(status =>
+                            .Subscribe(status =>
                         {
                             responseDisposable.Dispose();
-                            if (status == ExitStatus.Cancel)
+                            if (status == ModalConfirmCancelLayout.CANCEL_STATUS)
                             {
                                 gameStateMachine.CloseGame();
                                 savesService.Select(Item);
                                 screensService.GoTo<GameScreen>();
                             }
 
-                            if (status == ExitStatus.Confirm)
+                            if (status == ModalConfirmLayout.CONFIRM_STATUS)
                             {
                                 // еще не готово, гдесь надо вызвать еще одну модалку,
                                 // ту что служит для создания нового сохранения
@@ -88,17 +88,16 @@ namespace Suburb.UI
                 .Subscribe(_ =>
                 {
                     IDisposable responseDisposable = null;
-                    responseDisposable = layoutService.Setup<ModalConfirmInput, ExitStatus, ModalConfirmLayout>(new ModalConfirmInput
+                    responseDisposable = layoutService.Setup<(string, string)[], string, ModalConfirmLayout>(new (string, string)[]
                     {
-                        HeaderIndex = "Удаление сохранения",
-                        BodyIndex = "Вы дейстивительно хотите удалить сохранение?\n Весь прогресс будет удален.",
-                        CancelIndex = "Нет",
-                        ConfirmIndex = "Да"
+                        (ModalConfirmLayout.HEADER_LABEL, "Есть несохраненные изменения"),
+                        (ModalConfirmLayout.BODY_LABEL, "Хотите сохранить изменения?"),
+                        (ModalConfirmLayout.CONFIRM_LABEL, "Да"),
                     })
-                        .Subscribe(status =>
+                    .Subscribe(status =>
                         {
                             responseDisposable.Dispose();
-                            if (status == ExitStatus.Confirm)
+                            if (status == ModalConfirmLayout.CONFIRM_STATUS)
                             {
                                 savesService.Delete(Item.UID);
                                 OnRemove.Execute();

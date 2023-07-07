@@ -11,19 +11,18 @@ namespace Suburb.UI.Layouts
         [SerializeField] private Button cancelButton;
         [SerializeField] private TMP_Text cancelText;
 
+        public const string CANCEL_LABEL = "CANCEL_LABEL";
+        public const string CANCEL_STATUS = "CANCEL_STATUS";
+
         protected override void Awake()
         {
             base.Awake();
 
-            cancelButton.OnClickAsObservable()
-                .Subscribe(_ => OnResponce.Execute(ExitStatus.Cancel))
-                .AddTo(this);
-        }
+            labels.Add(CANCEL_LABEL, cancelText);
 
-        public override void Init(ModalConfirmInput input)
-        {
-            cancelText.text = input.CancelIndex;
-            base.Init(input);
+            cancelButton.OnClickAsObservable()
+                .Subscribe(_ => OnResponce.Execute(CANCEL_STATUS))
+                .AddTo(this);
         }
     }
 }
