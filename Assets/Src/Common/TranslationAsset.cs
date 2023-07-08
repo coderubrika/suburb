@@ -7,6 +7,6 @@ namespace Suburb.Common
     public class TranslationAsset
     {
         public SystemLanguage Language;
-        public TextAsset TranslationsRaw;
+        public TextAsset TranslationsJson;
     }
 }

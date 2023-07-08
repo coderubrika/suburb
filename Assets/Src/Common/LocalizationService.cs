@@ -21,7 +21,7 @@ namespace Suburb.Common
             this.languagesRepository = languagesRepository;
 
             foreach (TranslationAsset asset in languagesRepository.Items)
-                translations[asset.Language] = JsonConvert.DeserializeObject<Dictionary<string, string>>(asset.TranslationsRaw.text);
+                translations[asset.Language] = JsonConvert.DeserializeObject<Dictionary<string, string>>(asset.TranslationsJson.text);
 
             string currentLangString = PlayerPrefs.GetString(LANGUAGE, Application.systemLanguage.ToString());
             CurrentLanguage.Value = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), currentLangString);

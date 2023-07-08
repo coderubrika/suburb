@@ -9,11 +9,13 @@ namespace Suburb.Installers
     {
         [SerializeField] private ResourcesRepository resourcesRepository;
         [SerializeField] private GameSettingsRepository gameSettingsRepository;
+        [SerializeField] private LanguagesRepository languagesRepository;
 
         public override void InstallBindings()
         {
             Container.BindInstances(resourcesRepository);
             Container.BindInstances(gameSettingsRepository);
+            Container.BindInstances(languagesRepository);
         }
     }
 }

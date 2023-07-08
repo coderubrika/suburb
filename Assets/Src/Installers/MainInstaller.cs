@@ -22,6 +22,7 @@ namespace Suburb.Installers
             Container.BindInterfacesAndSelfTo<LayoutService>().AsSingle().NonLazy();
 
             Container.Bind<SavesService>().AsSingle().NonLazy();
+            Container.Bind<LocalizationService>().AsSingle().NonLazy();
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
             Container.Bind<LocalStorageService>().AsSingle().NonLazy();
             Container.Bind<WebClientService>().AsSingle().NonLazy();
