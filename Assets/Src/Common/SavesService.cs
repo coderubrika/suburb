@@ -21,6 +21,8 @@ namespace Suburb.Common
 
         public GameCollectedData TmpData { get; } = new GameCollectedData();
         public bool HasSelectedSave { get => selectedData != null; }
+        public bool IsSelectedSaved { get => HasSelectedSave && saves.ContainsKey(selectedData.UID); }
+        public bool HasChanges { get => TmpData.IsDataHasChanges; }
         public Subject<ChangeType> OnChangeSaves { get; } = new();
 
         public enum ChangeType { Rewrite, Save, Delete }
@@ -119,6 +121,14 @@ namespace Suburb.Common
             selectedData = data;
             TmpData.Replace(selectedData);
             TmpData.UpdateSaveTime();
+        }
+
+        public void SaveSelected()
+        {
+            if (!HasChanges || !IsSelectedSaved)
+                return;
+
+            SaveAs(selectedData.UID);
         }
 
         private GameCollectedData Create()

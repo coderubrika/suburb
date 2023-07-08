@@ -54,7 +54,7 @@ namespace Suburb.UI
 
                     ShowModalToLoad();
 
-                    if (savesService.TmpData.IsDataHasChanges)
+                    if (savesService.HasChanges)
                         return;
 
                     gameStateMachine.CloseGame();
@@ -70,7 +70,7 @@ namespace Suburb.UI
 
         private void ShowModalToRewrite()
         {
-            if (!savesService.TmpData.IsDataHasChanges)
+            if (!savesService.HasChanges)
                 return;
 
             IDisposable responseDisposable = null;
@@ -87,7 +87,7 @@ namespace Suburb.UI
 
         private void ShowModalToLoad()
         {
-            if (!savesService.TmpData.IsDataHasChanges)
+            if (!savesService.HasChanges)
                 return;
 
             IDisposable responseDisposable = null;

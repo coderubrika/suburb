@@ -20,6 +20,7 @@ namespace Suburb.UI.Screens
         [SerializeField] private GameObject emptyMessage;
         [SerializeField] private Button backButton;
         [SerializeField] private Button newSaveButton;
+        [SerializeField] private Button saveCurrentButton;
         [SerializeField] private SaveViewListItem saveViewListItemPrefab;
         [SerializeField] private RectTransform itemsMount;
 
@@ -42,23 +43,28 @@ namespace Suburb.UI.Screens
                 .AddTo(this);
 
             newSaveButton.OnClickAsObservable()
+                .Subscribe(_ => savesService.SaveAsNew())
+                .AddTo(this);
+
+            saveCurrentButton.OnClickAsObservable()
                 .Subscribe(_ =>
                 {
-                    savesService.SaveAsNew();
-                    RenderList();
+                    saveCurrentButton.interactable = false;
+                    savesService.SaveSelected();
                 })
                 .AddTo(this);
         }
 
         protected override void Show()
         {
+            saveCurrentButton.interactable = savesService.IsSelectedSaved && savesService.HasChanges;
             newSaveButton.interactable = savesService.HasSelectedSave;
             RenderList();
 
             changesDisposable = savesService.OnChangeSaves
                 .Subscribe(type =>
                 {
-                    if (type == SavesService.ChangeType.Rewrite)
+                    if (type is SavesService.ChangeType.Rewrite or SavesService.ChangeType.Save)
                         isSaveMode = false;
 
                     RenderList();

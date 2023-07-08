@@ -46,7 +46,7 @@ namespace Suburb.UI.Screens
             newGameButton.OnClickAsObservable()
                 .Subscribe(_ => 
                 {
-                    if (!savesService.TmpData.IsDataHasChanges)
+                    if (!savesService.HasChanges)
                     {
                         gameStateMachine.CloseGame();
                         savesService.CreateNewSave();
