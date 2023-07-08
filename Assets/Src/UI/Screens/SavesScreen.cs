@@ -6,6 +6,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using System;
 
 namespace Suburb.UI.Screens
 {
@@ -23,7 +24,7 @@ namespace Suburb.UI.Screens
         [SerializeField] private RectTransform itemsMount;
 
         private readonly List<SaveViewListItem> saveViews = new();
-
+        private IDisposable changesDisposable;
         private bool isSaveMode;
 
         [Inject]
@@ -51,14 +52,29 @@ namespace Suburb.UI.Screens
 
         protected override void Show()
         {
-            isSaveMode = false;
             newSaveButton.interactable = savesService.HasSelectedSave;
             RenderList();
+
+            changesDisposable = savesService.OnChangeSaves
+                .Subscribe(type =>
+                {
+                    if (type == SavesService.ChangeType.Rewrite)
+                        isSaveMode = false;
+
+                    RenderList();
+                })
+                .AddTo(this);
 
             base.Show();
         }
 
-        public void RenderList()
+        protected override void Hide()
+        {
+            base.Hide();
+            changesDisposable?.Dispose();
+        }
+
+        private void RenderList()
         {
             GameCollectedData[] saveDatas = savesService.GetSaves();
             saveViews.DestroyGameObjects();
@@ -66,12 +82,6 @@ namespace Suburb.UI.Screens
             foreach (var data in saveDatas)
             {
                 var newItem = injectCreator.Create<SaveViewListItem>(saveViewListItemPrefab, itemsMount, new object[] { data, isSaveMode });
-                newItem.OnRemove
-                    .Subscribe(_ =>
-                    {
-                        RenderList();
-                    })
-                    .AddTo(newItem);
                 saveViews.Add(newItem);
             }
 
@@ -85,6 +95,7 @@ namespace Suburb.UI.Screens
         public void SwitchToSave()
         {
             isSaveMode = true;
+            RenderList();
         }
     }
 }

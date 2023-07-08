@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UniRx;
 
 namespace Suburb.Common
 {
@@ -20,6 +21,9 @@ namespace Suburb.Common
 
         public GameCollectedData TmpData { get; } = new GameCollectedData();
         public bool HasSelectedSave { get => selectedData != null; }
+        public Subject<ChangeType> OnChangeSaves { get; } = new();
+
+        public enum ChangeType { Rewrite, Save, Delete }
 
         public SavesService(
             LocalStorageService localStorageService,
@@ -78,6 +82,7 @@ namespace Suburb.Common
             TmpData.UpdateSaveTime();
 
             localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, recipientData.FileName), recipientData);
+            OnChangeSaves.OnNext(ChangeType.Rewrite);
         }
 
         public void Delete(string uid)
@@ -91,6 +96,7 @@ namespace Suburb.Common
             saves.Remove(uid);
             localStorageService.RemoveFile(Path.Combine(SAVES_FOLDER, deletingData.FileName));
             SyncData();
+            OnChangeSaves.OnNext(ChangeType.Delete);
         }
 
         public void Rename(string uid, string name)
@@ -138,6 +144,7 @@ namespace Suburb.Common
             saves[data.UID] = data;
             localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, data.FileName), data);
             SyncData();
+            OnChangeSaves.OnNext(ChangeType.Save);
         }
 
         private void SyncData()

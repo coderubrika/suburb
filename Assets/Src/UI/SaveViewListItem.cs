@@ -24,8 +24,6 @@ namespace Suburb.UI
         [SerializeField] private TMP_Text dateTime;
         [SerializeField] private Button removeButton;
 
-        public ReactiveCommand OnRemove = new();
-
         [Inject]
         public void Construct(
             SavesService savesService, 
@@ -121,10 +119,7 @@ namespace Suburb.UI
             {
                 responseDisposable.Dispose();
                 if (status == ModalConfirmLayout.CONFIRM_STATUS)
-                {
                     savesService.Delete(Item.UID);
-                    OnRemove.Execute();
-                }
             })
                 .AddTo(this);
         }
