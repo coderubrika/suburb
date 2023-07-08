@@ -67,6 +67,7 @@ namespace Suburb.UI.Screens
                     if (type is SavesService.ChangeType.Rewrite or SavesService.ChangeType.Save)
                         isSaveMode = false;
 
+                    saveCurrentButton.interactable = savesService.IsSelectedSaved && savesService.HasChanges;
                     RenderList();
                 })
                 .AddTo(this);

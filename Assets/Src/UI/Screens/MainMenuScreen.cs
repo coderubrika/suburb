@@ -36,7 +36,30 @@ namespace Suburb.UI.Screens
             this.gameStateMachine = gameStateMachine;
 
             quitButton.OnClickAsObservable()
-                .Subscribe(_ => Application.Quit())
+                .Subscribe(_ =>
+                {
+                    if (!savesService.HasChanges)
+                    {
+                        Application.Quit();
+                        return;
+                    }
+
+                    IDisposable responseDisposable = null;
+                    responseDisposable = layoutService.Setup<IEnumerable<(string, string)>, string, ModalConfirmCancelLayout>(ModalUtils.HaveSaveChangesCancelInput)
+                    .Subscribe(status =>
+                    {
+                        responseDisposable.Dispose();
+                        if (status == ModalConfirmCancelLayout.CANCEL_STATUS)
+                            Application.Quit();
+
+                        if (status == ModalConfirmLayout.CONFIRM_STATUS)
+                        {
+                            SavesScreen screen = screensService.GoTo<SavesScreen>();
+                            screen.SwitchToSave();
+                        }
+                    })
+                    .AddTo(this);
+                })
                 .AddTo(this);
 
             savesButton.OnClickAsObservable()
@@ -46,7 +69,7 @@ namespace Suburb.UI.Screens
             newGameButton.OnClickAsObservable()
                 .Subscribe(_ => 
                 {
-                    if (!savesService.HasChanges)
+                    if (!savesService.TmpData.IsDataHasChanges)
                     {
                         gameStateMachine.CloseGame();
                         savesService.CreateNewSave();
