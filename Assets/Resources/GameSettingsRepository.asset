@@ -23,7 +23,7 @@ MonoBehaviour:
     minMoveSensivity: 0.3333
   defaultSaveData:
     UID: 
-    Name: "\u041D\u0430\u0447\u0430\u043B\u043E"
+    Name: save_name_begin
     SaveTime: 
     FileName: 
     WorldCameraControllerData:

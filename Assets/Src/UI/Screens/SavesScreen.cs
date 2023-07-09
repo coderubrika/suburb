@@ -64,7 +64,7 @@ namespace Suburb.UI.Screens
             changesDisposable = savesService.OnChangeSaves
                 .Subscribe(type =>
                 {
-                    if (type is SavesService.ChangeType.Rewrite or SavesService.ChangeType.Save)
+                    if (type is SavesService.ChangeType.Overwrite or SavesService.ChangeType.Save)
                         isSaveMode = false;
 
                     saveCurrentButton.interactable = savesService.IsSelectedSaved && savesService.HasChanges;

@@ -24,6 +24,7 @@ namespace Suburb.Common
                 translations[asset.Language] = JsonConvert.DeserializeObject<Dictionary<string, string>>(asset.TranslationsJson.text);
 
             string currentLangString = PlayerPrefs.GetString(LANGUAGE, Application.systemLanguage.ToString());
+            //string currentLangString = PlayerPrefs.GetString(LANGUAGE, SystemLanguage.English.ToString());
             CurrentLanguage.Value = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), currentLangString);
         }
 

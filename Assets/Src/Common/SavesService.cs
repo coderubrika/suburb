@@ -25,7 +25,7 @@ namespace Suburb.Common
         public bool HasChanges { get => TmpData.IsDataHasChanges; }
         public Subject<ChangeType> OnChangeSaves { get; } = new();
 
-        public enum ChangeType { Rewrite, Save, Delete }
+        public enum ChangeType { Overwrite, Save, Delete }
 
         public SavesService(
             LocalStorageService localStorageService,
@@ -84,7 +84,7 @@ namespace Suburb.Common
             TmpData.UpdateSaveTime();
 
             localStorageService.SaveToPersistent(Path.Combine(SAVES_FOLDER, recipientData.FileName), recipientData);
-            OnChangeSaves.OnNext(ChangeType.Rewrite);
+            OnChangeSaves.OnNext(ChangeType.Overwrite);
         }
 
         public void Delete(string uid)

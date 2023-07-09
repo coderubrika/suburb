@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LanguagesRepository
   m_EditorClassIdentifier: 
   items:
-  - translationsObject: {fileID: 102900000, guid: cc022dfebcf32114faed9dc64f8a31c8, type: 3}
-    Language: 30
-  - translationsObject: {fileID: 102900000, guid: e4084ad2e15c3fb4a98ca84385bb1b50, type: 3}
-    Language: 10
+  - Language: 30
+    TranslationsJson: {fileID: 4900000, guid: c45268c98a15bc941b0e4e4443417be4, type: 3}
+  - Language: 10
+    TranslationsJson: {fileID: 4900000, guid: 2ab4f3a11e616784d8b84f3f5cdb14e1, type: 3}

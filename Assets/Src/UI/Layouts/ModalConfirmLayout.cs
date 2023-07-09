@@ -1,15 +1,19 @@
-﻿using Suburb.Screens;
+﻿using Suburb.Common;
+using Suburb.Screens;
 using Suburb.Utils;
 using System.Collections.Generic;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Suburb.UI.Layouts
 {
     public class ModalConfirmLayout : BaseLayout<IEnumerable<(string, string)>, string>
     {
+        private LocalizationService localizationService;
+
         [SerializeField] private TMP_Text header;
         [SerializeField] private TMP_Text body;
         [SerializeField] private TMP_Text confirmText;
@@ -26,6 +30,12 @@ namespace Suburb.UI.Layouts
 
         public const string CLOSE_STATUS = "CLOSE_STATUS";
         public const string CONFIRM_STATUS = "CONFIRM_STATUS";
+
+        [Inject]
+        public void Construct(LocalizationService localizationService)
+        {
+            this.localizationService = localizationService;
+        }
 
         protected virtual void Awake()
         {
@@ -47,7 +57,7 @@ namespace Suburb.UI.Layouts
         public override void Init(IEnumerable<(string, string)> input)
         {
             foreach (var inputItem in input)
-                labels[inputItem.Item1].text = inputItem.Item2;
+                labels[inputItem.Item1].text = localizationService.GetLocalizedText(inputItem.Item2);
         }
 
         protected override void Show()

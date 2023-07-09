@@ -19,6 +19,7 @@ namespace Suburb.UI
         private SavesService savesService;
         private LayoutService layoutService;
         private GameStateMachine gameStateMachine;
+        private LocalizationService localizationService;
 
         [SerializeField] private TMP_Text header;
         [SerializeField] private TMP_Text dateTime;
@@ -30,6 +31,7 @@ namespace Suburb.UI
             ScreensService screensService,
             GameStateMachine gameStateMachine,
             LayoutService layoutService,
+            LocalizationService localizationService,
             bool isSaveMode)
         {
             this.screensService = screensService;
@@ -37,10 +39,10 @@ namespace Suburb.UI
             this.gameStateMachine = gameStateMachine;
             this.layoutService = layoutService;
 
-            header.text = Item.Name;
+            header.text = localizationService.GetLocalizedText(Item.Name);
             dateTime.text = DateTimeUtils.ParseAndFormat(
-                Item.SaveTime, 
-                DateTimeUtils.DETAIL_DATE_TIME_FORMAT, 
+                Item.SaveTime,
+                DateTimeUtils.DETAIL_DATE_TIME_FORMAT,
                 DateTimeUtils.SHORT_DATE_TIME_FORMAT);
 
             Button.OnClickAsObservable()

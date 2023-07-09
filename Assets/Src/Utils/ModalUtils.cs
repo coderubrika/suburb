@@ -8,19 +8,19 @@ namespace Suburb.Utils
     {
         private static readonly IEnumerable<(string, string)> HaveSaveChanges = new (string, string)[]
         {
-            (ModalConfirmLayout.HEADER_LABEL, "Есть несохраненные изменения"),
-            (ModalConfirmLayout.BODY_LABEL, "Хотите сохранить изменения?"),
+            (ModalConfirmLayout.HEADER_LABEL, "modal_header_unsave_changes"),
+            (ModalConfirmLayout.BODY_LABEL, "modal_body_unsave_changes"),
         };
 
         private static readonly IEnumerable<(string, string)> AskRewriteSave = new (string, string)[]
         {
-            (ModalConfirmLayout.HEADER_LABEL, "Перезапись сохранения"),
-            (ModalConfirmLayout.BODY_LABEL, "Уверены, что хотите перезаписать это сохранение?"),
+            (ModalConfirmLayout.HEADER_LABEL, "modal_header_rewrite_save"),
+            (ModalConfirmLayout.BODY_LABEL, "modal_body_rewrite_save"),
         };
 
-        private static readonly (string, string) Yes = (ModalConfirmLayout.CONFIRM_LABEL, "Да");
+        private static readonly (string, string) Yes = (ModalConfirmLayout.CONFIRM_LABEL, "yes");
 
-        private static readonly (string, string) No = (ModalConfirmCancelLayout.CANCEL_LABEL, "Нет");
+        private static readonly (string, string) No = (ModalConfirmCancelLayout.CANCEL_LABEL, "no");
 
         private static readonly (string, string)[] YesNo = new (string, string)[]
         {
