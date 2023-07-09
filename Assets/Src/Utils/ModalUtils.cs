@@ -18,6 +18,12 @@ namespace Suburb.Utils
             (ModalConfirmLayout.BODY_LABEL, "modal_body_rewrite_save"),
         };
 
+        private static readonly IEnumerable<(string, string)> AskDeleteSave = new (string, string)[]
+        {
+            (ModalConfirmLayout.HEADER_LABEL, "modal_header_delete_save"),
+            (ModalConfirmLayout.BODY_LABEL, "modal_body_delete_save"),
+        };
+
         private static readonly (string, string) Yes = (ModalConfirmLayout.CONFIRM_LABEL, "yes");
 
         private static readonly (string, string) No = (ModalConfirmCancelLayout.CANCEL_LABEL, "no");
@@ -34,6 +40,9 @@ namespace Suburb.Utils
             .Union(YesNo);
 
         public static readonly IEnumerable<(string, string)> AskRewriteSaveInput = AskRewriteSave
+            .Append(Yes);
+
+        public static readonly IEnumerable<(string, string)> AskDeleteSaveInput = AskDeleteSave
             .Append(Yes);
     }
 }

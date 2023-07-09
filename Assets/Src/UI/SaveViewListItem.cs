@@ -116,7 +116,7 @@ namespace Suburb.UI
         private void ShowModalToRemove()
         {
             IDisposable responseDisposable = null;
-            responseDisposable = layoutService.Setup<IEnumerable<(string, string)>, string, ModalConfirmLayout>(ModalUtils.HaveSaveChangesInput)
+            responseDisposable = layoutService.Setup<IEnumerable<(string, string)>, string, ModalConfirmLayout>(ModalUtils.AskDeleteSaveInput)
             .Subscribe(status =>
             {
                 responseDisposable.Dispose();

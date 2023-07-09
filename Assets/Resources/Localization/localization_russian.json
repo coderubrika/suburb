@@ -10,6 +10,8 @@
 	"modal_body_unsave_changes": "Хотите сохранить изменения?",
 	"modal_header_rewrite_save": "Перезапись сохранения",
 	"modal_body_rewrite_save": "Уверены, что хотите перезаписать это сохранение?",
+	"modal_header_delete_save": "Удаление сохранения",
+	"modal_body_delete_save": "Уверены, что хотите удалить это сохранение?",
 	"yes": "Да",
 	"no": "Нет",
 	"save_name_begin": "Начало",
