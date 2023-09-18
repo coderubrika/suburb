@@ -1,3 +1,6 @@
 [submodule "Assets/Src/Screens"]
 	path = Assets/Src/Screens
 	url = https://github.com/coderubrika/UnityScreens
+[submodule "Assets/Src/Utils"]
+	path = Assets/Src/Utils
+	url = https://github.com/coderubrika/UnityUtils
