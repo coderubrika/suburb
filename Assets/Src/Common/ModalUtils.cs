@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Suburb.Utils
+namespace Suburb.Common
 {
     public static class ModalUtils
     {
