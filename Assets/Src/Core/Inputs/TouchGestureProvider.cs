@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
-namespace Suburb.Core.Inputs
+namespace Suburb.Inputs
 {
     public class TouchGestureProvider : IGestureProvider
     {

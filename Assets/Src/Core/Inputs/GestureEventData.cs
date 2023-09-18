@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Suburb.Core.Inputs
+namespace Suburb.Inputs
 {
     public class GestureEventData
     {

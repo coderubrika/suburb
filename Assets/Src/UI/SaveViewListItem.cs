@@ -10,6 +10,7 @@ using Suburb.UI.Screens;
 using Suburb.UI.Layouts;
 using System;
 using System.Collections.Generic;
+using Suburb.Serialization;
 
 namespace Suburb.UI
 {

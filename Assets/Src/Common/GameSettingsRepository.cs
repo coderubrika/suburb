@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Suburb.Serialization;
+using System;
 using UnityEngine;
 
 namespace Suburb.Common

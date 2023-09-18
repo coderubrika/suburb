@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 using System;
+using Suburb.Serialization;
 
 namespace Suburb.UI.Screens
 {

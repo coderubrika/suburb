@@ -1,6 +1,6 @@
 using System;
 
-namespace Suburb.Utils
+namespace Suburb.Serialization
 {
     [Serializable]
     public struct SmoothTransitionParam

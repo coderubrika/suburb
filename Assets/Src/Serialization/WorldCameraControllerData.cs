@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Suburb.Utils;
+using Suburb.Utils.Serialization;
 using System;
 
-namespace Suburb.Common
+namespace Suburb.Serialization
 {
     [Serializable]
     public class WorldCameraControllerData : IEquatable<WorldCameraControllerData>

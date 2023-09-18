@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Suburb.Utils
+namespace Suburb.Utils.Serialization
 {
     [Serializable]
     public class Vector3Data : IEquatable<Vector3Data>

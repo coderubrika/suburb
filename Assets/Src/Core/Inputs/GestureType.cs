@@ -1,4 +1,4 @@
-﻿namespace Suburb.Core.Inputs
+﻿namespace Suburb.Inputs
 {
     public enum GestureType
     {

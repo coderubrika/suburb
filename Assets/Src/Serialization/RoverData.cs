@@ -1,8 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Suburb.Utils;
+using Suburb.Utils.Serialization;
 
-namespace Suburb.Common
+namespace Suburb.Serialization
 {
     [Serializable]
     public class RoverData

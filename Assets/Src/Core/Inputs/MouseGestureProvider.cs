@@ -4,7 +4,7 @@ using static UnityEngine.InputSystem.InputAction;
 using Suburb.Utils;
 using System;
 
-namespace Suburb.Core.Inputs
+namespace Suburb.Inputs
 {
     public class MouseGestureProvider : IGestureProvider
     {

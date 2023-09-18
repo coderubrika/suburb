@@ -1,5 +1,6 @@
 ﻿using Suburb.Core;
-using Suburb.Core.Inputs;
+using Suburb.Inputs;
+using Suburb.Serialization;
 using Suburb.Utils;
 using System;
 using UniRx;

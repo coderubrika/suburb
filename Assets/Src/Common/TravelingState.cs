@@ -1,4 +1,4 @@
-﻿using Suburb.Core.Inputs;
+﻿using Suburb.Inputs;
 using Suburb.Detectors;
 
 namespace Suburb.Common

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Suburb.Common
+namespace Suburb.Serialization
 {
     [Serializable]
     public class GameResourcesData

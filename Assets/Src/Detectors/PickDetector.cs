@@ -1,5 +1,5 @@
 ﻿using Suburb.Common;
-using Suburb.Core.Inputs;
+using Suburb.Inputs;
 using Suburb.Interactables;
 using UniRx;
 using UnityEngine;

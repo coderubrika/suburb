@@ -1,6 +1,6 @@
 ﻿using UniRx;
 
-namespace Suburb.Core.Inputs
+namespace Suburb.Inputs
 {
     public interface IGestureProvider
     {
