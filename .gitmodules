@@ -4,3 +4,6 @@
 [submodule "Assets/Src/Utils"]
 	path = Assets/Src/Utils
 	url = https://github.com/coderubrika/UnityUtils
+[submodule "Assets/Src/Inputs"]
+	path = Assets/Src/Inputs
+	url = https://github.com/coderubrika/UnityInputs
