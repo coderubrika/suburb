@@ -1,5 +1,6 @@
 ﻿using Suburb.Utils;
 using System.Collections;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -22,6 +23,10 @@ namespace Suburb.Router
         private void Awake()
         {
             AddAndGoTo(5);
+            if (!routerService.ContainsEndpoint("b"))
+                routerService.AddEndpoint(new Endpoint("b"));
+            this.Log(string.Join("/", routerService.GetPathToPrevious("2").Select(p => p.Name).ToArray()));
+            this.Log(string.Join("/", routerService.GetPathToPrevious("b").Select(p => p.Name).ToArray()));
             AddAndGoTo("4");
             GoBack(5);
             AddAndGoTo(5);
