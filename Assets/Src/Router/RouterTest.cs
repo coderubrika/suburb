@@ -22,18 +22,7 @@ namespace Suburb.Router
 
         private void Awake()
         {
-            AddAndGoTo(5);
-            if (!routerService.ContainsEndpoint("b"))
-                routerService.AddEndpoint(new Endpoint("b"));
-            this.Log(string.Join("/", routerService.GetPathToPrevious("2").Select(p => p.Name).ToArray()));
-            this.Log(string.Join("/", routerService.GetPathToPrevious("b").Select(p => p.Name).ToArray()));
-            AddAndGoTo("4");
-            GoBack(5);
-            AddAndGoTo(5);
-            GoBackTo("2");
-            GoBackTo("3");
-            GoBackTo("3");
-            GoBackTo("f");
+            Test2();
         }
 
         private void AddAndGoTo(string name)
@@ -64,6 +53,40 @@ namespace Suburb.Router
         {
             routerService.GoToPrevious(name);
             this.Log(string.Join('/', routerService.GetHistory()));
+        }
+
+        private void CreateEndpoints(int count)
+        {
+            for (int i = 0; i < count; i++)
+                routerService.AddEndpoint(new Endpoint(i.ToString()));
+        }
+
+        private void Test1()
+        {
+            AddAndGoTo(5);
+            if (!routerService.ContainsEndpoint("b"))
+                routerService.AddEndpoint(new Endpoint("b"));
+            this.Log(string.Join("/", routerService.GetPathToPrevious("2").Select(p => p.Name).ToArray()));
+            this.Log(string.Join("/", routerService.GetPathToPrevious("b").Select(p => p.Name).ToArray()));
+            AddAndGoTo("4");
+            GoBack(5);
+            AddAndGoTo(5);
+            GoBackTo("2");
+            GoBackTo("3");
+            GoBackTo("3");
+            GoBackTo("f");
+        }
+
+        private void Test2()
+        {
+            CreateEndpoints(10);
+
+            routerService.Use((from, to) => this.Log($"{from?.Name}->{to?.Name}"));
+            routerService.Use((from, to) => this.Log($"{from?.Name}!!->{to?.Name}!!"));
+
+            routerService.GoTo("4");
+            routerService.GoTo("9");
+            routerService.GoTo("1");
         }
     }
 }

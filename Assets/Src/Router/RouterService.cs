@@ -116,8 +116,8 @@ namespace Suburb.Router
 
             if (middlewares.ContainsKey(key))
                 middlewares[key] += middleware;
-
-            middlewares.Add($"{nameFrom}->{nameTo}", middleware);
+            else
+                middlewares.Add($"{nameFrom}->{nameTo}", middleware);
         }
 
         private void ApplyMiddlewares(IEndpoint from = null, IEndpoint to = null)
