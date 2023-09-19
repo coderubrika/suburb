@@ -5,6 +5,16 @@ using UnityEngine;
 
 namespace Suburb.Router
 {
+    public class Endpoint : IEndpoint
+    {
+        public string Name { get; }
+
+        public Endpoint(string name)
+        {
+            Name = name;
+        }
+    }
+
     public class RouterTest : MonoBehaviour
     {
         private readonly RouterService routerService = new RouterService();
