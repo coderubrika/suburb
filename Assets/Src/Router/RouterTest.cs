@@ -83,8 +83,13 @@ namespace Suburb.Router
 
             routerService.Use((from, to) => this.Log($"{from?.Name}->{to?.Name}"));
             routerService.Use((from, to) => this.Log($"{from?.Name}!!->{to?.Name}!!"));
+            routerService.Use((from, to) => this.Log($"{from?.Name}**->{to?.Name}**"), "9", "1");
+            routerService.Use((from, to) => this.Log($"{from?.Name}++->{to?.Name}++"), null, "9");
+            routerService.Use((from, to) => this.Log($"{from?.Name}&&->{to?.Name}&&"), "4");
 
             routerService.GoTo("4");
+            routerService.GoTo("9");
+            routerService.GoTo("1");
             routerService.GoTo("9");
             routerService.GoTo("1");
         }
