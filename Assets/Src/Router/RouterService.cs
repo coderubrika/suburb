@@ -8,8 +8,12 @@ namespace Suburb.Router
 {
     public class RouterService
     {
+        private const string ALL = "*";
+        private const string ALL_FILTER = "*->*";
+
         private readonly Stack<Endpoint> history = new();
         private readonly Dictionary<string, Endpoint> endpoints = new();
+        private readonly Dictionary<string, Action<Endpoint, Endpoint>> middlewares = new();
 
         public bool GoTo(string name)
         {
@@ -79,6 +83,50 @@ namespace Suburb.Router
             return history
                 .Select(endpoint => endpoint.Name)
                 .Reverse();
+        }
+
+        public void Use(Action<Endpoint, Endpoint> middleware, string nameFrom = null, string nameTo = null)
+        {
+            (nameFrom, nameTo) = TransformNames(nameFrom, nameTo);
+
+            string key = $"{nameFrom}->{nameTo}";
+
+            if (middlewares.ContainsKey(key))
+                middlewares[key] += middleware;
+
+            middlewares.Add($"{nameFrom}->{nameTo}", middleware);
+        }
+
+        private void ApplyMiddlewares(Endpoint from = null, Endpoint to = null)
+        {
+            string nameFrom, nameTo, filter;
+            (nameFrom, nameTo) = TransformNames(from?.Name, to?.Name);
+
+            if (middlewares.TryGetValue(ALL_FILTER, out Action<Endpoint, Endpoint> middleware))
+                middlewares[ALL_FILTER]?.Invoke(from, to);
+
+            filter = $"{nameFrom}->*";
+            if (nameFrom != ALL && middlewares.TryGetValue(filter, out middleware))
+                middlewares[filter]?.Invoke(from, to);
+
+            filter = $"*->{nameTo}";
+            if (nameTo != ALL && middlewares.TryGetValue(filter, out middleware))
+                middlewares[filter]?.Invoke(from, to);
+
+            filter = $"{nameFrom}->{nameTo}";
+            if (nameFrom != ALL && nameTo != ALL && middlewares.TryGetValue(filter, out middleware))
+                middlewares[filter]?.Invoke(from, to);
+        }
+
+        private (string NameFrom, string NameTo) TransformNames(string nameFrom, string nameTo)
+        {
+            if (string.IsNullOrEmpty(nameFrom))
+                nameFrom = ALL;
+
+            if (string.IsNullOrEmpty(nameTo))
+                nameTo = ALL;
+
+            return new ValueTuple<string, string>(nameFrom, nameTo);
         }
     }
 }
