@@ -11,64 +11,87 @@ namespace Suburb.Router
         private const string ALL = "*";
         private const string ALL_FILTER = "*->*";
 
-        private readonly Stack<Endpoint> history = new();
-        private readonly Dictionary<string, Endpoint> endpoints = new();
-        private readonly Dictionary<string, Action<Endpoint, Endpoint>> middlewares = new();
+        private readonly Stack<IEndpoint> history = new();
+        private readonly Dictionary<string, IEndpoint> endpoints = new();
+        private readonly Dictionary<string, Action<IEndpoint, IEndpoint>> middlewares = new();
 
         public bool GoTo(string name)
         {
-            if (!endpoints.TryGetValue(name, out Endpoint endpoint))
+            if (!endpoints.TryGetValue(name, out IEndpoint to))
                 return false;
 
-            if (history.TryPeek(out Endpoint peekEndpoint) && peekEndpoint == endpoint)
+            if (history.TryPeek(out IEndpoint from) && from == to)
                 return false;
 
-            history.Push(endpoint);
+            history.Push(to);
+            ApplyMiddlewares(from, to);
             return true;
         }
 
-        public bool GoBack()
+        public bool GoToPrevious()
         {
             if (history.Count < 2)
                 return false;
 
-            history.Pop();
+            IEndpoint from = history.Pop();
+            IEndpoint to = history.Peek();
+            ApplyMiddlewares(from, to);
             return true;
         }
 
-        public bool GoBackTo(string name)
+        public bool GoToPrevious(string name)
         {
             if (history.Count < 2)
                 return false;
 
-            if (!endpoints.TryGetValue(name, out Endpoint endpoint))
+            if (!endpoints.TryGetValue(name, out IEndpoint to))
                 return false;
 
-            if (history.Peek() == endpoint)
+            if (history.Peek() == to)
                 return false;
 
-            if (!history.Contains(endpoint))
+            if (!history.Contains(to))
             {
                 history.Clear();
-                history.Push(endpoint);
+                history.Push(to);
                 return true;
             }
 
-            history.Pop();
+            IEndpoint from = history.Pop();
 
-            while (history.TryPop(out Endpoint variant))
+            while (history.TryPop(out IEndpoint target))
             {
-                if (variant == endpoint)
+                if (target == to)
                 {
-                    history.Push(endpoint);
+                    history.Push(to);
                     break;
                 }
             }
 
+            ApplyMiddlewares(from, to);
             return true;
         }
 
-        public void AddEndpoint(Endpoint endpoint)
+        public IEndpoint[] GetPathToPrevious(string name)
+        {
+            if (history.Count < 2)
+                return Array.Empty<IEndpoint>();
+
+            if (!endpoints.TryGetValue(name, out IEndpoint to))
+                return Array.Empty<IEndpoint>();
+
+            if (history.Peek() == to)
+                return Array.Empty<IEndpoint>();
+
+            if (!history.Contains(to))
+                return history.ToArray();
+
+            return history
+                .TakeWhile(x => x != to)
+                .ToArray();
+        }
+
+        public void AddEndpoint(IEndpoint endpoint)
         {
             endpoints[endpoint.Name] = endpoint;
         }
@@ -85,7 +108,7 @@ namespace Suburb.Router
                 .Reverse();
         }
 
-        public void Use(Action<Endpoint, Endpoint> middleware, string nameFrom = null, string nameTo = null)
+        public void Use(Action<IEndpoint, IEndpoint> middleware, string nameFrom = null, string nameTo = null)
         {
             (nameFrom, nameTo) = TransformNames(nameFrom, nameTo);
 
@@ -97,12 +120,12 @@ namespace Suburb.Router
             middlewares.Add($"{nameFrom}->{nameTo}", middleware);
         }
 
-        private void ApplyMiddlewares(Endpoint from = null, Endpoint to = null)
+        private void ApplyMiddlewares(IEndpoint from = null, IEndpoint to = null)
         {
             string nameFrom, nameTo, filter;
             (nameFrom, nameTo) = TransformNames(from?.Name, to?.Name);
 
-            if (middlewares.TryGetValue(ALL_FILTER, out Action<Endpoint, Endpoint> middleware))
+            if (middlewares.TryGetValue(ALL_FILTER, out Action<IEndpoint, IEndpoint> middleware))
                 middlewares[ALL_FILTER]?.Invoke(from, to);
 
             filter = $"{nameFrom}->*";

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Suburb.Router
+﻿namespace Suburb.Router
 {
-    public class Endpoint
+    public class Endpoint : IEndpoint
     {
-        public readonly string Name;
+        public string Name { get; }
 
         public Endpoint(string name)
         {

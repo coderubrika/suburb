@@ -40,14 +40,14 @@ namespace Suburb.Router
         {
             for (int i = 0; i < count; i++)
             {
-                routerService.GoBack();
+                routerService.GoToPrevious();
                 this.Log(string.Join('/', routerService.GetHistory()));
             }
         }
 
         private void GoBackTo(string name)
         {
-            routerService.GoBackTo(name);
+            routerService.GoToPrevious(name);
             this.Log(string.Join('/', routerService.GetHistory()));
         }
     }
