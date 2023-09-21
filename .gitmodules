@@ -7,3 +7,6 @@
 [submodule "Assets/Src/Inputs"]
 	path = Assets/Src/Inputs
 	url = https://github.com/coderubrika/UnityInputs
+[submodule "Assets/Src/ExpressRouter"]
+	path = Assets/Src/ExpressRouter
+	url = https://github.com/coderubrika/ExpressRouter
