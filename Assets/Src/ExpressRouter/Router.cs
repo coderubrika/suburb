@@ -113,7 +113,7 @@ namespace Suburb.ExpressRouter
             return history.TryPeek(out IEndpoint endpoint) ? endpoint : null;
         }
 
-        public void Use(Action<IEndpoint, IEndpoint> middleware, string nameFrom = null, string nameTo = null)
+        public IDisposable Use(Action<IEndpoint, IEndpoint> middleware, string nameFrom = null, string nameTo = null)
         {
             (nameFrom, nameTo) = TransformNames(nameFrom, nameTo);
 
@@ -123,6 +123,8 @@ namespace Suburb.ExpressRouter
                 middlewares[key] += middleware;
             else
                 middlewares.Add($"{nameFrom}->{nameTo}", middleware);
+
+            return new DisposableHook(() => middlewares[key] -= middleware);
         }
 
         private void ApplyMiddlewares(IEndpoint from = null, IEndpoint to = null)
