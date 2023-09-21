@@ -1,8 +1,7 @@
-﻿using Suburb.Utils;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
-namespace Suburb.Router
+namespace Suburb.ExpressRouter
 {
     public class Endpoint : IEndpoint
     {
@@ -16,7 +15,7 @@ namespace Suburb.Router
 
     public class RouterTest : MonoBehaviour
     {
-        private readonly RouterService routerService = new RouterService();
+        private readonly Router routerService = new Router();
 
         private void Awake()
         {
@@ -29,7 +28,7 @@ namespace Suburb.Router
                 routerService.AddEndpoint(new Endpoint(name));
 
             routerService.GoTo(name);
-            this.Log(string.Join('/', routerService.GetHistory()));
+            Debug.Log(string.Join('/', routerService.GetHistory()));
         }
 
         private void AddAndGoTo(int count)
@@ -43,14 +42,14 @@ namespace Suburb.Router
             for (int i = 0; i < count; i++)
             {
                 routerService.GoToPrevious();
-                this.Log(string.Join('/', routerService.GetHistory()));
+                Debug.Log(string.Join('/', routerService.GetHistory()));
             }
         }
 
         private void GoBackTo(string name)
         {
             routerService.GoToPrevious(name);
-            this.Log(string.Join('/', routerService.GetHistory()));
+            Debug.Log(string.Join('/', routerService.GetHistory()));
         }
 
         private void CreateEndpoints(int count)
@@ -64,8 +63,8 @@ namespace Suburb.Router
             AddAndGoTo(5);
             if (!routerService.ContainsEndpoint("b"))
                 routerService.AddEndpoint(new Endpoint("b"));
-            this.Log(string.Join("/", routerService.GetPathToPrevious("2").Select(p => p.Name).ToArray()));
-            this.Log(string.Join("/", routerService.GetPathToPrevious("b").Select(p => p.Name).ToArray()));
+            Debug.Log(string.Join("/", routerService.GetPathToPrevious("2").Select(p => p.Name).ToArray()));
+            Debug.Log(string.Join("/", routerService.GetPathToPrevious("b").Select(p => p.Name).ToArray()));
             AddAndGoTo("4");
             GoBack(5);
             AddAndGoTo(5);
@@ -79,11 +78,11 @@ namespace Suburb.Router
         {
             CreateEndpoints(10);
 
-            routerService.Use((from, to) => this.Log($"{from?.Name}->{to?.Name}"));
-            routerService.Use((from, to) => this.Log($"{from?.Name}!!->{to?.Name}!!"));
-            routerService.Use((from, to) => this.Log($"{from?.Name}**->{to?.Name}**"), "9", "1");
-            routerService.Use((from, to) => this.Log($"{from?.Name}++->{to?.Name}++"), null, "9");
-            routerService.Use((from, to) => this.Log($"{from?.Name}&&->{to?.Name}&&"), "4");
+            routerService.Use((from, to) => Debug.Log($"{from?.Name}->{to?.Name}"));
+            routerService.Use((from, to) => Debug.Log($"{from?.Name}!!->{to?.Name}!!"));
+            routerService.Use((from, to) => Debug.Log($"{from?.Name}**->{to?.Name}**"), "9", "1");
+            routerService.Use((from, to) => Debug.Log($"{from?.Name}++->{to?.Name}++"), null, "9");
+            routerService.Use((from, to) => Debug.Log($"{from?.Name}&&->{to?.Name}&&"), "4");
 
             routerService.GoTo("4");
             routerService.GoTo("9");

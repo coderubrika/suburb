@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Suburb.Router
+namespace Suburb.ExpressRouter
 {
-    public class RouterService
+    public class Router
     {
         private const string ALL = "*";
         private const string ALL_FILTER = "*->*";
@@ -70,7 +70,7 @@ namespace Suburb.Router
             return true;
         }
 
-        public IEndpoint[] GetPathToPrevious(string name)
+        public IEndpoint[] GetPathToPrevious(string name, bool isExcludeFrom = false)
         {
             if (history.Count < 2)
                 return Array.Empty<IEndpoint>();
@@ -84,7 +84,9 @@ namespace Suburb.Router
             if (!history.Contains(to))
                 return history.ToArray();
 
-            return history
+            IEnumerable<IEndpoint> path = isExcludeFrom ? history.Skip(1) : history;
+
+            return path
                 .TakeWhile(x => x != to)
                 .ToArray();
         }
@@ -104,6 +106,11 @@ namespace Suburb.Router
             return history
                 .Select(endpoint => endpoint.Name)
                 .Reverse();
+        }
+
+        public IEndpoint GetLast()
+        {
+            return history.TryPeek(out IEndpoint endpoint) ? endpoint : null;
         }
 
         public void Use(Action<IEndpoint, IEndpoint> middleware, string nameFrom = null, string nameTo = null)

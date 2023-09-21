@@ -1,4 +1,4 @@
-﻿namespace Suburb.Router
+﻿namespace Suburb.ExpressRouter
 {
     public interface IEndpoint
     {
