@@ -1,4 +1,5 @@
-﻿using Suburb.Common;
+﻿using Suburb.Cameras;
+using Suburb.Common;
 using Suburb.Inputs;
 using Suburb.Interactables;
 using UniRx;
@@ -16,10 +17,10 @@ namespace Suburb.Detectors
         public ReactiveCommand<PickEventData> OnPick { get; } = new();
 
         public PickDetector(
-            PlayerCamera playerCamera,
+            CameraService cameraService,
             IGestureProvider gestureProvider)
         {
-            this.playerCamera = playerCamera.GetCamera();
+            playerCamera = cameraService.Main;
             this.gestureProvider = gestureProvider;
         }
 

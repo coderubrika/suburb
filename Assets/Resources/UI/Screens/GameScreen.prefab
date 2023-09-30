@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1997633020767744717}
   - component: {fileID: 3629832170398626905}
   - component: {fileID: 5019980967764343221}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 9043336689805523410}
   - component: {fileID: 9043336689805523411}
   - component: {fileID: 1407543721647542455}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ Canvas:
   m_GameObject: {fileID: 9043336689805523412}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
@@ -235,4 +235,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 685e8ac0f9596094d8c61ce5b356f55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 9043336689805523409}
   menuButton: {fileID: 5019980967764343221}

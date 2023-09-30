@@ -3,6 +3,7 @@ using Suburb.Inputs;
 using Suburb.Serialization;
 using Suburb.Utils;
 using System;
+using Suburb.Cameras;
 using UniRx;
 using UnityEngine;
 
@@ -11,7 +12,8 @@ namespace Suburb.Common
     public class WorldCameraController : IDisposable
     {
         private readonly IGestureProvider gestureProvider;
-        private readonly PlayerCamera playerCamera;
+        private readonly CameraService cameraService;
+        private readonly Camera playerCamera;
         private readonly GameSettingsRepository gameSettingsRepository;
         private readonly SavesService savesService;
 
@@ -33,16 +35,17 @@ namespace Suburb.Common
         private bool isPinchDragEnabled;
 
         public WorldCameraController(
-            PlayerCamera playerCamera, 
+            CameraService cameraService, 
             IGestureProvider gestureProvider,
             GameSettingsRepository gameSettingsRepository,
             SavesService savesService)
         {
             this.gestureProvider = gestureProvider;
-            this.playerCamera = playerCamera;
+            this.cameraService = cameraService;
             this.gameSettingsRepository = gameSettingsRepository;
             this.savesService = savesService;
 
+            playerCamera = this.cameraService.Main;
             settings = gameSettingsRepository.WorldCameraControllerSettings;
             smoothTransitionParam = settings.SmoothTransitionParam;
             cameraTransform = playerCamera.transform;

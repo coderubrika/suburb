@@ -6,14 +6,17 @@ using Suburb.Utils;
 using UnityEngine;
 using Zenject;
 using System;
+using Suburb.Cameras;
 
 namespace Suburb.Installers
 {
     public class MainInstaller : MonoInstaller
     {
-        [SerializeField] private PlayerCamera playerCamera;
+        [SerializeField] private Camera playerCamera;
+        [SerializeField] private Camera uiCamera;
         [SerializeField] private string screensRoot;
         [SerializeField] private string layoutsRoot;
+        
         public override void InstallBindings()
         {
             Container.Bind<ScreensFactory>().AsSingle().WithArguments(screensRoot).NonLazy();
@@ -27,7 +30,12 @@ namespace Suburb.Installers
             Container.Bind<LocalStorageService>().AsSingle().NonLazy();
             Container.Bind<WebClientService>().AsSingle().NonLazy();
 
-            Container.Bind<PlayerCamera>().FromComponentInNewPrefab(playerCamera).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<CameraService>()
+                .AsSingle()
+                .WithArguments(
+                    playerCamera, 
+                    new[]{(ScreensService.UI_CAMERA, uiCamera)})
+                .NonLazy();
             Container.Bind<GameStateMachine>().AsSingle();
             Container.Bind<WorldMapService>().AsSingle();
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1633233644725439517}
   - component: {fileID: 5663637994433895306}
   - component: {fileID: 608121267447149734}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 1990560500849993119}
   - component: {fileID: 5588541337791036549}
   - component: {fileID: 3466497103184640473}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: EmptyMessage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 4612861427349887372}
   - component: {fileID: 5768292815277955631}
   - component: {fileID: 1844111593312462083}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 1506341842773199796}
   - component: {fileID: 7506432989063156245}
   - component: {fileID: 5432132167441071583}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -463,7 +463,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2123453565642440392}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Sliding Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -502,7 +502,7 @@ GameObject:
   - component: {fileID: 2324375885490653402}
   - component: {fileID: 5645885683258930852}
   - component: {fileID: 7415394092431851445}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -581,7 +581,7 @@ GameObject:
   - component: {fileID: 5297320686216557977}
   - component: {fileID: 1559830542331754823}
   - component: {fileID: 1587430282566931673}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SaveAsNewButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -702,7 +702,7 @@ GameObject:
   - component: {fileID: 6615027009611603986}
   - component: {fileID: 231503279533623922}
   - component: {fileID: 2696628703976095243}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SaveCurrent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -822,7 +822,7 @@ GameObject:
   - component: {fileID: 2228257213002184318}
   - component: {fileID: 6420099167828249266}
   - component: {fileID: 4673566391797297132}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Scrollbar Vertical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -918,7 +918,7 @@ GameObject:
   - component: {fileID: 3610437154209345731}
   - component: {fileID: 284581562555284712}
   - component: {fileID: 400267041113125786}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -995,7 +995,7 @@ GameObject:
   - component: {fileID: 3787962737237399233}
   - component: {fileID: 1172459694663051961}
   - component: {fileID: 7015749646590479416}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Viewport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1089,7 +1089,7 @@ GameObject:
   - component: {fileID: 9043336689805523410}
   - component: {fileID: 9043336689805523411}
   - component: {fileID: -4003221463573376134}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SavesScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1131,7 +1131,7 @@ Canvas:
   m_GameObject: {fileID: 9043336689805523412}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
@@ -1195,6 +1195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6053b29aaf3ee3e4bad08ea1431f1c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 9043336689805523409}
   scrollRect: {fileID: 5432132167441071583}
   emptyMessage: {fileID: 2469124327171992931}
   backButton: {fileID: 3084236799888248718}
@@ -1212,6 +1213,14 @@ PrefabInstance:
     - target: {fileID: 3742363404755717003, guid: 4b5c2736e0ca8f542a7b44ed8f9dca5a, type: 3}
       propertyPath: m_Name
       value: BackButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742363404755717003, guid: 4b5c2736e0ca8f542a7b44ed8f9dca5a, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140478447390813108, guid: 4b5c2736e0ca8f542a7b44ed8f9dca5a, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4693396493432367575, guid: 4b5c2736e0ca8f542a7b44ed8f9dca5a, type: 3}
       propertyPath: m_Pivot.x

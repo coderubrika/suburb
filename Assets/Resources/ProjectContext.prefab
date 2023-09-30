@@ -75,6 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b19036fc007ac4db7aa8a3c299af38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 1385441692398572342, guid: ac92c4b2c3367dd419723922aeb5dddb, type: 3}
+  playerCamera: {fileID: 1385441692398572336, guid: ac92c4b2c3367dd419723922aeb5dddb, type: 3}
+  uiCamera: {fileID: 4991573764432880851, guid: b1a6f89100b134185a3aede1dc268c0e, type: 3}
   screensRoot: UI/Screens
   layoutsRoot: UI/Layouts

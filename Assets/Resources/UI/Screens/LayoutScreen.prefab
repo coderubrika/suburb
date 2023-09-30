@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9043336689805523410}
   - component: {fileID: 9043336689805523411}
   - component: {fileID: 8309749881868077934}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: LayoutScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,7 +49,7 @@ Canvas:
   m_GameObject: {fileID: 9043336689805523412}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
@@ -113,3 +113,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2509c50cbf5f0b247a7bcdc98397b432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 9043336689805523409}
