@@ -1,0 +1,95 @@
+using System;
+using DG.Tweening;
+using Suburb.Cameras;
+using Suburb.Common;
+using Suburb.ResourceMaps;
+using Suburb.Screens;
+using Suburb.Utils;
+using Suburb.Utils.Serialization;
+using TMPro;
+using UnityEngine;
+
+namespace Suburb.UI
+{
+    public class MainMenuStartAnimation : IUIAnimation
+    {
+        private readonly Camera uiCamera;
+        private readonly GameObject mars;
+        private readonly CanvasGroup canvasGroup;
+        private readonly TMP_Text[] texts;
+        private readonly AnimationSettingsData cameraAnim;
+        private readonly TransformData cameraStart;
+        private readonly TransformData cameraEnd;
+        private readonly RectTransform[] textMasks;
+        private readonly float buttonsBlockWidth;
+        
+        public MainMenuStartAnimation(
+            UIAnimationsService uiAnimationsService,
+            CameraService cameraService)
+        {
+            uiCamera = cameraService.GetCamera(ScreensService.UI_CAMERA);
+            var backgroundMap = uiAnimationsService.GetResourceMap<MenuBackgroundResourceMap>();
+            mars = backgroundMap.Mars;
+            var uiMap = uiAnimationsService.GetResourceMap<MainMenuScreenResourceMap>();
+            canvasGroup = uiMap.CanvasGroup;
+            texts = uiMap.Texts;
+            cameraAnim = uiMap.CameraAnimSettings;
+            cameraStart = uiMap.CameraStart;
+            cameraEnd = uiMap.CameraEnd;
+            textMasks = uiMap.TextMasks;
+            buttonsBlockWidth = uiMap.ButtonsBlock.rect.width;
+        }
+        
+        public IDisposable Animate()
+        {
+            canvasGroup.alpha = 0;
+            uiCamera.transform.position = cameraStart.Position;
+            uiCamera.transform.localRotation = Quaternion.Euler(cameraStart.Rotation);
+
+            for (int i = 0; i < texts.Length; i++)
+            {
+                var text = texts[i];
+                text.color = UIUtils.GetNewAlpha(text.color, 0);
+
+                var maskRect = textMasks[i];
+                maskRect.offsetMax = maskRect.offsetMax.ChangeX(-buttonsBlockWidth);
+            }
+            
+            mars.SetActive(true);
+            Sequence sequence = DOTween.Sequence()
+                .Append(canvasGroup.DOFade(1f, 1f).SetEase(Ease.InOutBack));
+            
+            sequence
+                .Append(uiCamera.transform.DORotate(cameraEnd.Rotation, cameraAnim.Duration).SetEase(cameraAnim.Easing))
+                .Join(uiCamera.transform.DOMove(cameraEnd.Position, cameraAnim.Duration).SetEase(cameraAnim.Easing));
+
+            Sequence textsSequence = DOTween.Sequence()
+                .AppendInterval(1.5f);
+            
+            for (int i = texts.Length - 1; i >= 0; i--)
+            {
+                var text = texts[i];
+                textsSequence.Join(text.DOFade(1f, 0.4f).SetEase(Ease.OutCirc));
+
+                var maskRect = textMasks[i];
+                Tween tween = DOTween.To(
+                    () => maskRect.offsetMax.x,
+                    x => maskRect.offsetMax = maskRect.offsetMax.ChangeX(x),
+                    0f, 0.4f).SetEase(Ease.Flash);
+                textsSequence.Join(tween);
+                textsSequence.PrependInterval(0.1f);
+            }
+
+            return new DisposableHook(() =>
+            {
+                sequence?.Kill();
+                textsSequence?.Kill();
+            });
+        }
+
+        public bool CheckAllow()
+        {
+            return true;
+        }
+    }
+}

@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Suburb.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using Suburb.Utils.Serialization;
 using UnityEngine;
 
 namespace Suburb.Common
@@ -10,9 +12,20 @@ namespace Suburb.Common
     {
         private readonly WebClientService webClientService;
 
+        private readonly JsonSerializerSettings convertSettings;
+        
         public LocalStorageService(WebClientService webClientService)
         {
             this.webClientService = webClientService;
+
+            convertSettings = new JsonSerializerSettings
+            {
+                Converters = new List<JsonConverter>
+                {
+                    new Vector3Converter(),
+                    new EaseConverter()
+                }
+            };
         }
 
         public void RemoveFile(string path)
@@ -66,7 +79,7 @@ namespace Suburb.Common
                 File.Delete(fullPath);
 
             bool isDebug = Application.isEditor || Debug.isDebugBuild;
-            string json = JsonConvert.SerializeObject(data, isDebug ? Formatting.Indented : Formatting.None);
+            string json = JsonConvert.SerializeObject(data, isDebug ? Formatting.Indented : Formatting.None, convertSettings);
 
             File.WriteAllText(fullPath, json);
         }
@@ -82,7 +95,7 @@ namespace Suburb.Common
             string json = File.ReadAllText(fullPath);
             try
             {
-                return JsonConvert.DeserializeObject<T>(json);
+                return JsonConvert.DeserializeObject<T>(json, convertSettings);
             }
             catch (Exception ex)
             {

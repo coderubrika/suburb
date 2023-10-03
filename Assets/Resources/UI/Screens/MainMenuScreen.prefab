@@ -1996,34 +1996,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 9043336689805523409}
-  buttonsBlock: {fileID: 6375309822366418282}
   newGameButton: {fileID: 8838649514643452557}
   continueButton: {fileID: 2011503022858617361}
   savesButton: {fileID: 2054752746279769587}
   quitButton: {fileID: 6984850355953572040}
-  canvasGroup: {fileID: 6703833335285919805}
-  cameraStartRotation: {x: -1, y: 0, z: 0}
-  cameraEndRotation: {x: 5, y: 0, z: 0}
-  cameraStartPosition: {x: 0, y: 2, z: -10}
-  cameraEndPosition: {x: 0, y: 0, z: 0}
-  cameraRotateDuration: 2
-  cameraRotateEasing: 21
-  cameraMoveDuration: 2
-  cameraMoveEasing: 21
-  texts:
-  - {fileID: 4203046158512955936}
-  - {fileID: 2911560491652981076}
-  - {fileID: 6068455303092813473}
-  - {fileID: 6194537930274403208}
-  - {fileID: 8453923717018598935}
-  - {fileID: 5546809269290525859}
-  textMasks:
-  - {fileID: 2385635169226569586}
-  - {fileID: 1803552608064047864}
-  - {fileID: 6860464577037387541}
-  - {fileID: 6341310234191100629}
-  - {fileID: 7456298355209043664}
-  - {fileID: 3892424470010590107}
+  resourceMap:
+    canvasGroup: {fileID: 6703833335285919805}
+    cameraAnimSettings:
+      Duration: 0.4
+      Easing: 4
+    cameraStart:
+      Position: {x: 100, y: 100, z: 100}
+      Rotation: {x: 100, y: 100, z: 100}
+      Scale: {x: 0, y: 0, z: 0}
+      children: []
+    cameraEnd:
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: 0, y: 0, z: 0}
+      Scale: {x: 0, y: 0, z: 0}
+      children: []
+    texts:
+    - {fileID: 4203046158512955936}
+    - {fileID: 2911560491652981076}
+    - {fileID: 6068455303092813473}
+    - {fileID: 6194537930274403208}
+    - {fileID: 8453923717018598935}
+    - {fileID: 5546809269290525859}
+    textMasks:
+    - {fileID: 2385635169226569586}
+    - {fileID: 1803552608064047864}
+    - {fileID: 6860464577037387541}
+    - {fileID: 6341310234191100629}
+    - {fileID: 7456298355209043664}
+    - {fileID: 3892424470010590107}
+    buttonsBlock: {fileID: 6375309822366418282}
 --- !u!225 &6703833335285919805
 CanvasGroup:
   m_ObjectHideFlags: 0

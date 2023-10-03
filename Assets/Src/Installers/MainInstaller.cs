@@ -5,7 +5,6 @@ using Suburb.Detectors;
 using Suburb.Utils;
 using UnityEngine;
 using Zenject;
-using System;
 using Suburb.Cameras;
 
 namespace Suburb.Installers
@@ -29,7 +28,7 @@ namespace Suburb.Installers
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
             Container.Bind<LocalStorageService>().AsSingle().NonLazy();
             Container.Bind<WebClientService>().AsSingle().NonLazy();
-
+            
             Container.BindInterfacesAndSelfTo<CameraService>()
                 .AsSingle()
                 .WithArguments(
@@ -46,6 +45,7 @@ namespace Suburb.Installers
 
             Container.Bind<PickDetector>().AsSingle();
             Container.Bind<WorldCameraController>().AsSingle();
+            Container.Bind<UIAnimationsService>().AsSingle();
         }
     }
 }
