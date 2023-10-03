@@ -1933,7 +1933,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 4991573764432880851, guid: b1a6f89100b134185a3aede1dc268c0e, type: 3}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 1
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -2003,18 +2003,16 @@ MonoBehaviour:
   resourceMap:
     canvasGroup: {fileID: 6703833335285919805}
     cameraAnimSettings:
-      Duration: 0.4
-      Easing: 4
+      Duration: 10
+      Easing: 15
     cameraStart:
-      Position: {x: 100, y: 100, z: 100}
-      Rotation: {x: 100, y: 100, z: 100}
+      Position: {x: 0, y: 25, z: -100}
+      Rotation: {x: -12, y: 0, z: 0}
       Scale: {x: 0, y: 0, z: 0}
-      children: []
     cameraEnd:
-      Position: {x: 0, y: 0, z: 0}
-      Rotation: {x: 0, y: 0, z: 0}
+      Position: {x: 0, y: 12.32, z: -64}
+      Rotation: {x: 4.9, y: -0.25, z: 0}
       Scale: {x: 0, y: 0, z: 0}
-      children: []
     texts:
     - {fileID: 4203046158512955936}
     - {fileID: 2911560491652981076}
