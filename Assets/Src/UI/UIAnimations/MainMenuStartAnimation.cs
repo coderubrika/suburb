@@ -14,7 +14,7 @@ namespace Suburb.UI
     public class MainMenuStartAnimation : IUIAnimation
     {
         private readonly Camera uiCamera;
-        private readonly GameObject mars;
+        private readonly Mars mars;
         private readonly CanvasGroup canvasGroup;
         private readonly TMP_Text[] texts;
         private readonly AnimationSettingsData cameraAnim;
@@ -55,7 +55,7 @@ namespace Suburb.UI
                 maskRect.offsetMax = maskRect.offsetMax.ChangeX(-buttonsBlockWidth);
             }
             
-            mars.SetActive(true);
+            mars.gameObject.SetActive(true);
             Sequence sequence = DOTween.Sequence()
                 .Append(canvasGroup.DOFade(1f, 1f).SetEase(Ease.InOutBack));
             

@@ -46,6 +46,8 @@ namespace Suburb.Installers
             Container.Bind<PickDetector>().AsSingle();
             Container.Bind<WorldCameraController>().AsSingle();
             Container.Bind<UIAnimationsService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ResourcesService>().AsSingle().NonLazy();
+            Container.Bind<ResourceLoader>().AsSingle();
         }
     }
 }

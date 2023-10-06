@@ -1,20 +1,23 @@
 using Suburb.Common;
+using UniRx;
 using UnityEngine;
 
 namespace Suburb.ResourceMaps
 {
     public class MenuBackgroundResourceMap : IResourceMap
     {
-        private readonly GameObject mars;
         private readonly Transform root;
-        public GameObject Mars => mars;
+        private readonly Mars mars;
+
+        public Mars Mars => mars;
         
-        public MenuBackgroundResourceMap(GameObject mars)
+        public MenuBackgroundResourceMap(ResourcesService resourcesService)
         {
+            mars = resourcesService.GetInstance<Mars>("Mars");
+
             root = new GameObject("MenuBackgroundResourceRoot").transform;
-            GameObject.DontDestroyOnLoad(root);
+            Object.DontDestroyOnLoad(root.gameObject);
             mars.transform.SetParent(root);
-            this.mars = mars;
         }
     }
 }
