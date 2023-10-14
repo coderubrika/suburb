@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using Suburb.Cameras;
 using Suburb.Common;
+using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
 using Suburb.Screens;
 using Suburb.Utils;
@@ -39,8 +40,10 @@ namespace Suburb.UI
             textMasks = uiMap.TextMasks;
             buttonsBlockWidth = uiMap.ButtonsBlock.rect.width;
         }
-        
-        public IDisposable Animate()
+
+        public MiddlewareOrder Order => MiddlewareOrder.From;
+
+        public IDisposable Animate(Action next)
         {
             canvasGroup.alpha = 0;
             uiCamera.transform.position = cameraStart.Position;
@@ -78,6 +81,7 @@ namespace Suburb.UI
                     0f, 0.4f).SetEase(Ease.Flash);
                 textsSequence.Join(tween);
                 textsSequence.PrependInterval(0.1f);
+                textsSequence.OnKill(() => next?.Invoke());
             }
 
             return new DisposableHook(() =>

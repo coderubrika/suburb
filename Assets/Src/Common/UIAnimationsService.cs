@@ -41,14 +41,14 @@ namespace Suburb.Common
             where TFrom : BaseScreen
             where TTo : BaseScreen
         {
-            screensService.UseTransition<TFrom, TTo>((from, to) =>
+            screensService.UseTransition<TFrom, TTo>((_, _, next) =>
             {
                 if (!uiAnimation.CheckAllow())
                     return;
                 
                 currentAnimation?.Dispose();
-                currentAnimation = uiAnimation.Animate();
-            });
+                currentAnimation = uiAnimation.Animate(next);
+            }, uiAnimation.Order);
         }
     }
 }
