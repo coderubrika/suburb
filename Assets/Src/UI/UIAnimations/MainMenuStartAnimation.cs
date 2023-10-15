@@ -23,6 +23,9 @@ namespace Suburb.UI
         private readonly TransformData cameraEnd;
         private readonly RectTransform[] textMasks;
         private readonly float buttonsBlockWidth;
+
+        private Sequence cameraSequence;
+        private Sequence textSequence;
         
         public MainMenuStartAnimation(
             UIAnimationsService uiAnimationsService,
@@ -40,13 +43,13 @@ namespace Suburb.UI
             textMasks = uiMap.TextMasks;
             buttonsBlockWidth = uiMap.ButtonsBlock.rect.width;
 
-            Animate = new ActItem<FromTo>(OnAnimate);
+            Animate = new ActItem<FromTo>(Invoke, Finally);
         }
 
         public MiddlewareOrder Order => MiddlewareOrder.To;
         public ActItem<FromTo> Animate { get; }
 
-        private void OnAnimate(FromTo points, Action<FromTo> next)
+        private void Invoke(FromTo points, Action<FromTo> next)
         {
             canvasGroup.alpha = 0;
             uiCamera.transform.position = cameraStart.Position;
@@ -62,30 +65,36 @@ namespace Suburb.UI
             }
             
             mars.gameObject.SetActive(true);
-            Sequence sequence = DOTween.Sequence()
+            cameraSequence = DOTween.Sequence()
                 .Append(canvasGroup.DOFade(1f, 1f).SetEase(Ease.InOutBack));
             
-            sequence
+            cameraSequence
                 .Append(uiCamera.transform.DORotate(cameraEnd.Rotation, cameraAnim.Duration).SetEase(cameraAnim.Easing))
-                .Join(uiCamera.transform.DOMove(cameraEnd.Position, cameraAnim.Duration).SetEase(cameraAnim.Easing));
-
-            Sequence textsSequence = DOTween.Sequence()
+                .Join(uiCamera.transform.DOMove(cameraEnd.Position, cameraAnim.Duration).SetEase(cameraAnim.Easing))
+                .OnComplete(() => next?.Invoke(points));
+            
+            textSequence = DOTween.Sequence()
                 .AppendInterval(1.5f);
             
             for (int i = texts.Length - 1; i >= 0; i--)
             {
                 var text = texts[i];
-                textsSequence.Join(text.DOFade(1f, 0.4f).SetEase(Ease.OutCirc));
+                textSequence.Join(text.DOFade(1f, 0.4f).SetEase(Ease.OutCirc));
 
                 var maskRect = textMasks[i];
                 Tween tween = DOTween.To(
                     () => maskRect.offsetMax.x,
                     x => maskRect.offsetMax = maskRect.offsetMax.ChangeX(x),
                     0f, 0.4f).SetEase(Ease.Flash);
-                textsSequence.Join(tween);
-                textsSequence.PrependInterval(0.1f);
-                textsSequence.OnKill(() => next?.Invoke(points));
+                textSequence.Join(tween);
+                textSequence.PrependInterval(0.1f);
             }
+        }
+
+        private void Finally()
+        {
+            cameraSequence?.Kill();
+            textSequence?.Kill();
         }
     }
 }
