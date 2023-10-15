@@ -51,8 +51,11 @@ namespace Suburb.UI.Screens
             this.uiAnimationsService = uiAnimationsService;
             
             uiAnimationsService.AddResourceMap(resourceMap);
-            uiAnimationsService.AddAnimation<BaseScreen, MainMenuScreen>(
-                injectCreator.Create<MainMenuStartAnimation>(), MiddlewareOrder.To);
+            uiAnimationsService.AddAnimation(
+                injectCreator.Create<MainMenuStartAnimation>(),
+                null, 
+                nameof(MainMenuScreen),
+                MiddlewareOrder.To);
             
             quitButton.OnClickAsObservable()
                 .Subscribe(_ =>

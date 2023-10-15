@@ -94,6 +94,19 @@ namespace Suburb.UI
         {
             cameraSequence?.Kill();
             textSequence?.Kill();
+            
+            for (int i = 0; i < texts.Length; i++)
+            {
+                var text = texts[i];
+                text.color = UIUtils.GetNewAlpha(text.color, 1);
+
+                var maskRect = textMasks[i];
+                maskRect.offsetMax = maskRect.offsetMax.ChangeX(0);
+            }
+
+            uiCamera.transform.position = cameraEnd.Position;
+            uiCamera.transform.localRotation = Quaternion.Euler(cameraEnd.Rotation);
+            canvasGroup.alpha = 1;
         }
     }
 }

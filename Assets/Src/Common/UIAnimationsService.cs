@@ -38,11 +38,9 @@ namespace Suburb.Common
                 ? tMap : default;
         }
 
-        public void AddAnimation<TFrom, TTo>(IUIAnimation uiAnimation, MiddlewareOrder order)
-            where TFrom : BaseScreen
-            where TTo : BaseScreen
+        public void AddAnimation(IUIAnimation uiAnimation, string from, string to, MiddlewareOrder order)
         {
-            screensService.UseTransition<TFrom, TTo>(uiAnimation.Animate, order);
+            screensService.UseTransition(uiAnimation.Animate, from, to, order);
         }
     }
 }
