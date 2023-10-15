@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 using System;
+using Suburb.ExpressRouter;
+using Suburb.ResourceMaps;
 using Suburb.Serialization;
 
 namespace Suburb.UI.Screens
@@ -16,7 +18,7 @@ namespace Suburb.UI.Screens
         private ScreensService screensService;
         private SavesService savesService;
         private InjectCreator injectCreator;
-
+        
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] private GameObject emptyMessage;
         [SerializeField] private Button backButton;
@@ -24,7 +26,8 @@ namespace Suburb.UI.Screens
         [SerializeField] private Button saveCurrentButton;
         [SerializeField] private SaveViewListItem saveViewListItemPrefab;
         [SerializeField] private RectTransform itemsMount;
-
+        [SerializeField] private SavesScreenResourceMap resourceMap;
+        
         private readonly List<SaveViewListItem> saveViews = new();
         private IDisposable changesDisposable;
         private bool isSaveMode;
@@ -33,12 +36,27 @@ namespace Suburb.UI.Screens
         public void Construct(
             ScreensService screensService, 
             SavesService savesService,
-            InjectCreator injectCreator)
+            InjectCreator injectCreator,
+            UIAnimationsService uiAnimationsService)
         {
             this.screensService = screensService;
             this.savesService = savesService;
             this.injectCreator = injectCreator;
 
+            uiAnimationsService.AddResourceMap(resourceMap);
+            
+            uiAnimationsService.AddAnimation(
+                injectCreator.Create<SavesIntoAnimation>(),
+                Router.ALL,
+                nameof(SavesScreen),
+                MiddlewareOrder.To);
+            
+            uiAnimationsService.AddAnimation(
+                injectCreator.Create<SavesLeaveAnimation>(),
+                nameof(SavesScreen),
+                Router.ALL,
+                MiddlewareOrder.From);
+            
             backButton.OnClickAsObservable()
                 .Subscribe(_ => screensService.GoToPrevious())
                 .AddTo(this);

@@ -1089,6 +1089,7 @@ GameObject:
   - component: {fileID: 9043336689805523410}
   - component: {fileID: 9043336689805523411}
   - component: {fileID: -4003221463573376134}
+  - component: {fileID: 5048499486623090386}
   m_Layer: 5
   m_Name: SavesScreen
   m_TagString: Untagged
@@ -1203,6 +1204,20 @@ MonoBehaviour:
   saveCurrentButton: {fileID: 2696628703976095243}
   saveViewListItemPrefab: {fileID: 7976843039545074795, guid: 349ebfbadc9b1da469206199a497c3d4, type: 3}
   itemsMount: {fileID: 2324375885490653402}
+  resourceMap:
+    canvasGroup: {fileID: 5048499486623090386}
+--- !u!225 &5048499486623090386
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9043336689805523412}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &6571768977615342253
 PrefabInstance:
   m_ObjectHideFlags: 0
