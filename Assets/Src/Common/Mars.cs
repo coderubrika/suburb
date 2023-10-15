@@ -29,7 +29,7 @@ namespace Suburb.Common
             for (int i = 0; i < asteroids.Length; i++)
             {
                 var asteroid = asteroids[i] = poolGroup.Spawn(0);
-                asteroid.gameObject.SetActive(true);
+                asteroid.gameObject.SetActive(false);
                 asteroid.transform.localScale = Vector3.one * Random.Range(0.01f, 1f);
                 asteroid.transform.position = transform.position + Random.insideUnitSphere * (transform.localScale.x + 10);
                 asteroid.Velocity = MathUtils.RandVector3(minVelocity, maxVelocity);
@@ -41,6 +41,16 @@ namespace Suburb.Common
             transform.localRotation *= Quaternion.Euler(Vector3.forward * (rotationSpeed * Time.deltaTime));
             foreach (var asteroid in asteroids)
                 CalcAsteroidTransform(asteroid);
+        }
+
+        private void OnEnable()
+        {
+            asteroids.SetActiveGameObjects(true);
+        }
+
+        private void OnDisable()
+        {
+            asteroids.SetActiveGameObjects(false);
         }
 
         private void CalcAsteroidTransform(Asteroid asteroid)

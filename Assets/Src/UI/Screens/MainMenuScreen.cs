@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Suburb.Cameras;
+using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
 using TMPro;
 using UniRx;
@@ -51,7 +52,7 @@ namespace Suburb.UI.Screens
             
             uiAnimationsService.AddResourceMap(resourceMap);
             uiAnimationsService.AddAnimation<BaseScreen, MainMenuScreen>(
-                injectCreator.Create<MainMenuStartAnimation>());
+                injectCreator.Create<MainMenuStartAnimation>(), MiddlewareOrder.To);
             
             quitButton.OnClickAsObservable()
                 .Subscribe(_ =>

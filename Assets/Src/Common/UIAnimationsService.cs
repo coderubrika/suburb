@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using Suburb.ExpressRouter;
 using Suburb.Screens;
 using Suburb.UI;
 using Suburb.UI.Screens;
@@ -37,11 +38,11 @@ namespace Suburb.Common
                 ? tMap : default;
         }
 
-        public void AddAnimation<TFrom, TTo>(IUIAnimation uiAnimation)
+        public void AddAnimation<TFrom, TTo>(IUIAnimation uiAnimation, MiddlewareOrder order)
             where TFrom : BaseScreen
             where TTo : BaseScreen
         {
-            screensService.UseTransition<TFrom, TTo>(uiAnimation.Animate, uiAnimation.Order);
+            screensService.UseTransition<TFrom, TTo>(uiAnimation.Animate, order);
         }
     }
 }

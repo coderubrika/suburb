@@ -45,8 +45,7 @@ namespace Suburb.UI
 
             Animate = new ActItem<FromTo>(Invoke, Finally);
         }
-
-        public MiddlewareOrder Order => MiddlewareOrder.To;
+        
         public ActItem<FromTo> Animate { get; }
 
         private void Invoke(FromTo points, Action<FromTo> next)
