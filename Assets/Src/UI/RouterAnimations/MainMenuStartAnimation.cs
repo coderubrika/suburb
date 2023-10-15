@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Suburb.UI
 {
-    public class MainMenuStartAnimation : IUIAnimation
+    public class MainMenuStartAnimation : IRouterAnimation<FromTo>
     {
         private readonly Camera uiCamera;
         private readonly Mars mars;

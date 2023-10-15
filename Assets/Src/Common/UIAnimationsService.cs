@@ -2,9 +2,6 @@ using System.Collections.Generic;
 using System;
 using Suburb.ExpressRouter;
 using Suburb.Screens;
-using Suburb.UI;
-using Suburb.UI.Screens;
-using UnityEngine;
 
 namespace Suburb.Common
 {
@@ -38,9 +35,9 @@ namespace Suburb.Common
                 ? tMap : default;
         }
 
-        public void AddAnimation(IUIAnimation uiAnimation, string from, string to, MiddlewareOrder order)
+        public void AddAnimation(IRouterAnimation<FromTo> routerAnimation, string from, string to, MiddlewareOrder order)
         {
-            screensService.UseTransition(uiAnimation.Animate, from, to, order);
+            screensService.UseTransition(routerAnimation.Animate, from, to, order);
         }
     }
 }
