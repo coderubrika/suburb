@@ -39,11 +39,14 @@ namespace Suburb.UI
             cameraEnd = uiMap.CameraEnd;
             textMasks = uiMap.TextMasks;
             buttonsBlockWidth = uiMap.ButtonsBlock.rect.width;
+
+            Animate = new ActItem<FromTo>(OnAnimate);
         }
 
         public MiddlewareOrder Order => MiddlewareOrder.To;
+        public ActItem<FromTo> Animate { get; }
 
-        public IDisposable Animate((IEndpoint From, IEndpoint To) args, Action<(IEndpoint From, IEndpoint To)> next)
+        private void OnAnimate(FromTo points, Action<FromTo> next)
         {
             canvasGroup.alpha = 0;
             uiCamera.transform.position = cameraStart.Position;
@@ -81,19 +84,8 @@ namespace Suburb.UI
                     0f, 0.4f).SetEase(Ease.Flash);
                 textsSequence.Join(tween);
                 textsSequence.PrependInterval(0.1f);
-                textsSequence.OnKill(() => next?.Invoke(args));
+                textsSequence.OnKill(() => next?.Invoke(points));
             }
-
-            return new DisposableHook(() =>
-            {
-                sequence?.Kill();
-                textsSequence?.Kill();
-            });
-        }
-
-        public bool CheckAllow()
-        {
-            return true;
         }
     }
 }
