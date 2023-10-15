@@ -41,9 +41,9 @@ namespace Suburb.UI
             buttonsBlockWidth = uiMap.ButtonsBlock.rect.width;
         }
 
-        public MiddlewareOrder Order => MiddlewareOrder.From;
+        public MiddlewareOrder Order => MiddlewareOrder.To;
 
-        public IDisposable Animate(Action next)
+        public IDisposable Animate((IEndpoint From, IEndpoint To) args, Action<(IEndpoint From, IEndpoint To)> next)
         {
             canvasGroup.alpha = 0;
             uiCamera.transform.position = cameraStart.Position;
@@ -81,7 +81,7 @@ namespace Suburb.UI
                     0f, 0.4f).SetEase(Ease.Flash);
                 textsSequence.Join(tween);
                 textsSequence.PrependInterval(0.1f);
-                textsSequence.OnKill(() => next?.Invoke());
+                textsSequence.OnKill(() => next?.Invoke(args));
             }
 
             return new DisposableHook(() =>

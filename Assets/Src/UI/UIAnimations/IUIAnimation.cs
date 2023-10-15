@@ -6,7 +6,7 @@ namespace Suburb.UI
     public interface IUIAnimation
     {
         public MiddlewareOrder Order { get; }
-        public IDisposable Animate(Action next);
+        public IDisposable Animate((IEndpoint From, IEndpoint To) args, Action<(IEndpoint From, IEndpoint To)> next);
         public bool CheckAllow();
     }
 }
