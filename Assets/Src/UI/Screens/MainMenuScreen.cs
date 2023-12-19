@@ -4,12 +4,8 @@ using Suburb.UI.Layouts;
 using Suburb.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using DG.Tweening;
-using Suburb.Cameras;
 using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
-using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,20 +50,17 @@ namespace Suburb.UI.Screens
             
             uiAnimationsService.AddAnimation(
                 injectCreator.Create<MainMenuStartAnimation>(),
-                null, 
-                nameof(MainMenuScreen),
+                Rule.AToB(null, nameof(MainMenuScreen)),
                 MiddlewareOrder.To);
             
             uiAnimationsService.AddAnimation(
                 injectCreator.Create<MainMenuIntoAnimation>(),
-                nameof(SavesScreen), 
-                nameof(MainMenuScreen),
+                new Rule(Selector.All().Exclude(null), Selector.One(nameof(MainMenuScreen))),
                 MiddlewareOrder.To);
             
             uiAnimationsService.AddAnimation(
-                this.injectCreator.Create<MainMenuLeaveAnimation>(),
-                nameof(MainMenuScreen),
-                Router.ALL,
+                injectCreator.Create<MainMenuLeaveAnimation>(),
+                Rule.ThisToAll(nameof(MainMenuScreen)),
                 MiddlewareOrder.From);
             
             quitButton.OnClickAsObservable()

@@ -33,7 +33,7 @@ namespace Suburb.Installers
                 .AsSingle()
                 .WithArguments(
                     playerCamera, 
-                    new[]{(ScreensService.UI_CAMERA, uiCamera)})
+                    new[]{("UICamera", uiCamera)})
                 .NonLazy();
             Container.Bind<GameStateMachine>().AsSingle();
             Container.Bind<WorldMapService>().AsSingle();

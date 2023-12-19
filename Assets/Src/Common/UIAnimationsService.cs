@@ -35,9 +35,9 @@ namespace Suburb.Common
                 ? tMap : default;
         }
 
-        public void AddAnimation(IRouterAnimation<FromTo> routerAnimation, string from, string to, MiddlewareOrder order)
+        public void AddAnimation(IRouterAnimation<FromTo> routerAnimation, Rule rule, MiddlewareOrder order)
         {
-            screensService.UseTransition(routerAnimation.Animate, from, to, order);
+            screensService.UseTransition(routerAnimation.Animate, rule, order);
         }
     }
 }

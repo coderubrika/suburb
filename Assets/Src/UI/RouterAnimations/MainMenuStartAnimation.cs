@@ -31,7 +31,7 @@ namespace Suburb.UI
             UIAnimationsService uiAnimationsService,
             CameraService cameraService)
         {
-            uiCamera = cameraService.GetCamera(ScreensService.UI_CAMERA);
+            uiCamera = cameraService.GetCamera("UICamera");
             var backgroundMap = uiAnimationsService.GetResourceMap<MenuBackgroundResourceMap>();
             mars = backgroundMap.Mars;
             var uiMap = uiAnimationsService.GetResourceMap<MainMenuScreenResourceMap>();

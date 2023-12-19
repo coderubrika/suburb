@@ -47,14 +47,12 @@ namespace Suburb.UI.Screens
             
             uiAnimationsService.AddAnimation(
                 injectCreator.Create<SavesIntoAnimation>(),
-                Router.ALL,
-                nameof(SavesScreen),
+                Rule.AllToThis(nameof(SavesScreen)),
                 MiddlewareOrder.To);
             
             uiAnimationsService.AddAnimation(
                 injectCreator.Create<SavesLeaveAnimation>(),
-                nameof(SavesScreen),
-                Router.ALL,
+                Rule.ThisToAll(nameof(SavesScreen)),
                 MiddlewareOrder.From);
             
             backButton.OnClickAsObservable()
