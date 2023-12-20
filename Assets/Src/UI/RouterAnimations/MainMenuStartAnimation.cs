@@ -1,10 +1,8 @@
 using System;
 using DG.Tweening;
-using Suburb.Cameras;
 using Suburb.Common;
 using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
-using Suburb.Screens;
 using Suburb.Utils;
 using Suburb.Utils.Serialization;
 using TMPro;
@@ -14,8 +12,8 @@ namespace Suburb.UI
 {
     public class MainMenuStartAnimation : IRouterAnimation<FromTo>
     {
-        private readonly Camera uiCamera;
-        private readonly Mars mars;
+        private readonly MenuSceneService menuSceneService;
+        
         private readonly CanvasGroup canvasGroup;
         private readonly TMP_Text[] texts;
         private readonly AnimationSettingsData cameraAnim;
@@ -28,20 +26,18 @@ namespace Suburb.UI
         private Sequence textSequence;
         
         public MainMenuStartAnimation(
-            UIAnimationsService uiAnimationsService,
-            CameraService cameraService)
+            MenuSceneService menuSceneService, 
+            MainMenuScreenResourceMap resourceMap)
         {
-            uiCamera = cameraService.GetCamera("UICamera");
-            var backgroundMap = uiAnimationsService.GetResourceMap<MenuBackgroundResourceMap>();
-            mars = backgroundMap.Mars;
-            var uiMap = uiAnimationsService.GetResourceMap<MainMenuScreenResourceMap>();
-            canvasGroup = uiMap.CanvasGroup;
-            texts = uiMap.Texts;
-            cameraAnim = uiMap.CameraAnimSettings;
-            cameraStart = uiMap.CameraStart;
-            cameraEnd = uiMap.CameraEnd;
-            textMasks = uiMap.TextMasks;
-            buttonsBlockWidth = uiMap.ButtonsBlock.rect.width;
+            this.menuSceneService = menuSceneService;
+            
+            canvasGroup = resourceMap.CanvasGroup;
+            texts = resourceMap.Texts;
+            cameraAnim = resourceMap.CameraAnimSettings;
+            cameraStart = resourceMap.CameraStart;
+            cameraEnd = resourceMap.CameraEnd;
+            textMasks = resourceMap.TextMasks;
+            buttonsBlockWidth = resourceMap.ButtonsBlock.rect.width;
 
             Animate = new ActItem<FromTo>(Invoke, Finally);
         }

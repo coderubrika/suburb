@@ -10,6 +10,10 @@ namespace Suburb.Common
 {
     public class Mars : MonoBehaviour
     {
+        //  не хочу чтобы так это делалось хочу чтобы был тупо префаб если потребуется хранить компонент
+        // то только тот что отвечает за ссылки на другие компоненты поэтому таких вещей как моно на этих
+        // штуках висеть не будет
+        
         [SerializeField] private float mass;
         [SerializeField] private Vector3 minVelocity;
         [SerializeField] private Vector3 maxVelocity;

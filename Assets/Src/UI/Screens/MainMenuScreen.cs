@@ -21,7 +21,6 @@ namespace Suburb.UI.Screens
         private LayoutService layoutService;
         private ResourcesRepository resourcesRepository;
         private InjectCreator injectCreator;
-        private UIAnimationsService uiAnimationsService;
         
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
@@ -36,32 +35,32 @@ namespace Suburb.UI.Screens
             GameStateMachine gameStateMachine,
             LayoutService layoutService,
             ResourcesRepository resourcesRepository,
-            InjectCreator injectCreator,
-            UIAnimationsService uiAnimationsService)
+            InjectCreator injectCreator)
         {
             this.screensService = screensService;
             this.savesService = savesService;
             this.gameStateMachine = gameStateMachine;
             this.resourcesRepository = resourcesRepository;
             this.injectCreator = injectCreator;
-            this.uiAnimationsService = uiAnimationsService;
+
+            var startAnimation = injectCreator.Create<MainMenuStartAnimation>(resourceMap);
+            var intoAnimation = injectCreator.Create<MainMenuIntoAnimation>(resourceMap);
+            var leaveAnimation = injectCreator.Create<MainMenuLeaveAnimation>(resourceMap);
             
-            uiAnimationsService.AddResourceMap(resourceMap);
-            
-            uiAnimationsService.AddAnimation(
-                injectCreator.Create<MainMenuStartAnimation>(),
+            screensService.UseTransition(
+                startAnimation.Animate, 
                 Rule.AToB(null, nameof(MainMenuScreen)),
-                MiddlewareOrder.To);
+                MiddlewareOrder.To).AddTo(this);
             
-            uiAnimationsService.AddAnimation(
-                injectCreator.Create<MainMenuIntoAnimation>(),
+            screensService.UseTransition(
+                intoAnimation.Animate, 
                 new Rule(Selector.All().Exclude(null), Selector.One(nameof(MainMenuScreen))),
-                MiddlewareOrder.To);
+                MiddlewareOrder.To).AddTo(this);
             
-            uiAnimationsService.AddAnimation(
-                injectCreator.Create<MainMenuLeaveAnimation>(),
+            screensService.UseTransition(
+                leaveAnimation.Animate, 
                 Rule.ThisToAll(nameof(MainMenuScreen)),
-                MiddlewareOrder.From);
+                MiddlewareOrder.From).AddTo(this);
             
             quitButton.OnClickAsObservable()
                 .Subscribe(_ =>

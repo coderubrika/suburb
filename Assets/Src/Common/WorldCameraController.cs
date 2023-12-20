@@ -38,14 +38,15 @@ namespace Suburb.Common
             CameraService cameraService, 
             IGestureProvider gestureProvider,
             GameSettingsRepository gameSettingsRepository,
-            SavesService savesService)
+            SavesService savesService,
+            Camera playerCamera)
         {
             this.gestureProvider = gestureProvider;
             this.cameraService = cameraService;
             this.gameSettingsRepository = gameSettingsRepository;
             this.savesService = savesService;
 
-            playerCamera = this.cameraService.Main;
+            this.playerCamera = playerCamera;
             settings = gameSettingsRepository.WorldCameraControllerSettings;
             smoothTransitionParam = settings.SmoothTransitionParam;
             cameraTransform = playerCamera.transform;

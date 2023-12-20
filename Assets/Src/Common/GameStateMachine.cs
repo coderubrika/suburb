@@ -1,27 +1,26 @@
 ﻿using Suburb.Utils;
 using System;
 using System.Collections.Generic;
+using Suburb.Cameras;
 using UniRx;
+using UnityEngine;
 
 namespace Suburb.Common
 {
     public class GameStateMachine
     {
-        private readonly SavesService savesService;
         private readonly InjectCreator injectCreator;
         private readonly WorldMapService WorldMapService;
-
+        
         private readonly Dictionary<Type, IGameState> states = new();
 
         private IGameState currentState;
         private bool isGameplayInited;
 
         public GameStateMachine(
-            SavesService savesService,
             InjectCreator injectCreator,
             WorldMapService WorldMapService)
         {
-            this.savesService = savesService;
             this.injectCreator = injectCreator;
             this.WorldMapService = WorldMapService;
         }
