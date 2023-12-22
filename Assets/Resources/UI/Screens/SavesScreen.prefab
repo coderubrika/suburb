@@ -1196,7 +1196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6053b29aaf3ee3e4bad08ea1431f1c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 9043336689805523409}
   scrollRect: {fileID: 5432132167441071583}
   emptyMessage: {fileID: 2469124327171992931}
   backButton: {fileID: 3084236799888248718}
@@ -1204,8 +1203,19 @@ MonoBehaviour:
   saveCurrentButton: {fileID: 2696628703976095243}
   saveViewListItemPrefab: {fileID: 7976843039545074795, guid: 349ebfbadc9b1da469206199a497c3d4, type: 3}
   itemsMount: {fileID: 2324375885490653402}
-  resourceMap:
-    canvasGroup: {fileID: 5048499486623090386}
+  canvasGroup: {fileID: 5048499486623090386}
+  fadeInAnimationData:
+    animationSettings:
+      Duration: 0.4
+      Easing: 1
+    start: 0
+    end: 1
+  fadeOutAnimationData:
+    animationSettings:
+      Duration: 0.4
+      Easing: 1
+    start: 1
+    end: 0
 --- !u!225 &5048499486623090386
 CanvasGroup:
   m_ObjectHideFlags: 0

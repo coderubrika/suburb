@@ -6,6 +6,8 @@ using Suburb.Utils;
 using UnityEngine;
 using Zenject;
 using Suburb.Cameras;
+using Suburb.Utils.Serialization;
+using UnityEngine.Serialization;
 
 namespace Suburb.Installers
 {
@@ -15,6 +17,7 @@ namespace Suburb.Installers
         [SerializeField] private Camera menuSceneCamera;
         [SerializeField] private string screensRoot;
         [SerializeField] private string layoutsRoot;
+        [SerializeField] private ValueAnimationData<TransformData> cameraAnimationData;
         
         public override void InstallBindings()
         {
@@ -28,8 +31,7 @@ namespace Suburb.Installers
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
             Container.Bind<LocalStorageService>().AsSingle().NonLazy();
             Container.Bind<WebClientService>().AsSingle().NonLazy();
-
-            Container.Bind<MenuSceneService>().AsSingle();
+            
             Container.Bind<Camera>()
                 .FromComponentInNewPrefab(menuSceneCamera)
                 .WhenInjectedInto<MenuSceneService>();
@@ -43,9 +45,13 @@ namespace Suburb.Installers
                 Container.Bind<IGestureProvider>().To<MouseGestureProvider>().AsSingle().NonLazy();
 
             Container.Bind<PickDetector>().AsSingle();
-            Container.Bind<WorldCameraController>().AsSingle();
+            Container.Bind<WorldCameraController>().AsSingle().WithArguments(playerCamera);
             Container.BindInterfacesAndSelfTo<ResourcesService>().AsSingle().NonLazy();
             Container.Bind<ResourceLoader>().AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<MenuSceneService>()
+                .AsSingle()
+                .WithArguments(cameraAnimationData);
         }
     }
 }

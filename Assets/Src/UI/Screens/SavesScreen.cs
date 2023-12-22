@@ -10,6 +10,7 @@ using System;
 using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
 using Suburb.Serialization;
+using Suburb.Utils.Serialization;
 
 namespace Suburb.UI.Screens
 {
@@ -26,7 +27,9 @@ namespace Suburb.UI.Screens
         [SerializeField] private Button saveCurrentButton;
         [SerializeField] private SaveViewListItem saveViewListItemPrefab;
         [SerializeField] private RectTransform itemsMount;
-        [SerializeField] private SavesScreenResourceMap resourceMap;
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private ValueAnimationData<float> fadeInAnimationData;
+        [SerializeField] private ValueAnimationData<float> fadeOutAnimationData;
         
         private readonly List<SaveViewListItem> saveViews = new();
         private IDisposable changesDisposable;
@@ -36,24 +39,24 @@ namespace Suburb.UI.Screens
         public void Construct(
             ScreensService screensService, 
             SavesService savesService,
-            InjectCreator injectCreator,
-            UIAnimationsService uiAnimationsService)
+            InjectCreator injectCreator)
         {
             this.screensService = screensService;
             this.savesService = savesService;
             this.injectCreator = injectCreator;
-
-            uiAnimationsService.AddResourceMap(resourceMap);
             
-            uiAnimationsService.AddAnimation(
-                injectCreator.Create<SavesIntoAnimation>(),
+            var intoAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeInAnimationData);
+            var leaveAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeOutAnimationData);
+            
+            screensService.UseTransition(
+                intoAnimation.Animate, 
                 Rule.AllToThis(nameof(SavesScreen)),
-                MiddlewareOrder.To);
+                MiddlewareOrder.To).AddTo(this);
             
-            uiAnimationsService.AddAnimation(
-                injectCreator.Create<SavesLeaveAnimation>(),
+            screensService.UseTransition(
+                leaveAnimation.Animate, 
                 Rule.ThisToAll(nameof(SavesScreen)),
-                MiddlewareOrder.From);
+                MiddlewareOrder.From).AddTo(this);
             
             backButton.OnClickAsObservable()
                 .Subscribe(_ => screensService.GoToPrevious())
@@ -105,7 +108,7 @@ namespace Suburb.UI.Screens
 
             foreach (var data in saveDatas)
             {
-                var newItem = injectCreator.Create<SaveViewListItem>(saveViewListItemPrefab, itemsMount, new object[] { data, isSaveMode });
+                var newItem = injectCreator.Create(saveViewListItemPrefab, itemsMount, data, isSaveMode);
                 saveViews.Add(newItem);
             }
 

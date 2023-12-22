@@ -9,23 +9,22 @@ namespace Suburb.Detectors
 {
     public class PickDetector
     {
-        private readonly Camera playerCamera;
         private readonly IGestureProvider gestureProvider;
+        
+        private Camera camera;
 
         private readonly CompositeDisposable disposables = new();
 
         public ReactiveCommand<PickEventData> OnPick { get; } = new();
 
-        public PickDetector(
-            CameraService cameraService,
-            IGestureProvider gestureProvider)
+        public PickDetector(IGestureProvider gestureProvider)
         {
-            playerCamera = cameraService.Main;
             this.gestureProvider = gestureProvider;
         }
 
-        public void Enable()
+        public void Enable(Camera camera)
         {
+            this.camera = camera;
             disposables.Clear();
 
             gestureProvider.OnPointerUp
@@ -41,7 +40,7 @@ namespace Suburb.Detectors
 
         private void CheckPoint(Vector2 point)
         {
-            Ray ray = playerCamera.ScreenPointToRay(point);
+            Ray ray = camera.ScreenPointToRay(point);
 
             if (Physics.Raycast(ray, out RaycastHit hit))
                 OnPick.Execute(new PickEventData

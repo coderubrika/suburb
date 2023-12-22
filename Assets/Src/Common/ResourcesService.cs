@@ -60,6 +60,7 @@ namespace Suburb.Common
         }
 
         public T GetInstance<T>(string name)
+            where T : Component
         {
             if (!prefabsInstances.TryGetValue(name, out (GameObject Prefab, object Instance) pair))
                 return default;

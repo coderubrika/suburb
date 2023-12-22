@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Suburb.ResourceMaps
 {
     [Serializable]
-    public class MainMenuScreenResourceMap : IResourceMap
+    public class MainMenuScreenResourceMap
     {
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private AnimationSettingsData cameraAnimSettings;

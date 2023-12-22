@@ -16,9 +16,6 @@ namespace Suburb.UI
         
         private readonly CanvasGroup canvasGroup;
         private readonly TMP_Text[] texts;
-        private readonly AnimationSettingsData cameraAnim;
-        private readonly TransformData cameraStart;
-        private readonly TransformData cameraEnd;
         private readonly RectTransform[] textMasks;
         private readonly float buttonsBlockWidth;
 
@@ -33,9 +30,6 @@ namespace Suburb.UI
             
             canvasGroup = resourceMap.CanvasGroup;
             texts = resourceMap.Texts;
-            cameraAnim = resourceMap.CameraAnimSettings;
-            cameraStart = resourceMap.CameraStart;
-            cameraEnd = resourceMap.CameraEnd;
             textMasks = resourceMap.TextMasks;
             buttonsBlockWidth = resourceMap.ButtonsBlock.rect.width;
 
@@ -47,9 +41,8 @@ namespace Suburb.UI
         private void Invoke(FromTo points, Action<FromTo> next)
         {
             canvasGroup.alpha = 0;
-            uiCamera.transform.position = cameraStart.Position;
-            uiCamera.transform.localRotation = Quaternion.Euler(cameraStart.Rotation);
-
+            menuSceneService.StandCameraToStart();
+            
             for (int i = 0; i < texts.Length; i++)
             {
                 var text = texts[i];
@@ -59,14 +52,10 @@ namespace Suburb.UI
                 maskRect.offsetMax = maskRect.offsetMax.ChangeX(-buttonsBlockWidth);
             }
             
-            mars.gameObject.SetActive(true);
             cameraSequence = DOTween.Sequence()
                 .Append(canvasGroup.DOFade(1f, 1f).SetEase(Ease.InOutBack));
-            
-            cameraSequence
-                .Append(uiCamera.transform.DORotate(cameraEnd.Rotation, cameraAnim.Duration).SetEase(cameraAnim.Easing))
-                .Join(uiCamera.transform.DOMove(cameraEnd.Position, cameraAnim.Duration).SetEase(cameraAnim.Easing))
-                .OnComplete(() => next?.Invoke(points));
+            menuSceneService.BindAnimation(cameraSequence);
+            cameraSequence.OnComplete(() => next?.Invoke(points));
             
             textSequence = DOTween.Sequence()
                 .AppendInterval(1.5f);
@@ -100,8 +89,7 @@ namespace Suburb.UI
                 maskRect.offsetMax = maskRect.offsetMax.ChangeX(0);
             }
 
-            uiCamera.transform.position = cameraEnd.Position;
-            uiCamera.transform.localRotation = Quaternion.Euler(cameraEnd.Rotation);
+            menuSceneService.StandCameraToEnd();
             canvasGroup.alpha = 1;
         }
     }

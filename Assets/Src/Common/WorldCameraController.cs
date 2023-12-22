@@ -13,7 +13,6 @@ namespace Suburb.Common
     {
         private readonly IGestureProvider gestureProvider;
         private readonly CameraService cameraService;
-        private readonly Camera playerCamera;
         private readonly GameSettingsRepository gameSettingsRepository;
         private readonly SavesService savesService;
 
@@ -39,20 +38,21 @@ namespace Suburb.Common
             IGestureProvider gestureProvider,
             GameSettingsRepository gameSettingsRepository,
             SavesService savesService,
-            Camera playerCamera)
+            Camera camera)
         {
             this.gestureProvider = gestureProvider;
             this.cameraService = cameraService;
             this.gameSettingsRepository = gameSettingsRepository;
             this.savesService = savesService;
 
-            this.playerCamera = playerCamera;
+            Camera = camera;
             settings = gameSettingsRepository.WorldCameraControllerSettings;
             smoothTransitionParam = settings.SmoothTransitionParam;
-            cameraTransform = playerCamera.transform;
+            cameraTransform = camera.transform;
             cameraForward = cameraTransform.forward;
         }
-
+        
+        public Camera Camera { get; }
         public void Enable()
         {
             if (isOn)

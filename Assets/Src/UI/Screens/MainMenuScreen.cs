@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
+using Suburb.Utils.Serialization;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,7 +27,10 @@ namespace Suburb.UI.Screens
         [SerializeField] private Button continueButton;
         [SerializeField] private Button savesButton;
         [SerializeField] private Button quitButton;
+        [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private MainMenuScreenResourceMap resourceMap;
+        [SerializeField] private ValueAnimationData<float> fadeInAnimationData;
+        [SerializeField] private ValueAnimationData<float> fadeOutAnimationData;
         
         [Inject]
         public void Construct(
@@ -44,8 +48,8 @@ namespace Suburb.UI.Screens
             this.injectCreator = injectCreator;
 
             var startAnimation = injectCreator.Create<MainMenuStartAnimation>(resourceMap);
-            var intoAnimation = injectCreator.Create<MainMenuIntoAnimation>(resourceMap);
-            var leaveAnimation = injectCreator.Create<MainMenuLeaveAnimation>(resourceMap);
+            var intoAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeInAnimationData);
+            var leaveAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeOutAnimationData);
             
             screensService.UseTransition(
                 startAnimation.Animate, 
