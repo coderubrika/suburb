@@ -4,6 +4,7 @@ using Suburb.UI.Layouts;
 using Suburb.Utils;
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
 using Suburb.Utils.Serialization;
@@ -16,22 +17,20 @@ namespace Suburb.UI.Screens
 {
     public class MainMenuScreen : BaseScreen
     {
-        private ScreensService screensService;
         private SavesService savesService;
-        private GameStateMachine gameStateMachine;
         private LayoutService layoutService;
-        private ResourcesRepository resourcesRepository;
-        private InjectCreator injectCreator;
+
         
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
         [SerializeField] private Button savesButton;
         [SerializeField] private Button quitButton;
         [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private MainMenuScreenResourceMap resourceMap;
+        [SerializeField] private TextListAnimationData resourceMap;
+        [SerializeField] private ValueAnimationData<float> fadeInStartAnimationData;
         [SerializeField] private ValueAnimationData<float> fadeInAnimationData;
         [SerializeField] private ValueAnimationData<float> fadeOutAnimationData;
-        
+
         [Inject]
         public void Construct(
             ScreensService screensService,
@@ -41,13 +40,9 @@ namespace Suburb.UI.Screens
             ResourcesRepository resourcesRepository,
             InjectCreator injectCreator)
         {
-            this.screensService = screensService;
             this.savesService = savesService;
-            this.gameStateMachine = gameStateMachine;
-            this.resourcesRepository = resourcesRepository;
-            this.injectCreator = injectCreator;
-
-            var startAnimation = injectCreator.Create<MainMenuStartAnimation>(resourceMap);
+            
+            var startAnimation = injectCreator.Create<MainMenuStartAnimation>(resourceMap, canvasGroup, fadeInStartAnimationData);
             var intoAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeInAnimationData);
             var leaveAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeOutAnimationData);
             

@@ -2001,18 +2001,6 @@ MonoBehaviour:
   quitButton: {fileID: 6984850355953572040}
   canvasGroup: {fileID: 6703833335285919805}
   resourceMap:
-    canvasGroup: {fileID: 6703833335285919805}
-    cameraAnimSettings:
-      Duration: 10
-      Easing: 15
-    cameraStart:
-      Position: {x: 0, y: 25, z: -100}
-      Rotation: {x: -12, y: 0, z: 0}
-      Scale: {x: 0, y: 0, z: 0}
-    cameraEnd:
-      Position: {x: 0, y: 12.32, z: -64}
-      Rotation: {x: 4.9, y: -0.25, z: 0}
-      Scale: {x: 0, y: 0, z: 0}
     texts:
     - {fileID: 4203046158512955936}
     - {fileID: 2911560491652981076}
@@ -2028,6 +2016,15 @@ MonoBehaviour:
     - {fileID: 7456298355209043664}
     - {fileID: 3892424470010590107}
     buttonsBlock: {fileID: 6375309822366418282}
+    animationConfig:
+      Duration: 0.4
+      Easing: 21
+  fadeInStartAnimationData:
+    animationSettings:
+      Duration: 1
+      Easing: 28
+    start: 0
+    end: 1
   fadeInAnimationData:
     animationSettings:
       Duration: 0.4

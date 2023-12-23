@@ -67,6 +67,7 @@ namespace Suburb.Common
             root = new GameObject(ROOT_NAME).transform;
             Object.DontDestroyOnLoad(root.gameObject);
             mars.transform.SetParent(root);
+            Hide();
         }
     }
 }

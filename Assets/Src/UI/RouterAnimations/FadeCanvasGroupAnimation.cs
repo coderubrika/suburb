@@ -3,12 +3,13 @@ using DG.Tweening;
 using Suburb.Common;
 using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
+using Suburb.Utils;
 using Suburb.Utils.Serialization;
 using UnityEngine;
 
 namespace Suburb.UI
 {
-    public class FadeCanvasGroupAnimation : IRouterAnimation<FromTo>
+    public class FadeCanvasGroupAnimation
     {
         private readonly CanvasGroup canvasGroup;
         private readonly ValueAnimationData<float> config;
@@ -27,15 +28,13 @@ namespace Suburb.UI
 
         private void Invoke(FromTo points, Action<FromTo> next)
         {
-            canvasGroup.alpha = config.Start;
-            fadeTween = canvasGroup.DOFade(config.End, config.AnimationSettings.Duration).SetEase(config.AnimationSettings.Easing)
+            fadeTween = UIUtils.FadeCanvas(canvasGroup, config)
                 .OnComplete(() => next.Invoke(points));
         }
 
         private void Finally()
         {
             fadeTween?.Kill();
-            canvasGroup.alpha = config.End;
         }
     }
 }

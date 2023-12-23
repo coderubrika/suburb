@@ -10,28 +10,31 @@ using UnityEngine;
 
 namespace Suburb.UI
 {
-    public class MainMenuStartAnimation : IRouterAnimation<FromTo>
+    public class MainMenuStartAnimation
     {
         private readonly MenuSceneService menuSceneService;
         
-        private readonly CanvasGroup canvasGroup;
         private readonly TMP_Text[] texts;
         private readonly RectTransform[] textMasks;
         private readonly float buttonsBlockWidth;
-
+        private readonly CanvasGroup canvasGroup;
+        private readonly ValueAnimationData<float> canvasAnimationConfig;
+            
         private Sequence cameraSequence;
         private Sequence textSequence;
         
         public MainMenuStartAnimation(
             MenuSceneService menuSceneService, 
-            MainMenuScreenResourceMap resourceMap)
+            TextListAnimationData textListAnimationData,
+            CanvasGroup canvasGroup,
+            ValueAnimationData<float> canvasAnimationConfig)
         {
+            this.canvasGroup = canvasGroup;
+            this.canvasAnimationConfig = canvasAnimationConfig;
             this.menuSceneService = menuSceneService;
-            
-            canvasGroup = resourceMap.CanvasGroup;
-            texts = resourceMap.Texts;
-            textMasks = resourceMap.TextMasks;
-            buttonsBlockWidth = resourceMap.ButtonsBlock.rect.width;
+            texts = textListAnimationData.Texts;
+            textMasks = textListAnimationData.TextMasks;
+            buttonsBlockWidth = textListAnimationData.ButtonsBlock.rect.width;
 
             Animate = new ActItem<FromTo>(Invoke, Finally);
         }
@@ -40,8 +43,8 @@ namespace Suburb.UI
 
         private void Invoke(FromTo points, Action<FromTo> next)
         {
-            canvasGroup.alpha = 0;
             menuSceneService.StandCameraToStart();
+            menuSceneService.Show();
             
             for (int i = 0; i < texts.Length; i++)
             {
@@ -51,9 +54,9 @@ namespace Suburb.UI
                 var maskRect = textMasks[i];
                 maskRect.offsetMax = maskRect.offsetMax.ChangeX(-buttonsBlockWidth);
             }
-            
-            cameraSequence = DOTween.Sequence()
-                .Append(canvasGroup.DOFade(1f, 1f).SetEase(Ease.InOutBack));
+
+            cameraSequence = DOTween.Sequence();
+            cameraSequence.Append(UIUtils.FadeCanvas(canvasGroup, canvasAnimationConfig));
             menuSceneService.BindAnimation(cameraSequence);
             cameraSequence.OnComplete(() => next?.Invoke(points));
             
@@ -90,7 +93,6 @@ namespace Suburb.UI
             }
 
             menuSceneService.StandCameraToEnd();
-            canvasGroup.alpha = 1;
         }
     }
 }
