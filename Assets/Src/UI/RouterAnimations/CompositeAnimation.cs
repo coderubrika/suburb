@@ -12,7 +12,7 @@ namespace Suburb.UI
     {
         private readonly CanvasGroup canvasGroup;
         private readonly ValueStartEndAnimationData<float> config;
-        private readonly List<Func<Tween>> tweenGetters = new();
+        private readonly List<Func<FromTo, Tween>> tweenGetters = new();
         
         private Sequence sequence;
         
@@ -23,14 +23,14 @@ namespace Suburb.UI
             Animate = new ActItem<FromTo>(Invoke, Finally);
         }
         
-        public CompositeAnimation(params Func<Tween>[] tweenGetters)
+        public CompositeAnimation(params Func<FromTo, Tween>[] tweenGetters)
         {
             foreach (var getter in tweenGetters)
                 this.tweenGetters.Add(getter);
             Animate = new ActItem<FromTo>(Invoke, Finally);
         }
 
-        public void AddTweenGetter(Func<Tween> tweenGetter)
+        public void AddTweenGetter(Func<FromTo, Tween> tweenGetter)
         {
             tweenGetters.Add(tweenGetter);
         }
@@ -39,7 +39,7 @@ namespace Suburb.UI
         {
             sequence = DOTween.Sequence().OnComplete(() => next.Invoke(points));
             foreach (var getter in tweenGetters)
-                sequence.Append(getter.Invoke());
+                sequence.Append(getter.Invoke(points));
         }
 
         private void Finally()

@@ -16,27 +16,20 @@ MonoBehaviour:
     Position: {x: 0, y: -80.1, z: -134.1}
     Rotation: {x: -105, y: 0, z: 0}
     Scale: {x: 0, y: 0, z: 0}
-  startNewAnimationData:
-    animationSettings:
-      Duration: 10
-      Easing: 15
-    end:
-      Position: {x: 0, y: -59.6, z: -90.6}
-      Rotation: {x: -34.65, y: 0, z: 0}
-      Scale: {x: 0, y: 0, z: 0}
-  startContinueAnimationData:
-    animationSettings:
-      Duration: 0
-      Easing: 0
-    end:
-      Position: {x: 0, y: 0, z: 0}
-      Rotation: {x: 0, y: 0, z: 0}
-      Scale: {x: 0, y: 0, z: 0}
-  rightSideAnimationData:
-    animationSettings:
-      Duration: 2
-      Easing: 15
-    end:
-      Position: {x: 0, y: -59.6, z: -90.6}
-      Rotation: {x: -34.65, y: 0, z: 0}
-      Scale: {x: 0, y: 0, z: 0}
+  centerTransform:
+    Position: {x: 0, y: -59.6, z: -90.6}
+    Rotation: {x: -34.65, y: 0, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  rightTransform:
+    Position: {x: -9.45, y: -32.4, z: -72.1}
+    Rotation: {x: -35.99, y: -32.4, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  startCenterAnim:
+    Duration: 10
+    Easing: 15
+  regularCenterAnim:
+    Duration: 2
+    Easing: 15
+  rightSideAnim:
+    Duration: 2
+    Easing: 14

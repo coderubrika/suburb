@@ -46,9 +46,17 @@ namespace Suburb.UI.Screens
             this.injectCreator = injectCreator;
             
             var intoAnimation = new CompositeAnimation(
-                () => UIUtils.FadeCanvas(canvasGroup, fadeInAnimationData),
-                menuSceneService.AnimateRight);
-            var leaveAnimation = new CompositeAnimation(() => UIUtils.FadeCanvas(canvasGroup, fadeOutAnimationData));
+                _ =>
+                {
+                    menuSceneService.AnimateRight();
+                    return UIUtils.FadeCanvas(canvasGroup, fadeInAnimationData);
+                });
+            var leaveAnimation = new CompositeAnimation(points =>
+            {
+                if (points.To.Name == nameof(MainMenuScreen))
+                    menuSceneService.AnimateEnter();
+                return UIUtils.FadeCanvas(canvasGroup, fadeOutAnimationData);
+            });
             
             screensService.UseTransition(
                 intoAnimation.Animate, 

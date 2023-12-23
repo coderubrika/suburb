@@ -8,16 +8,17 @@ namespace Suburb.Common
     public class MenuSceneConfig : ScriptableObject
     {
         [SerializeField] private TransformData hideTransform;
-        [SerializeField] private ValueAnimationData<TransformData> startNewAnimationData;
-        [SerializeField] private ValueAnimationData<TransformData> startContinueAnimationData;
-        [SerializeField] private ValueAnimationData<TransformData> rightSideAnimationData;
-
+        [SerializeField] private TransformData centerTransform;
+        [SerializeField] private TransformData rightTransform;
+        [SerializeField] private AnimationSettingsData startCenterAnim;
+        [SerializeField] private AnimationSettingsData regularCenterAnim;
+        [SerializeField] private AnimationSettingsData rightSideAnim;
+        
         public TransformData HideTransform => hideTransform;
-
-        public ValueAnimationData<TransformData> StartNewAnimationData => startNewAnimationData;
-
-        public ValueAnimationData<TransformData> StartContinueAnimationData => startContinueAnimationData;
-
-        public ValueAnimationData<TransformData> RightSideAnimationData => rightSideAnimationData;
+        public TransformData CenterTransform => centerTransform;
+        public TransformData RightTransform => rightTransform;
+        public AnimationSettingsData StartCenterAnim => startCenterAnim;
+        public AnimationSettingsData RegularCenterAnim => regularCenterAnim;
+        public AnimationSettingsData RightSideAnim => rightSideAnim;
     }
 }

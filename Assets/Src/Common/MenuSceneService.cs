@@ -15,6 +15,7 @@ namespace Suburb.Common
         private Transform root;
         private GameObject marsObject;
         private Camera camera;
+        private Sequence cameraSequence;
         
         public MenuSceneService(
             ResourcesService resourcesService, 
@@ -40,34 +41,36 @@ namespace Suburb.Common
             root.gameObject.SetActive(false);
         }
 
-        private Tween AnimateTo(ValueAnimationData<TransformData> animationTransformData)
+        private void AnimateTo(ValueAnimationData<TransformData> animationTransformData)
         {
-            TransformData transformData = animationTransformData.End;
-            AnimationSettingsData animationData = animationTransformData.AnimationSettings;
-            
-            Sequence sequence = DOTween.Sequence()
-                .Append(camera.transform.DORotate(transformData.Rotation, animationData.Duration).SetEase(animationData.Easing))
-                .Join(camera.transform.DOMove(transformData.Position, animationData.Duration).SetEase(animationData.Easing));
-            return sequence;
+            AnimateTo(animationTransformData.End, animationTransformData.AnimationSettings);
         }
         
-        public Tween AnimateEnterFirst()
+        private void AnimateTo(TransformData transformData, AnimationSettingsData animationData)
+        {
+            cameraSequence?.Kill();
+            cameraSequence = DOTween.Sequence()
+                .Append(camera.transform.DORotate(transformData.Rotation, animationData.Duration).SetEase(animationData.Easing))
+                .Join(camera.transform.DOMove(transformData.Position, animationData.Duration).SetEase(animationData.Easing));
+        }
+        
+        public void AnimateEnterFirst()
         {
             Show();
             StandCamera(config.HideTransform);
-            return AnimateTo(config.StartNewAnimationData);
+            AnimateTo(config.CenterTransform, config.StartCenterAnim);
         }
         
-        public Tween AnimateEnter()
+        public void AnimateEnter()
         {
             Show();
-            return AnimateTo(config.StartNewAnimationData);
+            AnimateTo(config.CenterTransform, config.RegularCenterAnim);
         }
         
-        public Tween AnimateRight()
+        public void AnimateRight()
         {
             Show();
-            return AnimateTo(config.RightSideAnimationData);
+            AnimateTo(config.RightTransform, config.RightSideAnim);
         }
 
         public void Initialize()
