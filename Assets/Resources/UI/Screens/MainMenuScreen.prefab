@@ -2016,27 +2016,18 @@ MonoBehaviour:
     - {fileID: 7456298355209043664}
     - {fileID: 3892424470010590107}
     buttonsBlock: {fileID: 6375309822366418282}
-    animationConfig:
-      Duration: 0.4
-      Easing: 21
-  fadeInStartAnimationData:
-    animationSettings:
-      Duration: 1
-      Easing: 28
-    start: 0
-    end: 1
   fadeInAnimationData:
     animationSettings:
       Duration: 0.4
       Easing: 1
-    start: 0
     end: 1
+    start: 0
   fadeOutAnimationData:
     animationSettings:
       Duration: 0.4
       Easing: 1
-    start: 1
     end: 0
+    start: 1
 --- !u!225 &6703833335285919805
 CanvasGroup:
   m_ObjectHideFlags: 0

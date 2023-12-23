@@ -16,7 +16,6 @@ namespace Suburb.Installers
         [SerializeField] private Camera playerCamera;
         [SerializeField] private string screensRoot;
         [SerializeField] private string layoutsRoot;
-        [SerializeField] private ValueAnimationData<TransformData> cameraAnimationData;
         
         public override void InstallBindings()
         {
@@ -43,10 +42,9 @@ namespace Suburb.Installers
             Container.Bind<WorldCameraController>().AsSingle().WithArguments(playerCamera);
             Container.BindInterfacesAndSelfTo<ResourcesService>().AsSingle().NonLazy();
             Container.Bind<ResourceLoader>().AsSingle();
-            
+
             Container.BindInterfacesAndSelfTo<MenuSceneService>()
-                .AsSingle()
-                .WithArguments(cameraAnimationData);
+                .AsSingle();
         }
     }
 }

@@ -54,6 +54,8 @@ MonoBehaviour:
     value: {fileID: 4807167278416216624}
   - key: Light
     value: {fileID: 7519485393122880974}
+  - key: MenuSceneConfig
+    value: {fileID: 11400000, guid: 55e4fb6583b164c6fbb0fda896af8ea4, type: 2}
 --- !u!1 &3862770278262073338
 GameObject:
   m_ObjectHideFlags: 0

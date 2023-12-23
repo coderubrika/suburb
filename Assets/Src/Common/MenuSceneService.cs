@@ -10,24 +10,18 @@ namespace Suburb.Common
     {
         private readonly ResourcesService resourcesService;
         private readonly InjectCreator injectCreator;
-        private readonly AnimationSettingsData cameraAnim;
-        private readonly TransformData cameraStart;
-        private readonly TransformData cameraEnd;
-
+        
+        private MenuSceneConfig config;
         private Transform root;
         private GameObject marsObject;
         private Camera camera;
         
         public MenuSceneService(
             ResourcesService resourcesService, 
-            InjectCreator injectCreator,
-            ValueAnimationData<TransformData> config)
+            InjectCreator injectCreator)
         {
             this.resourcesService = resourcesService;
             this.injectCreator = injectCreator;
-            cameraAnim = config.AnimationSettings;
-            cameraStart = config.Start;
-            cameraEnd = config.End;
         }
         
         private void Show()
@@ -35,16 +29,10 @@ namespace Suburb.Common
             root.gameObject.SetActive(true);
         }
 
-        private void StandCameraToStart()
+        private void StandCamera(TransformData transformData)
         {
-            camera.transform.position = cameraStart.Position;
-            camera.transform.localRotation = Quaternion.Euler(cameraStart.Rotation);
-        }
-
-        private void StandCameraToEnd()
-        {
-            camera.transform.position = cameraEnd.Position;
-            camera.transform.localRotation = Quaternion.Euler(cameraEnd.Rotation);
+            camera.transform.position = transformData.Position;
+            camera.transform.localRotation = Quaternion.Euler(transformData.Rotation);
         }
         
         private void Hide()
@@ -52,15 +40,34 @@ namespace Suburb.Common
             root.gameObject.SetActive(false);
         }
 
-        public Sequence BindAnimation(Sequence sequence)
+        private Tween AnimateTo(ValueAnimationData<TransformData> animationTransformData)
+        {
+            TransformData transformData = animationTransformData.End;
+            AnimationSettingsData animationData = animationTransformData.AnimationSettings;
+            
+            Sequence sequence = DOTween.Sequence()
+                .Append(camera.transform.DORotate(transformData.Rotation, animationData.Duration).SetEase(animationData.Easing))
+                .Join(camera.transform.DOMove(transformData.Position, animationData.Duration).SetEase(animationData.Easing));
+            return sequence;
+        }
+        
+        public Tween AnimateEnterFirst()
         {
             Show();
-            StandCameraToStart();
-            sequence
-                .Append(camera.transform.DORotate(cameraEnd.Rotation, cameraAnim.Duration).SetEase(cameraAnim.Easing))
-                .Join(camera.transform.DOMove(cameraEnd.Position, cameraAnim.Duration).SetEase(cameraAnim.Easing))
-                .OnKill(StandCameraToEnd);
-            return sequence;
+            StandCamera(config.HideTransform);
+            return AnimateTo(config.StartNewAnimationData);
+        }
+        
+        public Tween AnimateEnter()
+        {
+            Show();
+            return AnimateTo(config.StartNewAnimationData);
+        }
+        
+        public Tween AnimateRight()
+        {
+            Show();
+            return AnimateTo(config.RightSideAnimationData);
         }
 
         public void Initialize()
@@ -69,6 +76,7 @@ namespace Suburb.Common
             var sceneRef = injectCreator.Create(sceneRefPrefab, null);
             root = sceneRef.transform;
             camera = sceneRef.Refs["Camera"] as Camera;
+            config = sceneRef.Refs["MenuSceneConfig"] as MenuSceneConfig;
             Hide();
         }
     }

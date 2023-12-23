@@ -11,12 +11,12 @@ using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
 using Suburb.Serialization;
 using Suburb.Utils.Serialization;
+using UnityEngine.Serialization;
 
 namespace Suburb.UI.Screens
 {
     public class SavesScreen : BaseScreen
     {
-        private ScreensService screensService;
         private SavesService savesService;
         private InjectCreator injectCreator;
         
@@ -28,8 +28,8 @@ namespace Suburb.UI.Screens
         [SerializeField] private SaveViewListItem saveViewListItemPrefab;
         [SerializeField] private RectTransform itemsMount;
         [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private ValueAnimationData<float> fadeInAnimationData;
-        [SerializeField] private ValueAnimationData<float> fadeOutAnimationData;
+        [SerializeField] private ValueStartEndAnimationData<float> fadeInAnimationData;
+        [SerializeField] private ValueStartEndAnimationData<float> fadeOutAnimationData;
         
         private readonly List<SaveViewListItem> saveViews = new();
         private IDisposable changesDisposable;
@@ -39,14 +39,16 @@ namespace Suburb.UI.Screens
         public void Construct(
             ScreensService screensService, 
             SavesService savesService,
-            InjectCreator injectCreator)
+            InjectCreator injectCreator,
+            MenuSceneService menuSceneService)
         {
-            this.screensService = screensService;
             this.savesService = savesService;
             this.injectCreator = injectCreator;
             
-            var intoAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeInAnimationData);
-            var leaveAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeOutAnimationData);
+            var intoAnimation = new CompositeAnimation(
+                () => UIUtils.FadeCanvas(canvasGroup, fadeInAnimationData),
+                menuSceneService.AnimateRight);
+            var leaveAnimation = new CompositeAnimation(() => UIUtils.FadeCanvas(canvasGroup, fadeOutAnimationData));
             
             screensService.UseTransition(
                 intoAnimation.Animate, 

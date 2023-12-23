@@ -25,9 +25,8 @@ namespace Suburb.UI.Screens
         [SerializeField] private Button quitButton;
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private TextListAnimationData resourceMap;
-        [SerializeField] private ValueAnimationData<float> fadeInStartAnimationData;
-        [SerializeField] private ValueAnimationData<float> fadeInAnimationData;
-        [SerializeField] private ValueAnimationData<float> fadeOutAnimationData;
+        [SerializeField] private ValueStartEndAnimationData<float> fadeInAnimationData;
+        [SerializeField] private ValueStartEndAnimationData<float> fadeOutAnimationData;
 
         [Inject]
         public void Construct(
@@ -36,13 +35,16 @@ namespace Suburb.UI.Screens
             GameStateMachine gameStateMachine,
             LayoutService layoutService,
             PrefabsRepository prefabsRepository,
-            InjectCreator injectCreator)
+            InjectCreator injectCreator,
+            MenuSceneService menuSceneService)
         {
             this.savesService = savesService;
             
-            var startAnimation = injectCreator.Create<MainMenuStartAnimation>(resourceMap, canvasGroup, fadeInStartAnimationData);
-            var intoAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeInAnimationData);
-            var leaveAnimation = injectCreator.Create<FadeCanvasGroupAnimation>(canvasGroup, fadeOutAnimationData);
+            var startAnimation = injectCreator.Create<MainMenuStartAnimation>(resourceMap, canvasGroup, fadeInAnimationData);
+            var intoAnimation = new CompositeAnimation(
+                () => UIUtils.FadeCanvas(canvasGroup, fadeInAnimationData),
+                menuSceneService.AnimateEnter);
+            var leaveAnimation = new CompositeAnimation(() => UIUtils.FadeCanvas(canvasGroup, fadeOutAnimationData));
             
             screensService.UseTransition(
                 startAnimation.Animate, 

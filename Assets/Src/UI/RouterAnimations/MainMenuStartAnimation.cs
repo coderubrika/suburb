@@ -18,19 +18,19 @@ namespace Suburb.UI
         private readonly RectTransform[] textMasks;
         private readonly float buttonsBlockWidth;
         private readonly CanvasGroup canvasGroup;
-        private readonly ValueAnimationData<float> canvasAnimationConfig;
+        private readonly ValueStartEndAnimationData<float> canvasStartEndAnimationConfig;
             
-        private Sequence cameraSequence;
+        private Sequence mainSequence;
         private Sequence textSequence;
         
         public MainMenuStartAnimation(
             MenuSceneService menuSceneService, 
             TextListAnimationData textListAnimationData,
             CanvasGroup canvasGroup,
-            ValueAnimationData<float> canvasAnimationConfig)
+            ValueStartEndAnimationData<float> canvasStartEndAnimationConfig)
         {
             this.canvasGroup = canvasGroup;
-            this.canvasAnimationConfig = canvasAnimationConfig;
+            this.canvasStartEndAnimationConfig = canvasStartEndAnimationConfig;
             this.menuSceneService = menuSceneService;
             texts = textListAnimationData.Texts;
             textMasks = textListAnimationData.TextMasks;
@@ -52,10 +52,10 @@ namespace Suburb.UI
                 maskRect.offsetMax = maskRect.offsetMax.ChangeX(-buttonsBlockWidth);
             }
 
-            cameraSequence = DOTween.Sequence();
-            cameraSequence.Append(UIUtils.FadeCanvas(canvasGroup, canvasAnimationConfig));
-            menuSceneService.BindAnimation(cameraSequence);
-            cameraSequence.OnComplete(() => next?.Invoke(points));
+            mainSequence = DOTween.Sequence();
+            mainSequence.Append(UIUtils.FadeCanvas(canvasGroup, canvasStartEndAnimationConfig));
+            mainSequence.Append(menuSceneService.AnimateEnter());
+            mainSequence.OnComplete(() => next?.Invoke(points));
             
             textSequence = DOTween.Sequence()
                 .AppendInterval(1.5f);
@@ -89,7 +89,7 @@ namespace Suburb.UI
 
         private void Finally()
         {
-            cameraSequence?.Kill();
+            mainSequence?.Kill();
             textSequence?.Kill();
         }
     }
