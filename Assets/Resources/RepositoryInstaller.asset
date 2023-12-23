@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26e9753e5577d5499ecaa8982ad7da7, type: 3}
   m_Name: RepositoryInstaller
   m_EditorClassIdentifier: 
-  resourcesRepository: {fileID: 11400000, guid: d679731cc4166924ab8233cd99c8abf8, type: 2}
+  prefabsRepository: {fileID: 11400000, guid: d679731cc4166924ab8233cd99c8abf8, type: 2}
   gameSettingsRepository: {fileID: 11400000, guid: d8c1c26b9fe72b443a5856a69ef180ae, type: 2}
   languagesRepository: {fileID: 11400000, guid: 8fbef539cbcb192468fb30f62688e3b2, type: 2}
   resourcesGroupsRepository: {fileID: 11400000, guid: c6c4b21b5ed9a4d949c6e6f19f53a587, type: 2}

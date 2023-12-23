@@ -14,7 +14,6 @@ namespace Suburb.Installers
     public class MainInstaller : MonoInstaller
     {
         [SerializeField] private Camera playerCamera;
-        [SerializeField] private Camera menuSceneCamera;
         [SerializeField] private string screensRoot;
         [SerializeField] private string layoutsRoot;
         [SerializeField] private ValueAnimationData<TransformData> cameraAnimationData;
@@ -31,10 +30,6 @@ namespace Suburb.Installers
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
             Container.Bind<LocalStorageService>().AsSingle().NonLazy();
             Container.Bind<WebClientService>().AsSingle().NonLazy();
-            
-            Container.Bind<Camera>()
-                .FromComponentInNewPrefab(menuSceneCamera)
-                .WhenInjectedInto<MenuSceneService>();
             
             Container.Bind<GameStateMachine>().AsSingle();
             Container.Bind<WorldMapService>().AsSingle();

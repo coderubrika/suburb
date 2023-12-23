@@ -16,20 +16,20 @@ namespace Suburb.Common
         
         private readonly Dictionary<string, object> pools = new();
         private readonly Dictionary<string, object> poolGroups = new();
-        private readonly Dictionary<string, (GameObject Prefab, object Instance)> prefabsInstances = new();
+        private readonly Dictionary<string, PrefabRef> prefabs = new();
         private readonly Dictionary<string, (GameObject[] Prefabs, object[] Instances)> prefabsInstancesGroups = new();
         
         private Transform root;
         
         public ResourcesService(
             InjectCreator injectCreator,
-            ResourcesRepository resourcesRepository,
+            PrefabsRepository prefabsRepository,
             ResourcesGroupsRepository resourcesGroupsRepository)
         {
             this.injectCreator = injectCreator;
             
-            foreach (var prefab in resourcesRepository.Items)
-                prefabsInstances.Add(prefab.name, (prefab, null));
+            foreach (var prefab in prefabsRepository.Items)
+                prefabs.Add(prefab.name, prefab);
 
             foreach (var pair in resourcesGroupsRepository.Items)
                 prefabsInstancesGroups.Add(pair.Name, (pair.Prefabs, null));
@@ -59,26 +59,9 @@ namespace Suburb.Common
             return (AssetsGroupPool<TComponent>)poolGroup;
         }
 
-        public T GetInstance<T>(string name)
-            where T : Component
+        public PrefabRef GetPrefab(string name)
         {
-            if (!prefabsInstances.TryGetValue(name, out (GameObject Prefab, object Instance) pair))
-                return default;
-
-            pair.Instance ??= injectCreator.Create<T>(pair.Prefab, root);
-            return (T)pair.Instance;
-        }
-
-        public GameObject GetPrefab(string name)
-        {
-            return !prefabsInstances.TryGetValue(name, out (GameObject Prefab, object Instance) pair) ? default : pair.Prefab;
-        }
-
-        public void CacheInRam(GameObject prefab)
-        {
-            if (prefabsInstances.ContainsKey(prefab.name))
-                this.LogError($"prefab with name: '{prefab.name}' already cached");
-            prefabsInstances.Add(prefab.name, (prefab, null));
+            return prefabs.TryGetValue(name, out var prefab) ? prefab : null;
         }
 
 

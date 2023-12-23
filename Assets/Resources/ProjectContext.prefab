@@ -76,7 +76,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 1385441692398572336, guid: ac92c4b2c3367dd419723922aeb5dddb, type: 3}
-  menuSceneCamera: {fileID: 4991573764432880851, guid: b1a6f89100b134185a3aede1dc268c0e, type: 3}
   screensRoot: UI/Screens
   layoutsRoot: UI/Layouts
   cameraAnimationData:
@@ -84,10 +83,10 @@ MonoBehaviour:
       Duration: 10
       Easing: 15
     start:
-      Position: {x: 0, y: 25, z: -100}
-      Rotation: {x: -12, y: 0, z: 0}
+      Position: {x: 0, y: -80.1, z: -134.1}
+      Rotation: {x: -105, y: 0, z: 0}
       Scale: {x: 0, y: 0, z: 0}
     end:
-      Position: {x: 0, y: 12.32, z: -64}
-      Rotation: {x: 4.9, y: -0.25, z: 0}
+      Position: {x: 0, y: -59.6, z: -90.6}
+      Rotation: {x: -34.65, y: 0, z: 0}
       Scale: {x: 0, y: 0, z: 0}

@@ -4,7 +4,6 @@ using Suburb.UI.Layouts;
 using Suburb.Utils;
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using Suburb.ExpressRouter;
 using Suburb.ResourceMaps;
 using Suburb.Utils.Serialization;
@@ -19,7 +18,6 @@ namespace Suburb.UI.Screens
     {
         private SavesService savesService;
         private LayoutService layoutService;
-
         
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
@@ -37,7 +35,7 @@ namespace Suburb.UI.Screens
             SavesService savesService,
             GameStateMachine gameStateMachine,
             LayoutService layoutService,
-            ResourcesRepository resourcesRepository,
+            PrefabsRepository prefabsRepository,
             InjectCreator injectCreator)
         {
             this.savesService = savesService;

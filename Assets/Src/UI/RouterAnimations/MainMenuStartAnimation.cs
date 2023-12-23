@@ -43,9 +43,6 @@ namespace Suburb.UI
 
         private void Invoke(FromTo points, Action<FromTo> next)
         {
-            menuSceneService.StandCameraToStart();
-            menuSceneService.Show();
-            
             for (int i = 0; i < texts.Length; i++)
             {
                 var text = texts[i];
@@ -76,23 +73,24 @@ namespace Suburb.UI
                 textSequence.Join(tween);
                 textSequence.PrependInterval(0.1f);
             }
+
+            textSequence.OnKill(() =>
+            {
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    var text = texts[i];
+                    text.color = UIUtils.GetNewAlpha(text.color, 1);
+
+                    var maskRect = textMasks[i];
+                    maskRect.offsetMax = maskRect.offsetMax.ChangeX(0);
+                }
+            });
         }
 
         private void Finally()
         {
             cameraSequence?.Kill();
             textSequence?.Kill();
-            
-            for (int i = 0; i < texts.Length; i++)
-            {
-                var text = texts[i];
-                text.color = UIUtils.GetNewAlpha(text.color, 1);
-
-                var maskRect = textMasks[i];
-                maskRect.offsetMax = maskRect.offsetMax.ChangeX(0);
-            }
-
-            menuSceneService.StandCameraToEnd();
         }
     }
 }

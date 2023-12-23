@@ -10,9 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22bf8e1800b4778429baa9bc336923d8, type: 3}
-  m_Name: ResourcesRepository
+  m_Name: PrefabsRepository
   m_EditorClassIdentifier: 
   items:
-  - {fileID: 5004650449271260339, guid: 9b707964ef6039143b3b24afe84c18cd, type: 3}
-  - {fileID: 2124603762022914196, guid: 9ed47204b99ee8543a715c2d2ecfa42c, type: 3}
-  - {fileID: 474292075983231335, guid: 2dda105f87ca04362ba34fc8206a189d, type: 3}
+  - {fileID: 4486342508884482887, guid: d5b2b7a946086441f9623e671510e308, type: 3}

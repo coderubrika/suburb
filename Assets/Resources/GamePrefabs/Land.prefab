@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5004650449271260336}
   - component: {fileID: 5004650449271260337}
   - component: {fileID: 5004650449271260338}
-  - component: {fileID: 5004650449271260342}
   m_Layer: 6
   m_Name: Land
   m_TagString: Untagged
@@ -98,15 +97,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5004650449271260342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5004650449271260339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9df8720bb8f7bfc47b23b397c4711ec5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
