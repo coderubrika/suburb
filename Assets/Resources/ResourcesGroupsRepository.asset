@@ -15,4 +15,5 @@ MonoBehaviour:
   items:
   - name: Asteroids
     prefabs:
-    - {fileID: 6670048161436467523, guid: 87fa16214704a43fda9ee78e0a41cca2, type: 3}
+    - {fileID: 633495523569882580, guid: 588da3ddfdccf41d69cdd8e7f7680ed5, type: 3}
+    - {fileID: 8331747171892182342, guid: f93e9e7106f934f70b213e80dae99ce2, type: 3}

@@ -55,10 +55,10 @@ namespace Suburb.UI
             mainSequence = DOTween.Sequence();
             mainSequence.Append(UIUtils.FadeCanvas(canvasGroup, canvasStartEndAnimationConfig));
             mainSequence.AppendCallback(menuSceneService.AnimateEnterFirst);
-            mainSequence.OnComplete(() => next?.Invoke(points));
             
             textSequence = DOTween.Sequence()
-                .AppendInterval(1.5f);
+                .AppendInterval(1.5f)
+                .OnComplete(() => next?.Invoke(points));
             
             for (int i = texts.Length - 1; i >= 0; i--)
             {

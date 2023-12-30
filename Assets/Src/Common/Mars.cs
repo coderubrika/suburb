@@ -1,6 +1,4 @@
-using System;
 using System.Linq;
-using Suburb.ResourceMaps;
 using Suburb.Utils;
 using UnityEngine;
 using Zenject;
@@ -28,17 +26,17 @@ namespace Suburb.Common
             
             for (int i = 0; i < asteroids.Length; i++)
             {
-                var asteroid = asteroids[i] = poolGroup.Spawn(0);
+                var asteroid = asteroids[i] = poolGroup.Spawn(Random.Range(0, 2));
                 asteroid.gameObject.SetActive(false);
                 asteroid.transform.localScale = Vector3.one * Random.Range(0.01f, 1f);
-                asteroid.transform.position = transform.position + Random.insideUnitSphere * (transform.localScale.x + 10);
+                asteroid.transform.position = transform.position + Random.insideUnitSphere * (transform.localScale.x + 100);
                 asteroid.Velocity = MathUtils.RandVector3(minVelocity, maxVelocity);
             }
         }
 
         private void Update()
         {
-            transform.localRotation *= Quaternion.Euler(Vector3.forward * (rotationSpeed * Time.deltaTime));
+            transform.localRotation *= Quaternion.Euler(Vector3.up * (rotationSpeed * Time.deltaTime));
             foreach (var asteroid in asteroids)
                 CalcAsteroidTransform(asteroid);
         }
@@ -61,7 +59,7 @@ namespace Suburb.Common
 
             float distance = directionToPlanet.magnitude;
             
-            if (distance < 48 || distance > 500)
+            if (distance < 48 || distance > 1000)
             {
                 asteroid.transform.localScale = Vector3.one * Random.Range(0.01f, 1f);
                 asteroid.transform.position = transform.position + Random.insideUnitSphere * (transform.localScale.x + 10);
