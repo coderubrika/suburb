@@ -16,6 +16,7 @@ namespace Suburb.Common
         private GameObject marsObject;
         private Camera camera;
         private Sequence cameraSequence;
+        private MenuMarsController menuMarsController;
         
         public MenuSceneService(
             ResourcesService resourcesService, 
@@ -28,6 +29,7 @@ namespace Suburb.Common
         private void Show()
         {
             root.gameObject.SetActive(true);
+            menuMarsController.Show();
         }
 
         private void StandCamera(TransformData transformData)
@@ -39,6 +41,7 @@ namespace Suburb.Common
         private void Hide()
         {
             root.gameObject.SetActive(false);
+            menuMarsController.Hide();
         }
 
         private void AnimateTo(ValueAnimationData<TransformData> animationTransformData)
@@ -78,8 +81,11 @@ namespace Suburb.Common
             var sceneRefPrefab = resourcesService.GetPrefab("Menu3DScene");
             var sceneRef = injectCreator.Create(sceneRefPrefab, null);
             root = sceneRef.transform;
-            camera = sceneRef.Refs["Camera"] as Camera;
-            config = sceneRef.Refs["MenuSceneConfig"] as MenuSceneConfig;
+            var refs = sceneRef.Refs;
+            camera = refs["Camera"] as Camera;
+            config = refs["MenuSceneConfig"] as MenuSceneConfig;
+            var mars = refs["Mars"] as GameObject;
+            menuMarsController = injectCreator.Create<MenuMarsController>(root, mars);
             Hide();
         }
     }

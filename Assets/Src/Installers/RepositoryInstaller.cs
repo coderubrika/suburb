@@ -11,14 +11,14 @@ namespace Suburb.Installers
         [SerializeField] private PrefabsRepository prefabsRepository;
         [SerializeField] private GameSettingsRepository gameSettingsRepository;
         [SerializeField] private LanguagesRepository languagesRepository;
-        [SerializeField] private ResourcesGroupsRepository resourcesGroupsRepository;
+        [SerializeField] private PrefabGroupsRepository prefabGroupsRepository;
         
         public override void InstallBindings()
         {
             Container.BindInstances(prefabsRepository);
             Container.BindInstances(gameSettingsRepository);
             Container.BindInstances(languagesRepository);
-            Container.BindInstances(resourcesGroupsRepository);
+            Container.BindInstances(prefabGroupsRepository);
         }
     }
 }

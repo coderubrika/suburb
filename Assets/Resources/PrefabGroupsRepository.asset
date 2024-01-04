@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f3b56d94cba4995a68dbb14c3688e53, type: 3}
-  m_Name: ResourcesGroupsRepository
+  m_Name: PrefabGroupsRepository
   m_EditorClassIdentifier: 
   items:
   - name: Asteroids
     prefabs:
-    - {fileID: 633495523569882580, guid: 588da3ddfdccf41d69cdd8e7f7680ed5, type: 3}
-    - {fileID: 8331747171892182342, guid: f93e9e7106f934f70b213e80dae99ce2, type: 3}
+    - {fileID: 5857289108799797992, guid: 686b196dcec70406da53333169c9d1d2, type: 3}
+    - {fileID: 4050877395322312429, guid: 409ce71b9cb754fdcbfcecfd517a3993, type: 3}
