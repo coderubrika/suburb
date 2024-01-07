@@ -12,11 +12,17 @@ namespace Suburb.Common
         [SerializeField] private TransformData rightTransform;
         [SerializeField] private TransformData startupCameraTransform;
         [SerializeField] private TransformData startupProbeTransform;
+        [SerializeField] private TransformData startupCameraCloseStartTransform;
+        [SerializeField] private TransformData startupCameraCloseEndTransform;
+        [SerializeField] private TransformData startupProbeCloseStartTransform;
+        [SerializeField] private TransformData startupProbeCloseEndTransform;
         [SerializeField] private AnimationSettingsData startCenterAnim;
         [SerializeField] private AnimationSettingsData regularCenterAnim;
         [SerializeField] private AnimationSettingsData rightSideAnim;
         [SerializeField] private AnimationSettingsData startupCameraAnim;
         [SerializeField] private AnimationSettingsData startupProbeAnim;
+        [SerializeField] private AnimationSettingsData startupCameraCloseEndAnim;
+        [SerializeField] private AnimationSettingsData startupProbeCloseEndAnim;
         
         public TransformData HideTransform => hideTransform;
         public TransformData CenterTransform => centerTransform;
@@ -28,5 +34,11 @@ namespace Suburb.Common
         public TransformData StartupProbeTransform => startupProbeTransform;
         public AnimationSettingsData StartupCameraAnim => startupCameraAnim;
         public AnimationSettingsData StartupProbeAnim => startupProbeAnim;
+        public TransformData StartupCameraCloseStartTransform => startupCameraCloseStartTransform;
+        public TransformData StartupCameraCloseEndTransform => startupCameraCloseEndTransform;
+        public AnimationSettingsData StartupCameraCloseEndAnim => startupCameraCloseEndAnim;
+        public TransformData StartupProbeCloseStartTransform => startupProbeCloseStartTransform;
+        public TransformData StartupProbeCloseEndTransform => startupProbeCloseEndTransform;
+        public AnimationSettingsData StartupProbeCloseEndAnim => startupProbeCloseEndAnim;
     }
 }

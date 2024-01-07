@@ -21,7 +21,7 @@ namespace Suburb.Common
             menuSceneService.AnimateStartup()
                 .Subscribe(_ =>
                 {
-                    //menuSceneService.Hide();
+                    menuSceneService.Hide();
                     PlayStartup();
                 });
         }

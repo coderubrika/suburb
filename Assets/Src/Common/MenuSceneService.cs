@@ -36,10 +36,10 @@ namespace Suburb.Common
             menuMarsController.Show();
         }
 
-        private void StandCamera(TransformData transformData)
+        private void Stand(Transform transform, TransformData transformData)
         {
-            camera.transform.position = transformData.Position;
-            camera.transform.localRotation = Quaternion.Euler(transformData.Rotation);
+            transform.position = transformData.Position;
+            transform.localRotation = Quaternion.Euler(transformData.Rotation);
         }
         
         public void Hide()
@@ -70,7 +70,7 @@ namespace Suburb.Common
         public void PlayEnterFirst()
         {
             Show();
-            StandCamera(config.HideTransform);
+            Stand(camera.transform, config.HideTransform);
             PlayTo(camera.transform, ref cameraSequence, config.CenterTransform, config.StartCenterAnim);
         }
         
@@ -104,16 +104,22 @@ namespace Suburb.Common
         public IObservable<Unit> AnimateStartup()
         {
             cameraSequence?.Kill();
+            probeSequence?.Kill();
+            
             menuMarsController.Pause();
-            StandCamera(config.CenterTransform);
+            Stand(camera.transform, config.CenterTransform);
             probeObject.SetActive(true);
             PlayTo(camera.transform, ref cameraSequence, config.StartupCameraTransform, config.StartupCameraAnim);
             return PlayTo(probeObject.transform, ref probeSequence, config.StartupProbeTransform, config.StartupProbeAnim)
-                .ContinueWith(() =>
-                {
-                    StandCamera(config.StartupCameraCloseStartTransform);
-                    return PlayTo(config.StartupCameraCloseEndTransform);
-                });
+            .ContinueWith(_ =>
+            {
+                cameraSequence?.Kill();
+                probeSequence?.Kill();
+                Stand(probeObject.transform, config.StartupProbeCloseStartTransform);
+                Stand(camera.transform, config.StartupCameraCloseStartTransform);
+                PlayTo(probeObject.transform, ref probeSequence, config.StartupProbeCloseEndTransform, config.StartupProbeCloseEndAnim);
+                return PlayTo(camera.transform, ref cameraSequence, config.StartupCameraCloseEndTransform, config.StartupCameraCloseEndAnim);
+            });
         }
     }
 }
