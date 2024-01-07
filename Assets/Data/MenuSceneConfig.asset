@@ -24,12 +24,31 @@ MonoBehaviour:
     Position: {x: -9.45, y: -32.4, z: -72.1}
     Rotation: {x: -35.99, y: -32.4, z: 0}
     Scale: {x: 0, y: 0, z: 0}
+  startupCameraTransform:
+    Position: {x: 0, y: -14.6, z: -46.7}
+    Rotation: {x: -21.7, y: 0, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  startupProbeTransform:
+    Position: {x: 1.4, y: 0.2, z: 5.4}
+    Rotation: {x: -32.3, y: 0.1, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
   startCenterAnim:
+    Delay: 0
     Duration: 10
     Easing: 15
   regularCenterAnim:
+    Delay: 0
     Duration: 2
     Easing: 15
   rightSideAnim:
+    Delay: 0
     Duration: 2
     Easing: 15
+  startupCameraAnim:
+    Delay: 1
+    Duration: 20
+    Easing: 32
+  startupProbeAnim:
+    Delay: 0
+    Duration: 21
+    Easing: 33

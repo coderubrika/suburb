@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Suburb.Utils;
 using UniRx;
@@ -20,7 +19,8 @@ namespace Suburb.Common
         
         private IDisposable updateDisposable;
         private bool isShown;
-
+        private bool isPause;
+        
         public MenuMarsController(PrefabGroupsRepository prefabGroupsRepository, Transform root, GameObject mars)
         {
             this.prefabGroupsRepository = prefabGroupsRepository;
@@ -67,6 +67,9 @@ namespace Suburb.Common
             updateDisposable = Observable.EveryUpdate()
                 .Subscribe(_ =>
                 {
+                    if (isPause)
+                        return;
+                    
                     mars.transform.localRotation *= Quaternion.Euler(Vector3.up * Time.deltaTime * 1);
                     foreach (var mover in orbitalMovers)
                         mover.Update();
@@ -84,6 +87,16 @@ namespace Suburb.Common
                 asteroidsPool.Despawn(orbitalMovers[i].Disconnect());
             
             updateDisposable?.Dispose();
+        }
+
+        public void Pause()
+        {
+            isPause = true;
+        }
+
+        public void Resume()
+        {
+            isPause = false;
         }
     }
 }

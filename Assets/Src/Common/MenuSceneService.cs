@@ -1,6 +1,8 @@
+using System;
 using DG.Tweening;
 using Suburb.Utils;
 using Suburb.Utils.Serialization;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -16,7 +18,9 @@ namespace Suburb.Common
         private GameObject marsObject;
         private Camera camera;
         private Sequence cameraSequence;
+        private Sequence probeSequence;
         private MenuMarsController menuMarsController;
+        private GameObject probeObject;
         
         public MenuSceneService(
             ResourcesService resourcesService, 
@@ -38,42 +42,48 @@ namespace Suburb.Common
             camera.transform.localRotation = Quaternion.Euler(transformData.Rotation);
         }
         
-        private void Hide()
+        public void Hide()
         {
+            probeSequence?.Kill();
+            cameraSequence?.Kill();
             root.gameObject.SetActive(false);
             menuMarsController.Hide();
         }
-
-        private void AnimateTo(ValueAnimationData<TransformData> animationTransformData)
+        
+        private IObservable<Unit> PlayTo(Transform transform, ref Sequence sequence, TransformData transformData, AnimationSettingsData animationData)
         {
-            AnimateTo(animationTransformData.End, animationTransformData.AnimationSettings);
+            Subject<Unit> onKill = new();
+            sequence?.Kill();
+            sequence = DOTween.Sequence()
+                .AppendInterval(animationData.Delay)
+                .Append(
+                    transform.DORotate(transformData.Rotation, animationData.Duration).SetEase(animationData.Easing))
+                .Join(transform.DOMove(transformData.Position, animationData.Duration).SetEase(animationData.Easing))
+                .OnKill(() =>
+                {
+                    onKill.OnNext(Unit.Default);
+                    onKill.OnCompleted();
+                });
+            return onKill;
         }
         
-        private void AnimateTo(TransformData transformData, AnimationSettingsData animationData)
-        {
-            cameraSequence?.Kill();
-            cameraSequence = DOTween.Sequence()
-                .Append(camera.transform.DORotate(transformData.Rotation, animationData.Duration).SetEase(animationData.Easing))
-                .Join(camera.transform.DOMove(transformData.Position, animationData.Duration).SetEase(animationData.Easing));
-        }
-        
-        public void AnimateEnterFirst()
+        public void PlayEnterFirst()
         {
             Show();
             StandCamera(config.HideTransform);
-            AnimateTo(config.CenterTransform, config.StartCenterAnim);
+            PlayTo(camera.transform, ref cameraSequence, config.CenterTransform, config.StartCenterAnim);
         }
         
         public void AnimateEnter()
         {
             Show();
-            AnimateTo(config.CenterTransform, config.RegularCenterAnim);
+            PlayTo(camera.transform, ref cameraSequence, config.CenterTransform, config.RegularCenterAnim);
         }
         
         public void AnimateRight()
         {
             Show();
-            AnimateTo(config.RightTransform, config.RightSideAnim);
+            PlayTo(camera.transform, ref cameraSequence, config.RightTransform, config.RightSideAnim);
         }
 
         public void Initialize()
@@ -85,8 +95,25 @@ namespace Suburb.Common
             camera = refs["Camera"] as Camera;
             config = refs["MenuSceneConfig"] as MenuSceneConfig;
             var mars = refs["Mars"] as GameObject;
+            probeObject = refs["Probe"] as GameObject;
+            probeObject.SetActive(false);
             menuMarsController = injectCreator.Create<MenuMarsController>(root, mars);
             Hide();
+        }
+
+        public IObservable<Unit> AnimateStartup()
+        {
+            cameraSequence?.Kill();
+            menuMarsController.Pause();
+            StandCamera(config.CenterTransform);
+            probeObject.SetActive(true);
+            PlayTo(camera.transform, ref cameraSequence, config.StartupCameraTransform, config.StartupCameraAnim);
+            return PlayTo(probeObject.transform, ref probeSequence, config.StartupProbeTransform, config.StartupProbeAnim)
+                .ContinueWith(() =>
+                {
+                    StandCamera(config.StartupCameraCloseStartTransform);
+                    return PlayTo(config.StartupCameraCloseEndTransform);
+                });
         }
     }
 }

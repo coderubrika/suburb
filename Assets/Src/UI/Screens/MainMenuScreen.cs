@@ -36,7 +36,8 @@ namespace Suburb.UI.Screens
             LayoutService layoutService,
             PrefabsRepository prefabsRepository,
             InjectCreator injectCreator,
-            MenuSceneService menuSceneService)
+            MenuSceneService menuSceneService,
+            GameStartup gameStartup)
         {
             this.savesService = savesService;
             
@@ -103,6 +104,10 @@ namespace Suburb.UI.Screens
             newGameButton.OnClickAsObservable()
                 .Subscribe(_ => 
                 {
+                    gameStartup.NewGame();
+                    return;
+                    
+                    
                     if (!savesService.TmpData.IsDataHasChanges)
                     {
                         gameStateMachine.CloseGame();
