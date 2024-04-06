@@ -119,16 +119,16 @@ namespace Suburb.Common
 
         private void UpdateScale(GestureEventData data)
         {
-            float zoomDelta = data.ZoomDelta.y * settings.ZoomFactor;
-            currentZoom += zoomDelta;
-
-            if (currentZoom > settings.MaxZoom || currentZoom < settings.MinZoom)
-            {
-                currentZoom = Mathf.Clamp(currentZoom, settings.MinZoom, settings.MaxZoom);
-                return;
-            }
-
-            cameraTransform.position += cameraForward * zoomDelta;
+            // float zoomDelta = data.ZoomDelta.y * settings.ZoomFactor;
+            // currentZoom += zoomDelta;
+            //
+            // if (currentZoom > settings.MaxZoom || currentZoom < settings.MinZoom)
+            // {
+            //     currentZoom = Mathf.Clamp(currentZoom, settings.MinZoom, settings.MaxZoom);
+            //     return;
+            // }
+            //
+            // cameraTransform.position += cameraForward * zoomDelta;
         }
 
         private float GetMoveSpeed()
@@ -203,9 +203,9 @@ namespace Suburb.Common
                     isAllowToDisposeDrag = true;
                 }).AddTo(disposables);
 
-            gestureProvider.OnZoom.
-                Subscribe(UpdateScale)
-                .AddTo(disposables);
+            // gestureProvider.OnZoom.
+            //     Subscribe(UpdateScale)
+            //     .AddTo(disposables);
         }
     }
 }

@@ -27,10 +27,10 @@ namespace Suburb.Detectors
             this.camera = camera;
             disposables.Clear();
 
-            gestureProvider.OnPointerUp
-                .Where(data => !gestureProvider.IsDragging(data.Id))
-                .Subscribe(data => CheckPoint(data.Position))
-                .AddTo(disposables);
+            // gestureProvider.OnPointerUp
+            //     .Where(data => !gestureProvider.IsDragging(data.Id))
+            //     .Subscribe(data => CheckPoint(data.Position))
+            //     .AddTo(disposables);
         }
 
         public void Disable()
