@@ -33,12 +33,10 @@ namespace Suburb.Installers
             Container.Bind<GameStateMachine>().AsSingle();
             Container.Bind<WorldMapService>().AsSingle();
             Container.Bind<GameStartup>().AsSingle();
-
-            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-                Container.Bind<IGestureProvider>().To<TouchGestureProvider>().AsSingle().NonLazy();
-            else
-                Container.Bind<IGestureProvider>().To<MouseGestureProvider>().AsSingle().NonLazy();
-
+            
+            Container.Bind<TouchGestureProvider>().AsSingle().NonLazy();
+            Container.Bind<MouseGestureProvider>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<DragZoomGestureProvider>().AsSingle().NonLazy();
             Container.Bind<PickDetector>().AsSingle();
             Container.Bind<WorldCameraController>().AsSingle().WithArguments(playerCamera);
             Container.BindInterfacesAndSelfTo<ResourcesService>().AsSingle().NonLazy();

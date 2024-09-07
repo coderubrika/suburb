@@ -34,7 +34,7 @@ namespace Suburb.UI.Screens
         protected override void Show()
         {
             base.Show();
-            gameStateMachine.Start();
+            //gameStateMachine.Start();
         }
     }
 }

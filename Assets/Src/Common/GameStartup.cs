@@ -18,12 +18,12 @@ namespace Suburb.Common
         public void NewGame()
         {
             screensService.GoTo<GameScreen>();
-            menuSceneService.AnimateStartup()
-                .Subscribe(_ =>
-                {
-                    menuSceneService.Hide();
-                    PlayStartup();
-                });
+            // menuSceneService.AnimateStartup()
+            //     .Subscribe(_ =>
+            //     {
+            //         menuSceneService.Hide();
+            //         PlayStartup();
+            //     });
         }
 
         public void ContinueGame()
