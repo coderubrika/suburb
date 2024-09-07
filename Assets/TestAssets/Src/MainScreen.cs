@@ -3,6 +3,7 @@ using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace TestAssets.Src
@@ -13,12 +14,11 @@ namespace TestAssets.Src
         private DragZoomGestureProvider gestureProvider;
         private Camera camera;
         
-        [SerializeField] private VirtualJoystickView joystickView;
+        [SerializeField] private VirtualJoystick joystick;
         
         private readonly CompositeDisposable disposables = new();
         
         private DragZoomGestureSession session;
-        private VirtualJoystickController joystickController;
         
         [Inject]
         private void Construct(DragZoomGestureProvider gestureProvider, PlayerController playerController, Camera camera)
@@ -29,24 +29,22 @@ namespace TestAssets.Src
             this.gestureProvider = gestureProvider;
             
             session = new DragZoomGestureSession(transform as RectTransform, null);
-            joystickController = new VirtualJoystickController(session, joystickView.Radius);
         }
         
         private void OnEnable()
         {
             gestureProvider.Enable(session);
-            joystickController.Enable();
-            joystickView.Connect(joystickController);
+            joystick.Connect(session);
 
-            joystickController.OnDown
+            session.OnDown
                 .Subscribe(_ => playerController.StartMoving())
                 .AddTo(disposables);
             
-            joystickController.OnUp
+            session.OnUp
                 .Subscribe(_ => playerController.StopMoving())
                 .AddTo(disposables);
             
-            joystickController.OnDirectionAndForce
+            joystick.OnDirectionAndForce
                 .ObserveOnMainThread()
                 .Subscribe(data =>
                 {
@@ -60,8 +58,7 @@ namespace TestAssets.Src
 
         private void OnDisable()
         {
-            joystickView.Disconnect();
-            joystickController.Disable();
+            joystick.Disconnect();
             gestureProvider.Disable(session);
             disposables.Clear();
         }
