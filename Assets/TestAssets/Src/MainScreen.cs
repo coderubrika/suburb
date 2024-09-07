@@ -1,9 +1,6 @@
-using System;
 using Suburb.Inputs;
-using Suburb.Utils;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace TestAssets.Src
@@ -11,30 +8,39 @@ namespace TestAssets.Src
     public class MainScreen : MonoBehaviour
     {
         private PlayerController playerController;
-        private DragZoomGestureProvider gestureProvider;
+        private PointerGestureProvider gestureProvider;
         private Camera camera;
         
         [SerializeField] private VirtualJoystick joystick;
+        [SerializeField] private RectTransform joystickArea;
+        
+        [SerializeField] private VirtualJoystick joystick1;
+        [SerializeField] private RectTransform joystickArea1;
         
         private readonly CompositeDisposable disposables = new();
         
-        private DragZoomGestureSession session;
         
         [Inject]
-        private void Construct(DragZoomGestureProvider gestureProvider, PlayerController playerController, Camera camera)
+        private void Construct(PointerGestureProvider gestureProvider, PlayerController playerController, Camera camera)
         {
             this.gestureProvider = gestureProvider;
             this.playerController = playerController;
             this.camera = camera;
             this.gestureProvider = gestureProvider;
-            
-            session = new DragZoomGestureSession(transform as RectTransform, null);
         }
         
         private void OnEnable()
         {
-            gestureProvider.Enable(session);
-            joystick.Connect(session);
+            SetupSession(new SwipeGestureSession(joystickArea, null), joystick);
+            SetupSession(new SwipeGestureSession(joystickArea1, null), joystick1);
+        }
+
+        private void SetupSession(SwipeGestureSession session, VirtualJoystick virtualJoystick)
+        {
+            gestureProvider.AddSession(session)
+                .AddTo(disposables);
+            
+            virtualJoystick.Connect(session);
 
             session.OnDown
                 .Subscribe(_ => playerController.StartMoving())
@@ -44,7 +50,7 @@ namespace TestAssets.Src
                 .Subscribe(_ => playerController.StopMoving())
                 .AddTo(disposables);
             
-            joystick.OnDirectionAndForce
+            virtualJoystick.OnDirectionAndForce
                 .ObserveOnMainThread()
                 .Subscribe(data =>
                 {
@@ -55,11 +61,10 @@ namespace TestAssets.Src
                 })
                 .AddTo(disposables);
         }
-
+        
         private void OnDisable()
         {
             joystick.Disconnect();
-            gestureProvider.Disable(session);
             disposables.Clear();
         }
     }

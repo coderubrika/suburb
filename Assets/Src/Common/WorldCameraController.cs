@@ -152,22 +152,22 @@ namespace Suburb.Common
             if (gestureProvider is not TouchGestureProvider touchGestureProvider)
                 return;
 
-            touchGestureProvider.OnDragStartWithDoubleTouch
-                .Subscribe(_ => isPinchDragEnabled = true)
-                .AddTo(disposables);
-
-            touchGestureProvider.OnDragEndWithDoubleTouch
-                .Subscribe(_ => isPinchDragEnabled = false)
-                .AddTo(disposables);
-
-            touchGestureProvider.OnDragWithDoubleTouch
-                .Subscribe(data =>
-                {
-                    if (!isPinchDragEnabled)
-                        return;
-
-                    deltaPositon = data.Delta;
-                }).AddTo(disposables);
+            // touchGestureProvider.OnDragStartWithDoubleTouch
+            //     .Subscribe(_ => isPinchDragEnabled = true)
+            //     .AddTo(disposables);
+            //
+            // touchGestureProvider.OnDragEndWithDoubleTouch
+            //     .Subscribe(_ => isPinchDragEnabled = false)
+            //     .AddTo(disposables);
+            //
+            // touchGestureProvider.OnDragWithDoubleTouch
+            //     .Subscribe(data =>
+            //     {
+            //         if (!isPinchDragEnabled)
+            //             return;
+            //
+            //         deltaPositon = data.Delta;
+            //     }).AddTo(disposables);
         }
 
         private void SubscribeOnGeneralEvents()

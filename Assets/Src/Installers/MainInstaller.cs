@@ -19,31 +19,31 @@ namespace Suburb.Installers
         
         public override void InstallBindings()
         {
-            Container.Bind<ScreensFactory>().AsSingle().WithArguments(screensRoot).NonLazy();
-            Container.Bind<ScreensService>().AsSingle().NonLazy();
-            Container.Bind<LayoutsFactory>().AsSingle().WithArguments(layoutsRoot).NonLazy();
-            Container.BindInterfacesAndSelfTo<LayoutService>().AsSingle().NonLazy();
+            // Container.Bind<ScreensFactory>().AsSingle().WithArguments(screensRoot).NonLazy();
+            // Container.Bind<ScreensService>().AsSingle().NonLazy();
+            // Container.Bind<LayoutsFactory>().AsSingle().WithArguments(layoutsRoot).NonLazy();
+            // Container.BindInterfacesAndSelfTo<LayoutService>().AsSingle().NonLazy();
 
-            Container.Bind<SavesService>().AsSingle().NonLazy();
-            Container.Bind<LocalizationService>().AsSingle().NonLazy();
+            // Container.Bind<SavesService>().AsSingle().NonLazy();
+            // Container.Bind<LocalizationService>().AsSingle().NonLazy();
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
-            Container.Bind<LocalStorageService>().AsSingle().NonLazy();
-            Container.Bind<WebClientService>().AsSingle().NonLazy();
+            // Container.Bind<LocalStorageService>().AsSingle().NonLazy();
+            // Container.Bind<WebClientService>().AsSingle().NonLazy();
             
-            Container.Bind<GameStateMachine>().AsSingle();
-            Container.Bind<WorldMapService>().AsSingle();
-            Container.Bind<GameStartup>().AsSingle();
+            //Container.Bind<GameStateMachine>().AsSingle();
+            //Container.Bind<WorldMapService>().AsSingle();
+            //Container.Bind<GameStartup>().AsSingle();
             
             Container.Bind<TouchGestureProvider>().AsSingle().NonLazy();
             Container.Bind<MouseGestureProvider>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<DragZoomGestureProvider>().AsSingle().NonLazy();
-            Container.Bind<PickDetector>().AsSingle();
-            Container.Bind<WorldCameraController>().AsSingle().WithArguments(playerCamera);
-            Container.BindInterfacesAndSelfTo<ResourcesService>().AsSingle().NonLazy();
-            Container.Bind<ResourceLoader>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PointerGestureProvider>().AsSingle().NonLazy();
+            //Container.Bind<PickDetector>().AsSingle();
+            //Container.Bind<WorldCameraController>().AsSingle().WithArguments(playerCamera);
+            //Container.BindInterfacesAndSelfTo<ResourcesService>().AsSingle().NonLazy();
+            //Container.Bind<ResourceLoader>().AsSingle();
 
-            Container.BindInterfacesAndSelfTo<MenuSceneService>()
-                .AsSingle();
+            // Container.BindInterfacesAndSelfTo<MenuSceneService>()
+            //     .AsSingle();
         }
     }
 }

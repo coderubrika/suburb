@@ -8,7 +8,7 @@ namespace TestAssets.Src
 {
     public class VirtualJoystick : MonoBehaviour
     {
-        [SerializeField] private RectTransform joystickField;
+        [SerializeField] private RectTransform joystickOrigin;
         [SerializeField] private RectTransform joystickHandler;
         [SerializeField] private CanvasGroup canvasGroup;
         
@@ -20,13 +20,14 @@ namespace TestAssets.Src
         
         public ReactiveProperty<(Vector2 Direction, float Force)> OnDirectionAndForce { get; } = new();
         
-        public void Connect(DragZoomGestureSession gestureSession)
+        public void Connect(SwipeGestureSession gestureSession)
         {
-            rectRadius = joystickField.sizeDelta.x / 2;
+            canvasGroup.alpha = 0;
+            rectRadius = joystickOrigin.sizeDelta.x / 2;
             gestureSession.OnDown
                 .Subscribe(position =>
                 {
-                    joystickField.position = position;
+                    joystickOrigin.position = position;
                     joystickHandler.position = position;
                     
                     currentPosition = position;
@@ -43,7 +44,7 @@ namespace TestAssets.Src
                     currentPosition += newDelta;
                     currentDelta += newDelta;
 
-                    var anchoredPosition = joystickField.InverseTransformPoint(currentPosition).To2();
+                    var anchoredPosition = joystickOrigin.InverseTransformPoint(currentPosition).To2();
                     float magnitude = anchoredPosition.magnitude;
                     Vector2 normAncPos = anchoredPosition / magnitude;
                     magnitude = magnitude > rectRadius ? rectRadius : magnitude;
