@@ -23,8 +23,6 @@ namespace TestAssets.Src
         
         public void Initialize()
         {
-            mainScreen = injectCreator.Create(mainScreenPrefab, null, playerControllerPrefab, camera);
-            Object.DontDestroyOnLoad(mainScreenPrefab);
         }
     }
 }

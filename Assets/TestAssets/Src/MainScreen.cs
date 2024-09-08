@@ -17,6 +17,9 @@ namespace TestAssets.Src
         [SerializeField] private VirtualJoystick joystick1;
         [SerializeField] private RectTransform joystickArea1;
         
+        [SerializeField] private VirtualJoystick joystick2;
+        [SerializeField] private RectTransform joystickArea2;
+        
         private readonly CompositeDisposable disposables = new();
         
         
@@ -33,6 +36,7 @@ namespace TestAssets.Src
         {
             SetupSession(new SwipeGestureSession(joystickArea, null), joystick);
             SetupSession(new SwipeGestureSession(joystickArea1, null), joystick1);
+            SetupSession(new SwipeGestureSession(joystickArea2, null), joystick2);
         }
 
         private void SetupSession(SwipeGestureSession session, VirtualJoystick virtualJoystick)
@@ -65,6 +69,8 @@ namespace TestAssets.Src
         private void OnDisable()
         {
             joystick.Disconnect();
+            joystick1.Disconnect();
+            joystick2.Disconnect();
             disposables.Clear();
         }
     }
