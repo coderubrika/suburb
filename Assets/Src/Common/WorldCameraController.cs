@@ -149,7 +149,7 @@ namespace Suburb.Common
 
         private void SubscribeOnMobileEvents()
         {
-            if (gestureProvider is not TouchGestureProvider touchGestureProvider)
+            if (gestureProvider is not TouchInputProvider touchGestureProvider)
                 return;
 
             // touchGestureProvider.OnDragStartWithDoubleTouch

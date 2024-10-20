@@ -34,10 +34,10 @@ namespace Suburb.Installers
             //Container.Bind<WorldMapService>().AsSingle();
             //Container.Bind<GameStartup>().AsSingle();
             
-            Container.BindInterfacesAndSelfTo<TouchGestureProvider>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<MouseGestureProvider>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<KeyboardProvider>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PointerGestureProvider>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<TouchInputProvider>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<MouseInputProvider>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<KeyboardInputProvider>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PointerGestureConnector>().AsSingle().NonLazy();
             
             //Container.Bind<PickDetector>().AsSingle();
             //Container.Bind<WorldCameraController>().AsSingle().WithArguments(playerCamera);

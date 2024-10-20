@@ -10,17 +10,17 @@ namespace TestAssets.Src
     public class MainScreen : MonoBehaviour
     {
         private PlayerController playerController;
-        private PointerGestureProvider gestureProvider;
+        private PointerGestureConnector gestureConnector;
         private Camera camera;
-        private InjectCreator injectCreator;
+        private KeyboardInputProvider keyboardInputProvider;
         
-        [SerializeField] private VirtualJoystick joystick;
+        [SerializeField] private Stick joystick;
         [SerializeField] private RectTransform joystickArea;
         
-        [SerializeField] private VirtualJoystick joystick1;
+        [SerializeField] private Stick joystick1;
         [SerializeField] private RectTransform joystickArea1;
         
-        [SerializeField] private VirtualJoystick joystick2;
+        [SerializeField] private Stick joystick2;
         [SerializeField] private RectTransform joystickArea2;
         
         private readonly CompositeDisposable disposables = new();
@@ -28,16 +28,16 @@ namespace TestAssets.Src
         
         [Inject]
         private void Construct(
-            PointerGestureProvider gestureProvider, 
+            PointerGestureConnector gestureConnector, 
             PlayerController playerController, 
             Camera camera,
-            InjectCreator injectCreator)
+            KeyboardInputProvider keyboardInputProvider)
         {
-            this.gestureProvider = gestureProvider;
+            this.gestureConnector = gestureConnector;
             this.playerController = playerController;
             this.camera = camera;
-            this.gestureProvider = gestureProvider;
-            this.injectCreator = injectCreator;
+            this.gestureConnector = gestureConnector;
+            this.keyboardInputProvider = keyboardInputProvider;
         }
         
         private void OnEnable()
@@ -45,9 +45,8 @@ namespace TestAssets.Src
             SetupSession(new SwipeGestureSession(joystickArea, null), joystick);
             SetupSession(new SwipeGestureSession(joystickArea1, null), joystick1);
             SetupSession(new SwipeGestureSession(joystickArea2, null), joystick2);
-            
-            KeyboardSession keyboardSession = injectCreator.Create<KeyboardSession>();
-            keyboardSession.Connect()
+
+            KeyboardSession keyboardSession = keyboardInputProvider.CreateSession()
                 .AddTo(disposables);
             
             keyboardSession.OnKey(Key.A)
@@ -107,12 +106,13 @@ namespace TestAssets.Src
                 .AddTo(disposables);
         }
 
-        private void SetupSession(SwipeGestureSession session, VirtualJoystick virtualJoystick)
+        private void SetupSession(SwipeGestureSession session, Stick stick)
         {
-            gestureProvider.AddSession(session)
+            gestureConnector.Connect(session)
                 .AddTo(disposables);
             
-            virtualJoystick.Connect(session);
+            stick.Connect(session)
+                .AddTo(disposables);
 
             session.OnDown
                 .Subscribe(_ => playerController.StartMoving())
@@ -122,7 +122,7 @@ namespace TestAssets.Src
                 .Subscribe(_ => playerController.StopMoving())
                 .AddTo(disposables);
             
-            virtualJoystick.OnDirectionAndForce
+            stick.OnDirectionAndForce
                 .ObserveOnMainThread()
                 .Subscribe(data =>
                 {
@@ -133,9 +133,6 @@ namespace TestAssets.Src
         
         private void OnDisable()
         {
-            joystick.Disconnect();
-            joystick1.Disconnect();
-            joystick2.Disconnect();
             disposables.Clear();
         }
 
