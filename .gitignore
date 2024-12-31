@@ -1,5 +1,6 @@
 .vsconfig
 .idea
+.vscode/
 
 /[Ll]ibrary/
 /[Tt]emp/
