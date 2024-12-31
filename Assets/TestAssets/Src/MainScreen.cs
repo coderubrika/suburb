@@ -10,9 +10,11 @@ namespace TestAssets.Src
     public class MainScreen : MonoBehaviour
     {
         private PlayerController playerController;
-        private PointerGestureConnector gestureConnector;
+        //private PointerGestureConnector gestureConnector;
         private Camera camera;
         private KeyboardInputProvider keyboardInputProvider;
+        private InjectCreator injectCreator;
+        private LayerOrderer layerOrderer;
         
         [SerializeField] private Stick joystick;
         [SerializeField] private RectTransform joystickArea;
@@ -28,23 +30,30 @@ namespace TestAssets.Src
         
         [Inject]
         private void Construct(
-            PointerGestureConnector gestureConnector, 
+            //PointerGestureConnector gestureConnector, 
             PlayerController playerController, 
             Camera camera,
-            KeyboardInputProvider keyboardInputProvider)
+            KeyboardInputProvider keyboardInputProvider,
+            InjectCreator injectCreator,
+            LayerOrderer layerOrderer)
         {
-            this.gestureConnector = gestureConnector;
+            //this.gestureConnector = gestureConnector;
             this.playerController = playerController;
             this.camera = camera;
-            this.gestureConnector = gestureConnector;
+            //this.gestureConnector = gestureConnector;
             this.keyboardInputProvider = keyboardInputProvider;
+            this.injectCreator = injectCreator;
+            this.layerOrderer = layerOrderer;
         }
         
         private void OnEnable()
         {
-            SetupSession(new SwipeGestureSession(joystickArea, null), joystick);
-            SetupSession(new SwipeGestureSession(joystickArea1, null), joystick1);
-            SetupSession(new SwipeGestureSession(joystickArea2, null), joystick2);
+            SetupNewSession(new RectBasedSession(joystickArea, null), joystick);
+            SetupNewSession(new RectBasedSession(joystickArea1, null), joystick1);
+            SetupNewSession(new RectBasedSession(joystickArea2, null), joystick2);
+            //SetupSession(new SwipeGestureSession(joystickArea, null), joystick);
+            //SetupSession(new SwipeGestureSession(joystickArea1, null), joystick1);
+            //SetupSession(new SwipeGestureSession(joystickArea2, null), joystick2);
 
             KeyboardSession keyboardSession = keyboardInputProvider.CreateSession()
                 .AddTo(disposables);
@@ -106,19 +115,38 @@ namespace TestAssets.Src
                 .AddTo(disposables);
         }
 
-        private void SetupSession(SwipeGestureSession session, Stick stick)
+        // private void SetupSession(SwipeGestureSession session, Stick stick)
+        // {
+        //     gestureConnector.Connect(session)
+        //         .AddTo(disposables);
+        // }
+
+        private void SetupNewSession(CompositorsSession session, Stick stick)
         {
-            gestureConnector.Connect(session)
+            // technical gesture logic
+            var oneTwoTouchPluginCompositor = injectCreator.Create<OneTwoTouchPluginCompositor>(session);
+            var oneTwoTouchPlugin = injectCreator.Create<OneTwoTouchSwipePlugin>();
+            
+            oneTwoTouchPluginCompositor.Link<SwipeMember>(oneTwoTouchPlugin)
                 .AddTo(disposables);
             
-            stick.Connect(session)
+            session.AddCompositor(oneTwoTouchPluginCompositor)
+                .AddTo(disposables);
+            
+            layerOrderer.Connect(session)
                 .AddTo(disposables);
 
-            session.OnDown
+
+            // business gesture login
+            var swipe = session.GetMember<SwipeMember>();
+            stick.Connect(swipe)
+                .AddTo(disposables);
+            
+            swipe.OnDown
                 .Subscribe(_ => playerController.StartMoving())
                 .AddTo(disposables);
             
-            session.OnUp
+            swipe.OnUp
                 .Subscribe(_ => playerController.StopMoving())
                 .AddTo(disposables);
             
