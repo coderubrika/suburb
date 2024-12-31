@@ -38,7 +38,7 @@ namespace Suburb.Installers
             Container.BindInterfacesAndSelfTo<MouseInputProvider>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<KeyboardInputProvider>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PointerGestureConnector>().AsSingle().NonLazy();
-            
+
             //Container.Bind<PickDetector>().AsSingle();
             //Container.Bind<WorldCameraController>().AsSingle().WithArguments(playerCamera);
             //Container.BindInterfacesAndSelfTo<ResourcesService>().AsSingle().NonLazy();
