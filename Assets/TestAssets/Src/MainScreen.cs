@@ -133,6 +133,8 @@ namespace TestAssets.Src
             session.AddCompositor(oneTwoTouchPluginCompositor)
                 .AddTo(disposables);
             
+            session.SetBookResources(true);
+            
             layerOrderer.Connect(session)
                 .AddTo(disposables);
 
