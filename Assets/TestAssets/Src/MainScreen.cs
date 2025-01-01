@@ -10,7 +10,6 @@ namespace TestAssets.Src
     public class MainScreen : MonoBehaviour
     {
         private PlayerController playerController;
-        //private PointerGestureConnector gestureConnector;
         private Camera camera;
         private KeyboardInputProvider keyboardInputProvider;
         private InjectCreator injectCreator;
@@ -30,17 +29,14 @@ namespace TestAssets.Src
         
         [Inject]
         private void Construct(
-            //PointerGestureConnector gestureConnector, 
             PlayerController playerController, 
             Camera camera,
             KeyboardInputProvider keyboardInputProvider,
             InjectCreator injectCreator,
             LayerOrderer layerOrderer)
         {
-            //this.gestureConnector = gestureConnector;
             this.playerController = playerController;
             this.camera = camera;
-            //this.gestureConnector = gestureConnector;
             this.keyboardInputProvider = keyboardInputProvider;
             this.injectCreator = injectCreator;
             this.layerOrderer = layerOrderer;
@@ -48,12 +44,9 @@ namespace TestAssets.Src
         
         private void OnEnable()
         {
-            SetupNewSession(new RectBasedSession(joystickArea, null), joystick);
-            SetupNewSession(new RectBasedSession(joystickArea1, null), joystick1);
-            SetupNewSession(new RectBasedSession(joystickArea2, null), joystick2);
-            //SetupSession(new SwipeGestureSession(joystickArea, null), joystick);
-            //SetupSession(new SwipeGestureSession(joystickArea1, null), joystick1);
-            //SetupSession(new SwipeGestureSession(joystickArea2, null), joystick2);
+            SetupSession(new RectBasedSession(joystickArea, null), joystick);
+            SetupSession(new RectBasedSession(joystickArea1, null), joystick1);
+            SetupSession(new RectBasedSession(joystickArea2, null), joystick2);
 
             KeyboardSession keyboardSession = keyboardInputProvider.CreateSession()
                 .AddTo(disposables);
@@ -115,13 +108,7 @@ namespace TestAssets.Src
                 .AddTo(disposables);
         }
 
-        // private void SetupSession(SwipeGestureSession session, Stick stick)
-        // {
-        //     gestureConnector.Connect(session)
-        //         .AddTo(disposables);
-        // }
-
-        private void SetupNewSession(CompositorsSession session, Stick stick)
+        private void SetupSession(CompositorsSession session, Stick stick)
         {
             // technical gesture logic
             var oneTwoTouchPluginCompositor = injectCreator.Create<OneTwoTouchPluginCompositor>(session);
@@ -137,7 +124,6 @@ namespace TestAssets.Src
             
             layerOrderer.Connect(session)
                 .AddTo(disposables);
-
 
             // business gesture login
             var swipe = session.GetMember<SwipeMember>();

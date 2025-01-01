@@ -9,7 +9,7 @@ namespace Suburb.Detectors
 {
     public class PickDetector
     {
-        private readonly IGestureProvider gestureProvider;
+        //private readonly IGestureProvider gestureProvider;
         
         private Camera camera;
 
@@ -17,10 +17,10 @@ namespace Suburb.Detectors
 
         public ReactiveCommand<PickEventData> OnPick { get; } = new();
 
-        public PickDetector(IGestureProvider gestureProvider)
-        {
-            this.gestureProvider = gestureProvider;
-        }
+        // public PickDetector(IGestureProvider gestureProvider)
+        // {
+        //     this.gestureProvider = gestureProvider;
+        // }
 
         public void Enable(Camera camera)
         {

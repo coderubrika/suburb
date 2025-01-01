@@ -11,7 +11,7 @@ namespace Suburb.Common
 {
     public class WorldCameraController : IDisposable
     {
-        private readonly IGestureProvider gestureProvider;
+        //private readonly IGestureProvider gestureProvider;
         private readonly CameraService cameraService;
         private readonly GameSettingsRepository gameSettingsRepository;
         private readonly SavesService savesService;
@@ -35,12 +35,12 @@ namespace Suburb.Common
 
         public WorldCameraController(
             CameraService cameraService, 
-            IGestureProvider gestureProvider,
+            //IGestureProvider gestureProvider,
             GameSettingsRepository gameSettingsRepository,
             SavesService savesService,
             Camera camera)
         {
-            this.gestureProvider = gestureProvider;
+            //this.gestureProvider = gestureProvider;
             this.cameraService = cameraService;
             this.gameSettingsRepository = gameSettingsRepository;
             this.savesService = savesService;
@@ -117,19 +117,19 @@ namespace Suburb.Common
             oldPosition = newPosition;
         }
 
-        private void UpdateScale(GestureEventData data)
-        {
-            // float zoomDelta = data.ZoomDelta.y * settings.ZoomFactor;
-            // currentZoom += zoomDelta;
-            //
-            // if (currentZoom > settings.MaxZoom || currentZoom < settings.MinZoom)
-            // {
-            //     currentZoom = Mathf.Clamp(currentZoom, settings.MinZoom, settings.MaxZoom);
-            //     return;
-            // }
-            //
-            // cameraTransform.position += cameraForward * zoomDelta;
-        }
+        // private void UpdateScale(GestureEventData data)
+        // {
+        //     // float zoomDelta = data.ZoomDelta.y * settings.ZoomFactor;
+        //     // currentZoom += zoomDelta;
+        //     //
+        //     // if (currentZoom > settings.MaxZoom || currentZoom < settings.MinZoom)
+        //     // {
+        //     //     currentZoom = Mathf.Clamp(currentZoom, settings.MinZoom, settings.MaxZoom);
+        //     //     return;
+        //     // }
+        //     //
+        //     // cameraTransform.position += cameraForward * zoomDelta;
+        // }
 
         private float GetMoveSpeed()
         {
@@ -149,8 +149,8 @@ namespace Suburb.Common
 
         private void SubscribeOnMobileEvents()
         {
-            if (gestureProvider is not TouchInputProvider touchGestureProvider)
-                return;
+            // if (gestureProvider is not TouchInputProvider touchGestureProvider)
+            //     return;
 
             // touchGestureProvider.OnDragStartWithDoubleTouch
             //     .Subscribe(_ => isPinchDragEnabled = true)
@@ -172,36 +172,36 @@ namespace Suburb.Common
 
         private void SubscribeOnGeneralEvents()
         {
-            gestureProvider.OnDrag
-                .Subscribe(data =>
-                {
-                    if (data.Id != currentPointerId || isPinchDragEnabled)
-                        return;
-
-                    deltaPositon = data.Delta;
-                }).AddTo(disposables);
-
-            gestureProvider.OnDragStart
-                .Subscribe(data =>
-                {
-                    currentPointerId = data.Id;
-
-                    ClearLastDrag();
-
-                    dragDisposable = Observable.EveryUpdate()
-                        .Subscribe(UpdateMove)
-                        .AddTo(disposables);
-                }).AddTo(disposables);
-
-            gestureProvider.OnDragEnd
-                .Subscribe(data =>
-                {
-                    if (currentPointerId != data.Id)
-                        return;
-
-                    deltaPositon = Vector3.zero;
-                    isAllowToDisposeDrag = true;
-                }).AddTo(disposables);
+            // gestureProvider.OnDrag
+            //     .Subscribe(data =>
+            //     {
+            //         if (data.Id != currentPointerId || isPinchDragEnabled)
+            //             return;
+            //
+            //         deltaPositon = data.Delta;
+            //     }).AddTo(disposables);
+            //
+            // gestureProvider.OnDragStart
+            //     .Subscribe(data =>
+            //     {
+            //         currentPointerId = data.Id;
+            //
+            //         ClearLastDrag();
+            //
+            //         dragDisposable = Observable.EveryUpdate()
+            //             .Subscribe(UpdateMove)
+            //             .AddTo(disposables);
+            //     }).AddTo(disposables);
+            //
+            // gestureProvider.OnDragEnd
+            //     .Subscribe(data =>
+            //     {
+            //         if (currentPointerId != data.Id)
+            //             return;
+            //
+            //         deltaPositon = Vector3.zero;
+            //         isAllowToDisposeDrag = true;
+            //     }).AddTo(disposables);
 
             // gestureProvider.OnZoom.
             //     Subscribe(UpdateScale)
