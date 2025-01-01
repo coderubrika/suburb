@@ -24,6 +24,8 @@ namespace TestAssets.Src
         [SerializeField] private Stick joystick2;
         [SerializeField] private RectTransform joystickArea2;
         
+        [SerializeField] private RectTransform zoomArea;
+        
         private readonly CompositeDisposable disposables = new();
         private Vector2 moveDirectionFromKeyboard;
         
@@ -44,10 +46,11 @@ namespace TestAssets.Src
         
         private void OnEnable()
         {
-            SetupSession(new RectBasedSession(joystickArea, null), joystick);
-            SetupSession(new RectBasedSession(joystickArea1, null), joystick1);
-            SetupSession(new RectBasedSession(joystickArea2, null), joystick2);
-
+            SetupSession(new RectBasedSession(joystickArea), joystick);
+            SetupSession(new RectBasedSession(joystickArea1), joystick1);
+            SetupSession(new RectBasedSession(joystickArea2), joystick2);
+            SetupZoomSession(zoomArea);
+            
             KeyboardSession keyboardSession = keyboardInputProvider.CreateSession()
                 .AddTo(disposables);
             
@@ -158,6 +161,45 @@ namespace TestAssets.Src
             Vector3 cameraRight = new Vector3(camera.transform.right.x, 0f, camera.transform.right.z).normalized;
             Vector3 moveDirection = (cameraForward * data.Direction.y + cameraRight * data.Direction.x).normalized;
             return moveDirection * data.Force;
+        }
+
+        private void SetupZoomSession(RectTransform rectTransform)
+        {
+            var session = new RectBasedSession(rectTransform);
+            var compositor = injectCreator.Create<OneTwoTouchPluginCompositor>(session);
+            
+            var swipePlugin = injectCreator.Create<OneTwoTouchSwipePlugin>();
+            var zoomPlugin = injectCreator.Create<TwoTouchZoomPlugin>();
+            
+            compositor.Link<SwipeMember>(swipePlugin)
+                .AddTo(disposables);
+            compositor.Link<ZoomMember>(zoomPlugin);
+            
+            session.AddCompositor(compositor)
+                .AddTo(disposables);
+            
+            session.SetBookResources(true);
+            
+            layerOrderer.Connect(session)
+                .AddTo(disposables);
+            
+            var zoom = session.GetMember<ZoomMember>();
+            var swipe = session.GetMember<SwipeMember>();
+            
+            zoom.OnZoom
+                .Subscribe(zoomData =>
+                {
+                    rectTransform.localScale *= zoomData.Zoom;
+                })
+                .AddTo(disposables);
+            
+            swipe.OnDragStart
+                .Merge(swipe.OnDrag)
+                .Subscribe(delta =>
+                {
+                    rectTransform.position += delta.To3();
+                })
+                .AddTo(disposables);
         }
     }
 }
