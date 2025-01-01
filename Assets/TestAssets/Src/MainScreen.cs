@@ -170,10 +170,14 @@ namespace TestAssets.Src
             
             var swipePlugin = injectCreator.Create<OneTwoTouchSwipePlugin>();
             var zoomPlugin = injectCreator.Create<TwoTouchZoomPlugin>();
+            var rotatePlugin = injectCreator.Create<TwoTouchRotatePlugin>();
             
             compositor.Link<SwipeMember>(swipePlugin)
                 .AddTo(disposables);
-            compositor.Link<ZoomMember>(zoomPlugin);
+            compositor.Link<ZoomMember>(zoomPlugin)
+                .AddTo(disposables);
+            compositor.Link<RotateMember>(rotatePlugin)
+                .AddTo(disposables);
             
             session.AddCompositor(compositor)
                 .AddTo(disposables);
@@ -185,6 +189,7 @@ namespace TestAssets.Src
             
             var zoom = session.GetMember<ZoomMember>();
             var swipe = session.GetMember<SwipeMember>();
+            var rotate = session.GetMember<RotateMember>();
             
             zoom.OnZoom
                 .Subscribe(zoomData =>
@@ -198,6 +203,13 @@ namespace TestAssets.Src
                 .Subscribe(delta =>
                 {
                     rectTransform.position += delta.To3();
+                })
+                .AddTo(disposables);
+            
+            rotate.OnRotate
+                .Subscribe(angle =>
+                {
+                    rectTransform.rotation *= Quaternion.AngleAxis(angle, Vector3.forward);
                 })
                 .AddTo(disposables);
         }
