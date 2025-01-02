@@ -26,8 +26,7 @@ namespace TestAssets.Src
         [SerializeField] private Stick joystick2;
         [SerializeField] private RectTransform joystickArea2;
         
-        [SerializeField] private RectTransform zoomArea;
-        [SerializeField] private RectTransform mouseTest;
+        [SerializeField] private RectTransform[] zoomAreas;
         
         private readonly CompositeDisposable disposables = new();
         private Vector2 moveDirectionFromKeyboard;
@@ -52,7 +51,8 @@ namespace TestAssets.Src
             SetupSession(new RectBasedSession(joystickArea), joystick);
             SetupSession(new RectBasedSession(joystickArea1), joystick1);
             SetupSession(new RectBasedSession(joystickArea2), joystick2);
-            SetupZoomSession(zoomArea);
+            foreach (var zoomArea in zoomAreas)
+                SetupZoomSession(zoomArea);
             
             MouseTest();
             
