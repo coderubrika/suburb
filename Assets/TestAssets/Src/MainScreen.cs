@@ -1,3 +1,4 @@
+using System;
 using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
@@ -14,6 +15,7 @@ namespace TestAssets.Src
         private KeyboardInputProvider keyboardInputProvider;
         private InjectCreator injectCreator;
         private LayerOrderer layerOrderer;
+        //private MouseProvider mouseProvider;
         
         [SerializeField] private Stick joystick;
         [SerializeField] private RectTransform joystickArea;
@@ -25,6 +27,7 @@ namespace TestAssets.Src
         [SerializeField] private RectTransform joystickArea2;
         
         [SerializeField] private RectTransform zoomArea;
+        [SerializeField] private RectTransform mouseTest;
         
         private readonly CompositeDisposable disposables = new();
         private Vector2 moveDirectionFromKeyboard;
@@ -50,6 +53,8 @@ namespace TestAssets.Src
             SetupSession(new RectBasedSession(joystickArea1), joystick1);
             SetupSession(new RectBasedSession(joystickArea2), joystick2);
             SetupZoomSession(zoomArea);
+            
+            MouseTest();
             
             KeyboardSession keyboardSession = keyboardInputProvider.CreateSession()
                 .AddTo(disposables);
@@ -114,13 +119,18 @@ namespace TestAssets.Src
         private void SetupSession(CompositorsSession session, Stick stick)
         {
             // technical gesture logic
-            var compositor = injectCreator.Create<OneTouchPluginCompositor>(session);
+            var compositor = injectCreator.Create<OneTouchPluginCompositor>();
             var swipePlugin = injectCreator.Create<OneTouchSwipePlugin>();
             
-            compositor.Link<SwipeMember>(swipePlugin)
-                .AddTo(disposables);
             
             session.AddCompositor(compositor)
+                .AddTo(disposables);
+            
+            var mouseSwipeCompositor = injectCreator.Create<MouseSwipeCompositor>(MouseButtonType.Left);
+            session.AddCompositor(mouseSwipeCompositor)
+                .AddTo(disposables);
+            
+            compositor.Link<SwipeMember>(swipePlugin)
                 .AddTo(disposables);
             
             session.SetBookResources(true);
@@ -166,11 +176,14 @@ namespace TestAssets.Src
         private void SetupZoomSession(RectTransform rectTransform)
         {
             var session = new RectBasedSession(rectTransform);
-            var compositor = injectCreator.Create<OneTwoTouchPluginCompositor>(session);
+            var compositor = injectCreator.Create<OneTwoTouchPluginCompositor>();
             
             var swipePlugin = injectCreator.Create<OneTwoTouchSwipePlugin>();
             var zoomPlugin = injectCreator.Create<TwoTouchZoomPlugin>();
             var rotatePlugin = injectCreator.Create<TwoTouchRotatePlugin>();
+            
+            session.AddCompositor(compositor)
+                .AddTo(disposables);
             
             compositor.Link<SwipeMember>(swipePlugin)
                 .AddTo(disposables);
@@ -179,7 +192,8 @@ namespace TestAssets.Src
             compositor.Link<RotateMember>(rotatePlugin)
                 .AddTo(disposables);
             
-            session.AddCompositor(compositor)
+            var mouseSwipeCompositor = injectCreator.Create<MouseSwipeCompositor>(MouseButtonType.Left);
+            session.AddCompositor(mouseSwipeCompositor)
                 .AddTo(disposables);
             
             session.SetBookResources(true);
@@ -215,6 +229,11 @@ namespace TestAssets.Src
                     rectTransform.rotation *= Quaternion.AngleAxis(angle, Vector3.forward);
                 })
                 .AddTo(disposables);
+        }
+
+        private void MouseTest()
+        {
+            
         }
     }
 }
