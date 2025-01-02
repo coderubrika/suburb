@@ -114,13 +114,13 @@ namespace TestAssets.Src
         private void SetupSession(CompositorsSession session, Stick stick)
         {
             // technical gesture logic
-            var oneTwoTouchPluginCompositor = injectCreator.Create<OneTwoTouchPluginCompositor>(session);
-            var oneTwoTouchPlugin = injectCreator.Create<OneTwoTouchSwipePlugin>();
+            var compositor = injectCreator.Create<OneTouchPluginCompositor>(session);
+            var swipePlugin = injectCreator.Create<OneTouchSwipePlugin>();
             
-            oneTwoTouchPluginCompositor.Link<SwipeMember>(oneTwoTouchPlugin)
+            compositor.Link<SwipeMember>(swipePlugin)
                 .AddTo(disposables);
             
-            session.AddCompositor(oneTwoTouchPluginCompositor)
+            session.AddCompositor(compositor)
                 .AddTo(disposables);
             
             session.SetBookResources(true);
