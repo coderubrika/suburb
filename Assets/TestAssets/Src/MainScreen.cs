@@ -130,6 +130,10 @@ namespace TestAssets.Src
             session.AddCompositor(mouseSwipeCompositor)
                 .AddTo(disposables);
             
+            var mouseZoomCompositor = injectCreator.Create<MouseZoomCompositor>();
+            session.AddCompositor(mouseZoomCompositor)
+                .AddTo(disposables);
+            
             compositor.Link<SwipeMember>(swipePlugin)
                 .AddTo(disposables);
             
@@ -194,6 +198,10 @@ namespace TestAssets.Src
             
             var mouseSwipeCompositor = injectCreator.Create<MouseSwipeCompositor>(MouseButtonType.Left);
             session.AddCompositor(mouseSwipeCompositor)
+                .AddTo(disposables);
+            
+            var mouseZoomCompositor = injectCreator.Create<MouseZoomCompositor>();
+            session.AddCompositor(mouseZoomCompositor)
                 .AddTo(disposables);
             
             session.SetBookResources(true);
