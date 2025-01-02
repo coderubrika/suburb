@@ -194,7 +194,10 @@ namespace TestAssets.Src
             zoom.OnZoom
                 .Subscribe(zoomData =>
                 {
+                    var zoomCenterPosition = zoomData.Position.To3();
+                    Vector3 offset = zoomCenterPosition - rectTransform.position;
                     rectTransform.localScale *= zoomData.Zoom;
+                    rectTransform.position = zoomCenterPosition - offset * zoomData.Zoom;
                 })
                 .AddTo(disposables);
             
