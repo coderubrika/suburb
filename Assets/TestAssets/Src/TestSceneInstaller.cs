@@ -13,9 +13,9 @@ namespace TestAssets.Src
         public override void InstallBindings()
         {
             
-            Container.BindInterfacesAndSelfTo<TestAppStartup>()
-                .AsSingle()
-                .NonLazy();
+            // Container.BindInterfacesAndSelfTo<TestAppStartup>()
+            //     .AsSingle()
+            //     .NonLazy();
 
             Container.Bind<Camera>().FromComponentInNewPrefab(camera).AsSingle().NonLazy();
             Container.Bind<PlayerController>().FromComponentInNewPrefab(playerController).AsSingle().NonLazy();
