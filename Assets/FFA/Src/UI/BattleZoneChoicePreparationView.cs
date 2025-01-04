@@ -41,13 +41,8 @@ namespace FFA.UI
                 var session = new RectBasedSession(spawnPlayersImage.rectTransform);
                 session.SetBookResources(true);
                 
-                // session.AddCompositor(touchPluginCompositor)
-                //     .AddTo(disposables);
-
-                IDisposable d = session.AddCompositor(touchPluginCompositor);
-                d.AddTo(disposables);
-                Observable.Timer(TimeSpan.FromSeconds(2))
-                    .Subscribe(_ => d.Dispose());
+                session.AddCompositor(touchPluginCompositor)
+                    .AddTo(disposables);
                 
                 touchPluginCompositor.Link<SwipeMember>(swipePlugin)
                     .AddTo(disposables);
@@ -82,11 +77,12 @@ namespace FFA.UI
             announcementOfStartBattle.gameObject.SetActive(false);
         }
 
-        private void SetupSwipeHandling(ISession session, IDisposable sessionDisposable)
+        private void SetupSwipeHandling(CompositorsSession session, IDisposable sessionDisposable)
         {
             session.GetMember<SwipeMember>().OnDown
                 .Subscribe(position =>
                 {
+                    session.SetBookResources(false);
                     OnResponse.Execute((position, session));
                     sessionDisposable.Dispose();
                 })
