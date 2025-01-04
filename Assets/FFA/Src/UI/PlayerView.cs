@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace FFA.UI
 {
@@ -9,5 +10,10 @@ namespace FFA.UI
         [SerializeField] private Graphic playerBody;
         [SerializeField] private Graphic playerBodyBorder;
         [SerializeField] private Graphic background;
+        
+        public class Pool : MonoMemoryPool<PlayerView>
+        {
+        
+        }
     }
 }

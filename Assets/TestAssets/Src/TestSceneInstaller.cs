@@ -1,4 +1,5 @@
 using Suburb.Inputs;
+using Suburb.Utils;
 using UnityEngine;
 using Zenject;
 
@@ -12,11 +13,10 @@ namespace TestAssets.Src
         
         public override void InstallBindings()
         {
-            
-            // Container.BindInterfacesAndSelfTo<TestAppStartup>()
-            //     .AsSingle()
-            //     .NonLazy();
-
+            Container.Bind<InjectCreator>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<TouchResourceDistributor>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<MouseResourceDistributor>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<LayerOrderer>().AsSingle().NonLazy();
             Container.Bind<Camera>().FromComponentInNewPrefab(camera).AsSingle().NonLazy();
             Container.Bind<PlayerController>().FromComponentInNewPrefab(playerController).AsSingle().NonLazy();
             Container.Bind<MainScreen>().FromComponentInNewPrefab(mainScreenPrefab).AsSingle().NonLazy();

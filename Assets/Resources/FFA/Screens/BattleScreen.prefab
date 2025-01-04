@@ -196,8 +196,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startFightTimer: {fileID: 8864182482203630806}
   fieldFader: {fileID: 8561736228975926551}
-  zoneChoicePreparationViewDown: {fileID: 2937623760947562559}
-  zoneChoicePreparationViewTop: {fileID: 6746717396003793553}
+  zoneDown: {fileID: 2937623760947562559}
+  zoneTop: {fileID: 6746717396003793553}
 --- !u!1 &6618338470406417531
 GameObject:
   m_ObjectHideFlags: 0

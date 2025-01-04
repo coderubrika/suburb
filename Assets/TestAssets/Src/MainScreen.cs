@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
@@ -53,8 +54,6 @@ namespace TestAssets.Src
             SetupSession(new RectBasedSession(joystickArea2), joystick2);
             foreach (var zoomArea in zoomAreas)
                 SetupZoomSession(zoomArea);
-            
-            MouseTest();
             
             KeyboardSession keyboardSession = keyboardInputProvider.CreateSession()
                 .AddTo(disposables);
@@ -119,27 +118,26 @@ namespace TestAssets.Src
         private void SetupSession(CompositorsSession session, Stick stick)
         {
             // technical gesture logic
-            var compositor = injectCreator.Create<OneTouchPluginCompositor>();
-            var swipePlugin = injectCreator.Create<OneTouchSwipePlugin>();
+            // var compositor = injectCreator.Create<OneTouchPluginCompositor>();
+            // var swipePlugin = injectCreator.Create<OneTouchSwipePlugin>();
             
-            
-            session.AddCompositor(compositor)
-                .AddTo(disposables);
+            // session.AddCompositor(compositor)
+            //     .AddTo(disposables);
             
             var mouseSwipeCompositor = injectCreator.Create<MouseSwipeCompositor>(MouseButtonType.Left);
             session.AddCompositor(mouseSwipeCompositor)
                 .AddTo(disposables);
             
-            var mouseZoomCompositor = injectCreator.Create<MouseZoomCompositor>();
-            session.AddCompositor(mouseZoomCompositor)
-                .AddTo(disposables);
-            
-            compositor.Link<SwipeMember>(swipePlugin)
-                .AddTo(disposables);
+            // var mouseZoomCompositor = injectCreator.Create<MouseZoomCompositor>();
+            // session.AddCompositor(mouseZoomCompositor)
+            //     .AddTo(disposables);
+            //
+            // compositor.Link<SwipeMember>(swipePlugin)
+            //     .AddTo(disposables);
             
             session.SetBookResources(true);
             
-            layerOrderer.Connect(session)
+            layerOrderer.ConnectFirst(session)
                 .AddTo(disposables);
 
             // business gesture login
@@ -206,7 +204,7 @@ namespace TestAssets.Src
             
             session.SetBookResources(true);
             
-            layerOrderer.Connect(session)
+            layerOrderer.ConnectFirst(session)
                 .AddTo(disposables);
             
             var zoom = session.GetMember<ZoomMember>();
@@ -237,11 +235,6 @@ namespace TestAssets.Src
                     rectTransform.rotation *= Quaternion.AngleAxis(angle, Vector3.forward);
                 })
                 .AddTo(disposables);
-        }
-
-        private void MouseTest()
-        {
-            
         }
     }
 }
