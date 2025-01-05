@@ -5,7 +5,7 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 
-namespace FFA.UI
+namespace FFA.Battle.UI
 {
     public class AnnouncementOfStartBattle : MonoBehaviour
     {

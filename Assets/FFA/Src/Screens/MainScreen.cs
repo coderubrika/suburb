@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace FFA.UI.Screens
+namespace FFA.Screens
 {
     public class MainScreen : BaseScreen
     {

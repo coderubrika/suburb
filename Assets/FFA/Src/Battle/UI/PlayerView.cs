@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace FFA.UI
+namespace FFA.Battle.UI
 {
     public class PlayerView : MonoBehaviour
     {

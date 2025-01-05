@@ -1,4 +1,4 @@
-using FFA.UI.Screens;
+using FFA.Screens;
 using Suburb.Screens;
 using Zenject;
 

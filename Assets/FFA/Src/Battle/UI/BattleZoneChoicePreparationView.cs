@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace FFA.UI
+namespace FFA.Battle.UI
 {
     public class BattleZoneChoicePreparationView : MonoBehaviour
     {
@@ -16,11 +16,13 @@ namespace FFA.UI
         
         [SerializeField] private AnnouncementOfStartBattle announcementOfStartBattle;
         [SerializeField] private Image spawnPlayersImage;
+        [SerializeField] private BattleSide battleSide;
         
         private readonly CompositeDisposable disposables = new();
         private float spawnPlayersAlpha;
 
         public ReactiveCommand<Vector2> OnResponse { get; } = new();
+        public BattleSide BattleSide => battleSide;
         
         [Inject]
         private void Construct(InjectCreator injectCreator, LayerOrderer layerOrderer)

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
 
-namespace FFA.UI
+namespace FFA.Battle.UI
 {
     public class StartFightTimer : MonoBehaviour
     {

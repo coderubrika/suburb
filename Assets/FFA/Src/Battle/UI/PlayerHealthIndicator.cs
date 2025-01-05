@@ -1,7 +1,7 @@
 using MPUIKIT;
 using UnityEngine;
 
-namespace FFA.UI
+namespace FFA.Battle.UI
 {
     public class PlayerHealthIndicator : MonoBehaviour
     {

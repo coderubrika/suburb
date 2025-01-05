@@ -1,9 +1,11 @@
-using FFA.UI;
+using FFA.Battle;
 using Suburb.Inputs;
 using Suburb.Screens;
 using Suburb.Utils;
 using UnityEngine;
 using Zenject;
+using FFA.Battle.UI;
+
 
 namespace FFA
 {
@@ -21,6 +23,7 @@ namespace FFA
             Container.BindInterfacesAndSelfTo<LayerOrderer>().AsSingle().NonLazy();
             Container.Bind<ScreensFactory>().AsSingle().WithArguments("FFA/Screens").NonLazy();
             Container.Bind<ScreensService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<BattleService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<Startup>().AsSingle().NonLazy();
             Container.BindMemoryPool<PlayerView, PlayerView.Pool>()
                 .WithInitialSize(4)
