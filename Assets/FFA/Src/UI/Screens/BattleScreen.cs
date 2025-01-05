@@ -47,24 +47,24 @@ namespace FFA.UI.Screens
             zoneDown.gameObject.SetActive(true);
             zoneDown.Init(2);
             
-            // zoneTop.gameObject.SetActive(true);
-            // zoneTop.Init(2);
+            zoneTop.gameObject.SetActive(true);
+            zoneTop.Init(2);
             
             startFightTimer.gameObject.SetActive(true);
             startFightTimer.ResetTimer();
             
-            // Observable.WhenAll(zoneDown.OnResponse.Take(1), zoneTop.OnResponse.Take(1))
-            //     .ObserveOnMainThread()
-            //     .ContinueWith(_ => startFightTimer.StartTimer(TimeSpan.FromSeconds(0.5f)))
-            //     .ObserveOnMainThread()
-            //     .Do(_ => startFightTimer.gameObject.SetActive(false))
-            //     .ObserveOnMainThread()
-            //     .ContinueWith(_ => Observable.WhenAll(
-            //         zoneDown.Show("Player2"), 
-            //         zoneTop.Show("Player1")))
-            //     .ContinueWith(_ => fieldFader.DOFade(0, 0.4f).ToObservableOnComplete())
-            //     .Subscribe()
-            //     .AddTo(disposables);
+            Observable.WhenAll(zoneDown.OnResponse.Take(1), zoneTop.OnResponse.Take(1))
+                .ObserveOnMainThread()
+                .ContinueWith(_ => startFightTimer.StartTimer(TimeSpan.FromSeconds(1)))
+                .ObserveOnMainThread()
+                .Do(_ => startFightTimer.gameObject.SetActive(false))
+                .ObserveOnMainThread()
+                .ContinueWith(_ => Observable.WhenAll(
+                    zoneDown.Show("Player2"), 
+                    zoneTop.Show("Player1")))
+                .ContinueWith(_ => fieldFader.DOFade(0, 0.4f).ToObservableOnComplete())
+                .Subscribe()
+                .AddTo(disposables);
             
             zoneDown.OnResponse
                 .Subscribe(SetupPlayer)
