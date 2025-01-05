@@ -45,7 +45,7 @@ namespace FFA.UI.Screens
             fieldFader.gameObject.SetActive(true);
             fieldFader.color = UIUtils.GetNewAlpha(fieldFader.color, fieldFaderAlpha);
             zoneDown.gameObject.SetActive(true);
-            zoneDown.Init(1);
+            zoneDown.Init(2);
             
             // zoneTop.gameObject.SetActive(true);
             // zoneTop.Init(2);
@@ -85,13 +85,13 @@ namespace FFA.UI.Screens
             startFightTimer.gameObject.SetActive(false);
         }
 
-        private void SetupPlayer((Vector2 Position, ISession session) data)
+        private void SetupPlayer(Vector2 position)
         {
-            this.Log($"SetupPlayer: {data.Position}");
+            this.Log($"SetupPlayer: {position}");
             var player = playersPool.Spawn();
             player.transform.SetParent(battleZone);
             player.transform.localScale = Vector3.one;
-            player.transform.position = data.Position;
+            player.transform.position = position;
             var playerSession = new RectBasedSession(player.transform as RectTransform);
             playerSession.SetBookResources(true);
             playerSession.SetPreventNext(true);
@@ -113,7 +113,7 @@ namespace FFA.UI.Screens
                 .Subscribe(delta => player.transform.position += delta.To3())
                 .AddTo(disposables);
                     
-            layerOrderer.ConnectAfter(data.session, playerSession)
+            layerOrderer.ConnectFirst(playerSession)
                 .AddTo(disposables);
         }
     }

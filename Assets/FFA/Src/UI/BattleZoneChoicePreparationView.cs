@@ -20,7 +20,7 @@ namespace FFA.UI
         private readonly CompositeDisposable disposables = new();
         private float spawnPlayersAlpha;
 
-        public ReactiveCommand<(Vector2 Position, ISession session)> OnResponse { get; } = new();
+        public ReactiveCommand<Vector2> OnResponse { get; } = new();
         
         [Inject]
         private void Construct(InjectCreator injectCreator, LayerOrderer layerOrderer)
@@ -49,7 +49,7 @@ namespace FFA.UI
                     .AddTo(disposables);
 
                 IDisposable sessionDisposable = layerOrderer.ConnectFirst(session);
-                SetupSwipeHandling(session, sessionDisposable);
+                SetupSwipeHandling(session.GetMember<SwipeMember>(), sessionDisposable);
             }
             
             spawnPlayersImage.gameObject.SetActive(true);
@@ -78,13 +78,12 @@ namespace FFA.UI
             announcementOfStartBattle.gameObject.SetActive(false);
         }
 
-        private void SetupSwipeHandling(CompositorsSession session, IDisposable sessionDisposable)
+        private void SetupSwipeHandling(SwipeMember member, IDisposable sessionDisposable)
         {
-            session.GetMember<SwipeMember>().OnDown
+            member.OnDown
                 .Subscribe(position =>
                 {
-                    session.SetBookResources(false);
-                    OnResponse.Execute((position, session));
+                    OnResponse.Execute(position);
                     sessionDisposable.Dispose();
                 })
                 .AddTo(disposables);
