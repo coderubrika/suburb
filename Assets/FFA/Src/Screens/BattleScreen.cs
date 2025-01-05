@@ -46,6 +46,8 @@ namespace FFA.Screens
             battleService.SetName(BattleSide.Top, "Player2");
             battleService.SetPlayersCount(BattleSide.Bottom, 2);
             battleService.SetPlayersCount(BattleSide.Top, 2);
+            battleService.SetColor(BattleSide.Bottom, Color.blue);
+            battleService.SetColor(BattleSide.Top, Color.red);
             
             base.Show();
             battleController.StartPreparation();

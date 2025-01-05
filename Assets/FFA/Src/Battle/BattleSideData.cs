@@ -1,4 +1,5 @@
 using FFA.Battle.UI;
+using UnityEngine;
 
 namespace FFA.Battle
 {
@@ -6,5 +7,6 @@ namespace FFA.Battle
     {
         public int PlayersCount;
         public string PlayerName;
+        public Color SideColor;
     }
 }
