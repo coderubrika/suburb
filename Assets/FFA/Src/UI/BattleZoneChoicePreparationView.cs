@@ -27,7 +27,8 @@ namespace FFA.UI
         {
             this.injectCreator = injectCreator;
             this.layerOrderer = layerOrderer;
-            
+            spawnPlayersImage.gameObject.SetActive(false);
+            announcementOfStartBattle.gameObject.SetActive(false);
             spawnPlayersAlpha = spawnPlayersImage.color.a;
         }
 
@@ -39,7 +40,7 @@ namespace FFA.UI
                 OneTouchSwipePlugin swipePlugin = injectCreator.Create<OneTouchSwipePlugin>();
                 
                 var session = new RectBasedSession(spawnPlayersImage.rectTransform);
-                session.SetBookResources(true);
+                session.SetBookResources(false);
                 
                 session.AddCompositor(touchPluginCompositor)
                     .AddTo(disposables);
