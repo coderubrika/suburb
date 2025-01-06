@@ -7,6 +7,9 @@ using Zenject;
 
 namespace FFA.Battle.UI
 {
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(CircleCollider2D))]
+    
     public class PlayerView : MonoBehaviour
     {
         private BattleService battleService;
@@ -20,12 +23,14 @@ namespace FFA.Battle.UI
 
         [SerializeField] private float deltaThreshold;
         [SerializeField] private float deltaFactor;
-        
+        [SerializeField] private Rigidbody2D rigidbody;
+        [SerializeField] private float forceFactor;
         private readonly CompositeDisposable disposables = new();
         
         private RectBasedSession inputSession;
         private BattleSide battleSide;
         private RectTransform playerBodyTransform;
+        private Vector2 accumulatedDelta;
         
         [Inject]
         private void Construct(
@@ -54,6 +59,7 @@ namespace FFA.Battle.UI
         
         private void Setup(BattleSide side)
         {
+            accumulatedDelta = Vector2.zero;
             battleService.RegisterPlayer(this, side);
             battleSide = side;
             playerBody.color = Random.ColorHSV(0.7f, 1f, 0.7f, 1f, 0, 1f);
@@ -75,12 +81,11 @@ namespace FFA.Battle.UI
 
         private void HandleDrag(Vector2 delta)
         {
-            transform.position = ClampPosition(transform.position + delta.To3());
-            // transform.localRotation = Quaternion.Slerp(
-            //     transform.localRotation, 
-            //     Quaternion.LookRotation(delta, Vector3.up), 
-            //     Time.deltaTime * 10f);
+            // допустим я использую физику
             
+            //transform.position = ClampPosition(transform.position + delta.To3());
+            //transform.position += delta.To3();
+            accumulatedDelta += delta;
             float deltaDistance = battleService.BattleZone.InverseTransformVector(delta).magnitude;
             if (deltaDistance < deltaThreshold)
                 return;
@@ -93,6 +98,12 @@ namespace FFA.Battle.UI
             );
         }
 
+        private void FixedUpdate()
+        {
+            rigidbody.AddForce(battleService.BattleZone.InverseTransformVector(accumulatedDelta) * forceFactor);
+            accumulatedDelta = Vector2.zero;
+        }
+        
         private Vector3 ClampPosition(Vector3 position)
         {
             float radius = GetRadius();
