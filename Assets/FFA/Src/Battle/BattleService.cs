@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using FFA.Battle.UI;
 using Suburb.Inputs;
@@ -20,9 +21,13 @@ namespace FFA.Battle
         
         private readonly BattleSideInfo[] battleSideInfos = new BattleSideInfo[2];
         //private readonly CompositeDisposable disposables = new();
+        private readonly List<PlayerView> topPlayers = new();
+        private readonly List<PlayerView> bottomPlayers = new();
         
         private RectTransform battleZone;
 
+        public RectTransform BattleZone => battleZone;
+        
         public BattleService(
             InjectCreator injectCreator, 
             LayerOrderer layerOrderer,
@@ -31,6 +36,11 @@ namespace FFA.Battle
             //this.injectCreator = injectCreator;
             //this.layerOrderer = layerOrderer;
             this.playersPool = playersPool;
+        }
+
+        public void RegisterPlayer(PlayerView playerView, BattleSide side)
+        {
+            GetPlayersList(side).Add(playerView);
         }
         
         public void SetBattleZone(RectTransform rectTransform) => battleZone = rectTransform;
@@ -60,5 +70,7 @@ namespace FFA.Battle
             int idx = (int)side;
             return battleSideInfos[idx] ?? (battleSideInfos[idx] = new BattleSideInfo());
         }
+        
+        private List<PlayerView> GetPlayersList(BattleSide side) => side == BattleSide.Top ? topPlayers : bottomPlayers;
     }
 }

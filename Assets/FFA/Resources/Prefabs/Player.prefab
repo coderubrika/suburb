@@ -133,7 +133,7 @@ MonoBehaviour:
   playerBodyBorder: {fileID: 5987307728572945580}
   background: {fileID: 1918435020203822320}
   deltaThreshold: 0.1
-  deltaFactor: 0.005
+  deltaFactor: 1
 --- !u!1 &5026421377145103065
 GameObject:
   m_ObjectHideFlags: 0
