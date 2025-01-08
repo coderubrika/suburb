@@ -69,16 +69,16 @@ namespace FFA.Battle.UI
             isControlBlocked = isBlocking;
         }
         
-        private void Setup(BattleSide side)
+        private void Setup(BattleSide side, PlayerData data)
         {
             circleCollider.radius = playerBodyTransform.rect.width / 2;
             accumulatedDelta = Vector2.zero;
-            battleService.RegisterPlayer(this, side);
             battleSide = side;
-            playerBody.color = Random.ColorHSV(0.7f, 1f, 0.7f, 1f, 0, 1f);
-            playerBodyBorder.color = Random.ColorHSV(0f, 0.7f, 0.7f, 1f, 0, 1f);
-            background.color = battleService.GetColor(side);
             healthIndicator.SetHealthPercentage(1);
+            
+            playerBody.color = data.BodyColor;
+            playerBodyBorder.color = data.BodyBorderColor;
+            background.color = data.BackgroundColor;
             
             transform.localRotation = side == BattleSide.Bottom 
                 ? Quaternion.identity 
@@ -130,11 +130,11 @@ namespace FFA.Battle.UI
             return battleService.BattleZone.TransformVector(Vector3.right * playerBodyTransform.rect.width * 0.5f).x;
         }
         
-        public class Pool : MonoMemoryPool<BattleSide,PlayerView>
+        public class Pool : MonoMemoryPool<BattleSide, PlayerData ,PlayerView>
         {
-            protected override void Reinitialize(BattleSide side, PlayerView item)
+            protected override void Reinitialize(BattleSide side, PlayerData data, PlayerView item)
             {
-                item.Setup(side);
+                item.Setup(side, data);
             }
 
             protected override void OnDespawned(PlayerView item)

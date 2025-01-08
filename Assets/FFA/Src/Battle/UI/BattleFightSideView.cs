@@ -15,8 +15,10 @@ namespace FFA.Battle.UI
         [SerializeField] private float baseAlpha;
         [SerializeField] private float activeAlpha;
         [SerializeField] private RectTransform rectTransform;
+        [SerializeField] private RectTransform buttonsRoot;
         
         public RectTransform RectTransform => rectTransform;
+        public RectTransform ButtonsRoot => buttonsRoot;
         public BattleSide Side => side;
         
         private float targetAlpha;

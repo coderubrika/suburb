@@ -12,8 +12,10 @@ namespace FFA
     public class FFAInstaller : MonoInstaller
     {
         [SerializeField] private PlayerView playerView;
+        [SerializeField] private PlayerButton playerButton;
         
         private static string PLAYERS_POOL = "PlayersPool";
+        private static string PLAYERS_BUTTONS_POOL = "PlayersButtonsPool";
         
         public override void InstallBindings()
         {
@@ -31,6 +33,13 @@ namespace FFA
                 .ExpandByOneAtATime()
                 .FromComponentInNewPrefab(playerView)
                 .UnderTransformGroup(PLAYERS_POOL);
+            
+            Container.BindMemoryPool<PlayerButton, PlayerButton.Pool>()
+                .WithInitialSize(4)
+                .WithMaxSize(4)
+                .ExpandByOneAtATime()
+                .FromComponentInNewPrefab(playerButton)
+                .UnderTransformGroup(PLAYERS_BUTTONS_POOL);
         }
     }
 }

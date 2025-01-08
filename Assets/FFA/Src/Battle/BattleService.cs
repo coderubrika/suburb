@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FFA.Battle.UI;
@@ -5,6 +6,7 @@ using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace FFA.Battle
 {
@@ -37,11 +39,6 @@ namespace FFA.Battle
             //this.layerOrderer = layerOrderer;
             this.playersPool = playersPool;
         }
-
-        public void RegisterPlayer(PlayerView playerView, BattleSide side)
-        {
-            GetPlayersList(side).Add(playerView);
-        }
         
         public void SetBattleZone(RectTransform rectTransform) => battleZone = rectTransform;
         
@@ -57,12 +54,26 @@ namespace FFA.Battle
         
         public void SetPlayersCount(BattleSide side, int playersCount) => GetBattleSideInfo(side).PlayersCount = playersCount;
 
-        public void SetupPlayer(BattleSide side, Vector2 position)
+        public IDisposable SetupPlayer(BattleSide side, Vector2 position)
         {
-            var player = playersPool.Spawn(side);
+            PlayerData playerData = new PlayerData
+            {
+                BodyColor = Random.ColorHSV(0.7f, 1f, 0.7f, 1f, 0, 1f),
+                BodyBorderColor = Random.ColorHSV(0f, 0.7f, 0.7f, 1f, 0, 1f),
+                BackgroundColor = GetColor(side),
+            };
+            var player = playersPool.Spawn(side, playerData);
             player.transform.SetParent(battleZone);
             player.transform.localScale = Vector3.one;
             player.transform.position = position;
+            
+            GetPlayersList(side).Add(player);
+            
+            return Disposable.Create(() =>
+            {
+                GetPlayersList(side).Remove(player);
+                playersPool.Despawn(player);
+            });
         }
         
         private BattleSideInfo GetBattleSideInfo(BattleSide side)

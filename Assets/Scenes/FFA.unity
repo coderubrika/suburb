@@ -201,6 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerView: {fileID: 2788224199770833597, guid: 6559dd76f07bfd14ab87460309bd004f, type: 3}
+  playerButton: {fileID: 2249789240626792270, guid: c08d74468200a544980640b230f3f748, type: 3}
 --- !u!1 &312195883
 GameObject:
   m_ObjectHideFlags: 0
