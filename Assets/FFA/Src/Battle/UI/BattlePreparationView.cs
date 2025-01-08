@@ -37,7 +37,7 @@ namespace FFA.Battle.UI
                 zone.gameObject.SetActive(true);
                 zone.Init(battleService.GetPlayersCount(zone.BattleSide));
                 zone.OnResponse
-                    .Subscribe(position => battleService.SetupPlayer(zone.BattleSide, position))
+                    .Subscribe(position => battleService.CreatePlayer(zone.BattleSide, position))
                     .AddTo(disposables);
             }
             

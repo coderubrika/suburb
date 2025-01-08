@@ -54,7 +54,7 @@ namespace FFA.Battle
         
         public void SetPlayersCount(BattleSide side, int playersCount) => GetBattleSideInfo(side).PlayersCount = playersCount;
 
-        public IDisposable SetupPlayer(BattleSide side, Vector2 position)
+        public PlayerView CreatePlayer(BattleSide side, Vector2 position)
         {
             PlayerData playerData = new PlayerData
             {
@@ -69,11 +69,13 @@ namespace FFA.Battle
             
             GetPlayersList(side).Add(player);
             
-            return Disposable.Create(() =>
-            {
-                GetPlayersList(side).Remove(player);
+            return player;
+        }
+
+        public void DeletePlayer(PlayerView player)
+        {
+            if (GetPlayersList(player.Side).Remove(player))
                 playersPool.Despawn(player);
-            });
         }
         
         private BattleSideInfo GetBattleSideInfo(BattleSide side)

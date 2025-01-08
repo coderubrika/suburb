@@ -1,3 +1,4 @@
+using System;
 using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
@@ -28,16 +29,17 @@ namespace FFA.Battle.UI
         [SerializeField] private float forceFactor;
         
         private readonly CompositeDisposable disposables = new();
+        public PlayerController PlayerController {get; private set;}
         
-        private RectBasedSession inputSession;
-        private BattleSide battleSide;
         private RectTransform playerBodyTransform;
-        private Vector2 accumulatedDelta;
-
-        private bool isControlBlocked;
         
-        public BattleSide Side => battleSide;
-        public RectBasedSession InputSession => inputSession;
+        public float ForceFactor => forceFactor;
+        public float DeltaThreshold => deltaThreshold;
+        public float DeltaFactor => deltaFactor;
+        public Rigidbody2D Rigidbody => rigidbody;
+        public BattleSide Side {get; private set;}
+        public RectBasedSession InputSession {get; private set;}
+        public PlayerData PlayerData {get; private set;}
         
         [Inject]
         private void Construct(
@@ -49,31 +51,35 @@ namespace FFA.Battle.UI
             this.injectCreator = injectCreator;
             this.layerOrderer = layerOrderer;
             
-            inputSession = new RectBasedSession(transform as RectTransform);
-            inputSession.SetBookResources(true);
-            inputSession.SetPreventNext(true);
+            InputSession = new RectBasedSession(transform as RectTransform);
+            InputSession.SetBookResources(true);
+            InputSession.SetPreventNext(true);
                     
             playerBodyTransform = transform as RectTransform;
             var touchCompositor = injectCreator.Create<OneTouchPluginCompositor>();
-            inputSession.AddCompositor(touchCompositor)
+            InputSession.AddCompositor(touchCompositor)
                 .AddTo(disposables);
                     
             var swipeTouchPlugin = injectCreator.Create<OneTouchSwipePlugin>();
             touchCompositor.Link<SwipeMember>(swipeTouchPlugin)
                 .AddTo(disposables);
             
+            PlayerController = injectCreator.Create<PlayerController>(this);
         }
 
-        public void BlockControl(bool isBlocking)
+        public void AddTo(IDisposable disposable)
         {
-            isControlBlocked = isBlocking;
+            disposables.Add(disposable);
         }
         
         private void Setup(BattleSide side, PlayerData data)
         {
+            float dpiFactor = Screen.dpi/500;
+            
+            playerBodyTransform.sizeDelta *= dpiFactor;
+            PlayerData = data;
             circleCollider.radius = playerBodyTransform.rect.width / 2;
-            accumulatedDelta = Vector2.zero;
-            battleSide = side;
+            Side = side;
             healthIndicator.SetHealthPercentage(1);
             
             playerBody.color = data.BodyColor;
@@ -84,36 +90,11 @@ namespace FFA.Battle.UI
                 ? Quaternion.identity 
                 : Quaternion.Euler(0f, 0f, 180f);
             
-            inputSession.GetMember<SwipeMember>().OnDrag
-                .Subscribe(HandleDrag)
-                .AddTo(disposables);
-                    
-            layerOrderer.ConnectFirst(inputSession)
-                .AddTo(disposables);
-        }
-
-        private void HandleDrag(Vector2 delta)
-        {
-            if (isControlBlocked)
-                return;
             
-            accumulatedDelta += delta;
-            float deltaDistance = battleService.BattleZone.InverseTransformVector(delta).magnitude;
-            if (deltaDistance < deltaThreshold)
-                return;
+            PlayerController.Start();
             
-            float angle = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg; // вычисляем угол в радианах и переводим в градусы
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation, 
-                Quaternion.Euler(0, 0, angle - 90),  // Поворот только по оси Z, так как Canvas работает в 2D
-                Time.deltaTime * deltaDistance * deltaFactor
-            );
-        }
-
-        private void FixedUpdate()
-        {
-            rigidbody.AddForce(battleService.BattleZone.InverseTransformVector(accumulatedDelta) * forceFactor);
-            accumulatedDelta = Vector2.zero;
+            layerOrderer.ConnectFirst(InputSession)
+                .AddTo(disposables);
         }
         
         private Vector3 ClampPosition(Vector3 position)
@@ -139,6 +120,7 @@ namespace FFA.Battle.UI
 
             protected override void OnDespawned(PlayerView item)
             {
+                item.PlayerController.Clear();
                 item.disposables.Clear();
                 base.OnDespawned(item);
             }
