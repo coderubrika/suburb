@@ -91,4 +91,5 @@ MonoBehaviour:
   side: 1
   graphic: {fileID: 3041809072112834855}
   baseAlpha: 0.12
-  outOfZoneAlpha: 0.4
+  activeAlpha: 0.4
+  rectTransform: {fileID: 7668683251782102975}

@@ -13,7 +13,13 @@ namespace FFA.Battle.UI
         [SerializeField] private BattleSide side;
         [SerializeField] private Graphic graphic;
         [SerializeField] private float baseAlpha;
-        [SerializeField] private float outOfZoneAlpha;
+        [SerializeField] private float activeAlpha;
+        [SerializeField] private RectTransform rectTransform;
+        
+        public RectTransform RectTransform => rectTransform;
+        public BattleSide Side => side;
+        
+        private float targetAlpha;
         
         [Inject]
         private void Construct(BattleService battleService)
@@ -23,22 +29,34 @@ namespace FFA.Battle.UI
         
         public void Init()
         {
+            targetAlpha = 0;
             graphic.color = UIUtils.GetNewAlpha(battleService.GetColor(side), 0);
         }
 
-        public void Show()
+        public void PlayBase()
         {
             PlaySide(baseAlpha);
         }
-        
-        public void Hide()
+
+        public void PlayActive()
         {
+            PlaySide(activeAlpha);
+        }
+        
+        public void Clear()
+        {
+            targetAlpha = 0;
             DOTween.Kill(graphic);
             graphic.color = UIUtils.GetNewAlpha(Color.white, 0);
         }
         
         private void PlaySide(float alpha)
         {
+            if (targetAlpha == alpha)
+                return;
+            targetAlpha = alpha;
+            
+            DOTween.Kill(graphic);
             graphic.DOFade(alpha, 0.4f);
         }
     }

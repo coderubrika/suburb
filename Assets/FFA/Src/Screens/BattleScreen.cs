@@ -38,7 +38,8 @@ namespace FFA.Screens
             this.battleService = battleService;
             
             battleService.SetBattleZone(battleZone);
-            battleController = new BattleController(battlePreparation, battleFight);
+            
+            battleController = injectCreator.Create<BattleController>(battlePreparation, battleFight);
         }
         
         protected override void Show()

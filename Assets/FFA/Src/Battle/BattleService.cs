@@ -71,6 +71,6 @@ namespace FFA.Battle
             return battleSideInfos[idx] ?? (battleSideInfos[idx] = new BattleSideInfo());
         }
         
-        private List<PlayerView> GetPlayersList(BattleSide side) => side == BattleSide.Top ? topPlayers : bottomPlayers;
+        public List<PlayerView> GetPlayersList(BattleSide side) => side == BattleSide.Top ? topPlayers : bottomPlayers;
     }
 }

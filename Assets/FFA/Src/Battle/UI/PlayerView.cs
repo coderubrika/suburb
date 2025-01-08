@@ -33,6 +33,11 @@ namespace FFA.Battle.UI
         private BattleSide battleSide;
         private RectTransform playerBodyTransform;
         private Vector2 accumulatedDelta;
+
+        private bool isControlBlocked;
+        
+        public BattleSide Side => battleSide;
+        public RectBasedSession InputSession => inputSession;
         
         [Inject]
         private void Construct(
@@ -57,6 +62,11 @@ namespace FFA.Battle.UI
             touchCompositor.Link<SwipeMember>(swipeTouchPlugin)
                 .AddTo(disposables);
             
+        }
+
+        public void BlockControl(bool isBlocking)
+        {
+            isControlBlocked = isBlocking;
         }
         
         private void Setup(BattleSide side)
@@ -84,10 +94,9 @@ namespace FFA.Battle.UI
 
         private void HandleDrag(Vector2 delta)
         {
-            // допустим я использую физику
+            if (isControlBlocked)
+                return;
             
-            //transform.position = ClampPosition(transform.position + delta.To3());
-            //transform.position += delta.To3();
             accumulatedDelta += delta;
             float deltaDistance = battleService.BattleZone.InverseTransformVector(delta).magnitude;
             if (deltaDistance < deltaThreshold)
