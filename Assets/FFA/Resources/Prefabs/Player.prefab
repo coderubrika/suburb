@@ -137,6 +137,7 @@ MonoBehaviour:
   deltaThreshold: 0.1
   deltaFactor: 1
   rigidbody: {fileID: 8648806091523472270}
+  circleCollider: {fileID: 7471712821855144608}
   forceFactor: 10
 --- !u!50 &8648806091523472270
 Rigidbody2D:

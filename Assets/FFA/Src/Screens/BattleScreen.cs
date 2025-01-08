@@ -20,6 +20,7 @@ namespace FFA.Screens
         private BattleService battleService;
         
         [SerializeField] private BattlePreparationView battlePreparation;
+        [SerializeField] private BattleFightView battleFight;
         [SerializeField] private RectTransform battleZone;
         
         private readonly CompositeDisposable disposables = new();
@@ -37,7 +38,7 @@ namespace FFA.Screens
             this.battleService = battleService;
             
             battleService.SetBattleZone(battleZone);
-            battleController = new BattleController(battlePreparation);
+            battleController = new BattleController(battlePreparation, battleFight);
         }
         
         protected override void Show()
@@ -55,6 +56,7 @@ namespace FFA.Screens
 
         protected override void Hide()
         {
+            battleController.Clear();
             disposables.Clear();
         }
     }

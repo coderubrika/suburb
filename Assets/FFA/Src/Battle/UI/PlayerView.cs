@@ -24,7 +24,9 @@ namespace FFA.Battle.UI
         [SerializeField] private float deltaThreshold;
         [SerializeField] private float deltaFactor;
         [SerializeField] private Rigidbody2D rigidbody;
+        [SerializeField] private CircleCollider2D circleCollider;
         [SerializeField] private float forceFactor;
+        
         private readonly CompositeDisposable disposables = new();
         
         private RectBasedSession inputSession;
@@ -59,6 +61,7 @@ namespace FFA.Battle.UI
         
         private void Setup(BattleSide side)
         {
+            circleCollider.radius = playerBodyTransform.rect.width / 2;
             accumulatedDelta = Vector2.zero;
             battleService.RegisterPlayer(this, side);
             battleSide = side;
