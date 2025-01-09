@@ -141,6 +141,7 @@ MonoBehaviour:
   circleCollider: {fileID: 7471712821855144608}
   forceFactor: 20
   slowFactor: 6
+  anchorFactor: 1500
 --- !u!50 &8648806091523472270
 Rigidbody2D:
   serializedVersion: 4

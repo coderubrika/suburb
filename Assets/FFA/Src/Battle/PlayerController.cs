@@ -76,7 +76,7 @@ namespace FFA.Battle
             if (isMoveToAnchorBack)
             {
                 Vector3 toAnchorNormalized = (anchorBackTransform.position - view.transform.position).normalized;
-                view.Rigidbody.AddForce(toAnchorNormalized * view.ForceFactor);
+                view.Rigidbody.velocity = toAnchorNormalized * view.AnchorFactor;
             }
             else
             {

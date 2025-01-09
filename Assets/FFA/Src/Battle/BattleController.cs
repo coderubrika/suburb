@@ -130,6 +130,8 @@ namespace FFA.Battle
                     otherSideView.PlayBase();
                 })
                 .AddTo(disposables);
+            
+            playerView.PlayerController.BlockControl(false);
         }
 
         public void Clear()

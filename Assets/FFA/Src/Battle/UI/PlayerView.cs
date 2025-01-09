@@ -28,12 +28,14 @@ namespace FFA.Battle.UI
         [SerializeField] private CircleCollider2D circleCollider;
         [SerializeField] private float forceFactor;
         [SerializeField] private float slowFactor;
+        [SerializeField] private float anchorFactor;
         
         private readonly CompositeDisposable disposables = new();
         public PlayerController PlayerController {get; private set;}
         
         private RectTransform playerBodyTransform;
-        
+
+        public float AnchorFactor => anchorFactor;
         public float SlowFactor => slowFactor;
         public float ForceFactor => forceFactor;
         public float DeltaThreshold => deltaThreshold;
