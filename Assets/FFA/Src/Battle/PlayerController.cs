@@ -14,10 +14,11 @@ namespace FFA.Battle
         private readonly BattleService battleService;
         
         private Vector2 accumulatedDelta;
+        private Vector2 accumulatedDeltaOld;
         private bool isControlBlocked;
         private Transform anchorBackTransform;
         private bool isMoveToAnchorBack;
-        
+        private bool isDown;
         
         public PlayerController(
             BattleService battleService,
@@ -33,7 +34,15 @@ namespace FFA.Battle
             IDisposable dragDisposable = view.InputSession.GetMember<SwipeMember>().OnDrag
                 .Subscribe(HandleDrag);
             view.AddTo(dragDisposable);
+            
+            IDisposable downDisposable = view.InputSession.GetMember<SwipeMember>().OnDown
+                .Subscribe(_ => isDown = true);
+            view.AddTo(downDisposable);
 
+            IDisposable upDisposable = view.InputSession.GetMember<SwipeMember>().OnUp
+                .Subscribe(_ => isDown = false);
+            view.AddTo(upDisposable);
+            
             IDisposable fixedUpdateDisposable = Observable.EveryFixedUpdate()
                 .Subscribe(_ => FixedUpdate());
             view.AddTo(fixedUpdateDisposable);
@@ -67,11 +76,36 @@ namespace FFA.Battle
             if (isMoveToAnchorBack)
             {
                 Vector3 toAnchorNormalized = (anchorBackTransform.position - view.transform.position).normalized;
-                view.Rigidbody.AddForce(toAnchorNormalized * (view.ForceFactor));
+                view.Rigidbody.AddForce(toAnchorNormalized * view.ForceFactor);
             }
             else
-                view.Rigidbody.AddForce(battleService.BattleZone.InverseTransformVector(accumulatedDelta) * (view.ForceFactor));
+            {
+                if (isDown)
+                {
+                    float accumulatedDeltaMagnitude = accumulatedDelta.magnitude;
+                    float accumulatedDeltaOldMagnitude = accumulatedDeltaOld.magnitude;
+                
+                    if (accumulatedDeltaMagnitude > 0 && accumulatedDeltaOldMagnitude > 0)
+                    {
+                        float relation = accumulatedDeltaMagnitude / accumulatedDeltaOldMagnitude;
+                        view.Rigidbody.velocity = Vector2.Lerp(view.Rigidbody.velocity, view.Rigidbody.velocity * relation, Time.fixedDeltaTime * view.SlowFactor);
+                    }
+
+                    if (accumulatedDeltaMagnitude == 0)
+                    {
+                        view.Rigidbody.velocity = Vector2.Lerp(view.Rigidbody.velocity, view.Rigidbody.velocity * 0.1f, Time.fixedDeltaTime * view.SlowFactor);
+                    }
+                }
+                
+                
+                Vector3 delta = battleService.BattleZone.InverseTransformVector(accumulatedDelta);
+                view.Rigidbody.AddForce(delta * view.ForceFactor);
+                
+                // если длинна дельны увеличивается нужно добавлять как это происходит если длинна дельны уменьшается
+                // нужно уменьшать скорость пропрорционально отношению дельт
+            }
             
+            accumulatedDeltaOld = accumulatedDelta;
             accumulatedDelta = Vector2.zero;
         }
         
