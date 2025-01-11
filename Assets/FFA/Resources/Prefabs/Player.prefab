@@ -142,7 +142,7 @@ MonoBehaviour:
   forceFactor: 1
   slowFactor: 6
   anchorFactor: 500
-  health: 100
+  health: 20
   damageFactor: 0.01
 --- !u!50 &8648806091523472270
 Rigidbody2D:

@@ -26,6 +26,8 @@ namespace FFA.Battle
         public bool IsInStun { get; private set; }
 
         public Vector2 Velocity => velocity;
+
+        public ReactiveCommand OnDead { get; } = new();
         
         public PlayerController(
             BattleService battleService,
@@ -67,7 +69,8 @@ namespace FFA.Battle
             if (otherPlayer == null || otherPlayer.Side == view.Side)
                 return;
 
-            Vector2 velocityOther = battleService.BattleZone.InverseTransformVector(otherPlayer.PlayerController.Velocity) * view.DamageFactor;
+            Vector2 velocityOtherRaw = otherPlayer.PlayerController.Velocity;
+            Vector2 velocityOther = battleService.BattleZone.InverseTransformVector(velocityOtherRaw) * view.DamageFactor;
             Vector2 velocitySelf = battleService.BattleZone.InverseTransformVector(Velocity) * view.DamageFactor;
 
             if (otherPlayer.PlayerController.IsInStun)
@@ -75,16 +78,23 @@ namespace FFA.Battle
             
             if (velocityOther.sqrMagnitude > velocitySelf.sqrMagnitude)
             {
-                SetDamage(velocityOther.magnitude - velocitySelf.magnitude);
+                float velocityOtherMagnitude = velocityOther.magnitude;
+                float velocitySelfMagnitude = velocitySelf.magnitude;
+                bool isToStun = velocitySelfMagnitude / velocityOtherMagnitude < 0.2;
+            
+                SetDamage(velocityOtherMagnitude - velocitySelfMagnitude, isToStun);
+                view.Rigidbody.velocity = velocityOtherRaw + Velocity;
             }
         }
 
-        public void SetDamage(float damage)
+        public void SetDamage(float damage, bool isSetToStun = true)
         {
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, view.Health);
             view.HealthIndicator.SetHealthPercentage(currentHealth / view.Health);
-            IsInStun = true;
+            IsInStun = isSetToStun;
+            if (currentHealth == 0)
+                OnDead.Execute();
         }
         
         public void BlockControl(bool isBlocking)
@@ -101,6 +111,8 @@ namespace FFA.Battle
         
         public void Clear()
         {
+            velocity = Vector2.zero;
+            IsInStun = false;
             isMoveToAnchorBack = false;
             isControlBlocked = false;
             accumulatedDelta = Vector2.zero;

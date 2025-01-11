@@ -75,30 +75,30 @@ namespace FFA.Battle
             var playerButton = playerButtonPool.Spawn(playerView.Side, playerView.PlayerData);
             playerView.PlayerController.SetAnchorBackTransform(playerButton.transform);
             
-            IDisposable downDisposable = playerButton.Button.OnPointerDownAsObservable()
+            IDisposable downButtonDisposable = playerButton.Button.OnPointerDownAsObservable()
                 .Subscribe(_ => playerView.PlayerController.SetMoveToAnchorBack(true))
                 .AddTo(disposables);
+            playerView.AddTo(downButtonDisposable);
             
-            IDisposable upDisposable = playerButton.Button.OnPointerUpAsObservable()
+            IDisposable upButtonDisposable = playerButton.Button.OnPointerUpAsObservable()
                 .Subscribe(_ => playerView.PlayerController.SetMoveToAnchorBack(false))
                 .AddTo(disposables);
-            
-            playerView.AddTo(downDisposable);
-            playerView.AddTo(upDisposable);
+            playerView.AddTo(upButtonDisposable);
             
             playerButton.transform.SetParent(selfSideView.ButtonsRoot);
             playerButton.transform.localScale = Vector3.one;
             playerButton.transform.localRotation = Quaternion.identity;
-            
-            playerView.InputSession.AddExcludedRect(otherSideView.RectTransform)
-                .AddTo(disposables);
 
+            IDisposable excludedRectDisposable = playerView.InputSession.AddExcludedRect(otherSideView.RectTransform)
+                .AddTo(disposables);
+            playerView.AddTo(excludedRectDisposable);
+            
             SwipeMember swipe = playerView.InputSession.GetMember<SwipeMember>();
 
             IDisposable dragDisposable = null;
             IDisposable damageDisposable = null;
             
-            swipe.OnDown
+            IDisposable downDisposable = swipe.OnDown
                 .Subscribe(downPosition =>
                 {
                     playerButton.Button.interactable = false;
@@ -112,7 +112,8 @@ namespace FFA.Battle
                                 if (damageDisposable == null)
                                 {
                                     damageDisposable = Observable.Interval(TimeSpan.FromMilliseconds(500))
-                                        .Subscribe(_ => playerView.PlayerController.SetDamage(1));
+                                        .Subscribe(_ => playerView.PlayerController.SetDamage(1))
+                                        .AddTo(disposables);
                                     playerView.AddTo(damageDisposable);
                                 }
                                 
@@ -128,10 +129,12 @@ namespace FFA.Battle
                             }
                         })
                         .AddTo(disposables);
+                    playerView.AddTo(dragDisposable);
                 })
                 .AddTo(disposables);
-
-            swipe.OnUp
+            playerView.AddTo(downDisposable);
+            
+            IDisposable upDisposable = swipe.OnUp
                 .Subscribe(_ =>
                 {
                     damageDisposable?.Dispose();
@@ -142,6 +145,16 @@ namespace FFA.Battle
                     otherSideView.PlayBase();
                 })
                 .AddTo(disposables);
+            playerView.AddTo(upDisposable);
+            
+            IDisposable deadDisposable = playerView.PlayerController.OnDead
+                .Subscribe(_ =>
+                {
+                    battleService.DeletePlayer(playerView);
+                    playerButtonPool.Despawn(playerButton);
+                })
+                .AddTo(disposables);
+            playerView.AddTo(deadDisposable);
             
             playerView.PlayerController.BlockControl(false);
         }
