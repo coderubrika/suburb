@@ -19,6 +19,13 @@ namespace FFA.Battle
         private Transform anchorBackTransform;
         private bool isMoveToAnchorBack;
         private bool isDown;
+
+        private Vector2 velocity;
+        private float currentHealth;
+
+        public bool IsInStun { get; private set; }
+
+        public Vector2 Velocity => velocity;
         
         public PlayerController(
             BattleService battleService,
@@ -30,6 +37,7 @@ namespace FFA.Battle
         
         public void Start()
         {
+            currentHealth = view.Health;
             accumulatedDelta = Vector2.zero;
             IDisposable dragDisposable = view.InputSession.GetMember<SwipeMember>().OnDrag
                 .Subscribe(HandleDrag);
@@ -52,6 +60,32 @@ namespace FFA.Battle
         {
             this.anchorBackTransform = anchorBackTransform;
         }
+
+        public void CalcContact(Collision2D other)
+        {
+            PlayerView otherPlayer = other.gameObject.GetComponent<PlayerView>();
+            if (otherPlayer == null || otherPlayer.Side == view.Side)
+                return;
+
+            Vector2 velocityOther = battleService.BattleZone.InverseTransformVector(otherPlayer.PlayerController.Velocity) * view.DamageFactor;
+            Vector2 velocitySelf = battleService.BattleZone.InverseTransformVector(Velocity) * view.DamageFactor;
+
+            if (otherPlayer.PlayerController.IsInStun)
+                return;
+            
+            if (velocityOther.sqrMagnitude > velocitySelf.sqrMagnitude)
+            {
+                SetDamage(velocityOther.magnitude - velocitySelf.magnitude);
+            }
+        }
+
+        public void SetDamage(float damage)
+        {
+            currentHealth -= damage;
+            currentHealth = Mathf.Clamp(currentHealth, 0, view.Health);
+            view.HealthIndicator.SetHealthPercentage(currentHealth / view.Health);
+            IsInStun = true;
+        }
         
         public void BlockControl(bool isBlocking)
         {
@@ -61,6 +95,8 @@ namespace FFA.Battle
         public void SetMoveToAnchorBack(bool isMoveToAnchorBack)
         {
             this.isMoveToAnchorBack = isMoveToAnchorBack;
+            if (this.isMoveToAnchorBack)
+                IsInStun = true;
         }
         
         public void Clear()
@@ -73,15 +109,18 @@ namespace FFA.Battle
         
         private void FixedUpdate()
         {
+            velocity = view.Rigidbody.velocity;
+            
             if (isMoveToAnchorBack)
             {
                 Vector3 toAnchorNormalized = (anchorBackTransform.position - view.transform.position).normalized;
-                view.Rigidbody.velocity = toAnchorNormalized * view.AnchorFactor;
+                view.Rigidbody.velocity = battleService.BattleZone.TransformVector(toAnchorNormalized * view.AnchorFactor);
             }
             else
             {
                 if (isDown)
                 {
+                    IsInStun = false;
                     float accumulatedDeltaMagnitude = accumulatedDelta.magnitude;
                     float accumulatedDeltaOldMagnitude = accumulatedDeltaOld.magnitude;
                 
@@ -95,14 +134,11 @@ namespace FFA.Battle
                     {
                         view.Rigidbody.velocity = Vector2.Lerp(view.Rigidbody.velocity, view.Rigidbody.velocity * 0.1f, Time.fixedDeltaTime * view.SlowFactor);
                     }
+
                 }
-                
-                
-                Vector3 delta = battleService.BattleZone.InverseTransformVector(accumulatedDelta);
-                view.Rigidbody.AddForce(delta * view.ForceFactor);
-                
-                // если длинна дельны увеличивается нужно добавлять как это происходит если длинна дельны уменьшается
-                // нужно уменьшать скорость пропрорционально отношению дельт
+
+                float forceFactor = battleService.BattleZone.TransformVector(Vector3.right * view.ForceFactor).x;
+                view.Rigidbody.AddForce(accumulatedDelta * forceFactor);
             }
             
             accumulatedDeltaOld = accumulatedDelta;
@@ -120,10 +156,11 @@ namespace FFA.Battle
                 return;
             
             float angle = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg; // вычисляем угол в радианах и переводим в градусы
-            view.transform.rotation = Quaternion.Slerp(
-                view.transform.rotation, 
-                Quaternion.Euler(0, 0, angle - 90),  // Поворот только по оси Z, так как Canvas работает в 2D
-                Time.deltaTime * deltaDistance * view.DeltaFactor
+             view.transform.rotation = Quaternion.Slerp(
+                 view.transform.rotation, 
+                 Quaternion.Euler(0, 0, angle - 90),  // Поворот только по оси Z, так как Canvas работает в 2D
+                 //Time.deltaTime * deltaDistance * view.DeltaFactor
+                 Time.deltaTime * view.DeltaFactor
             );
         }
     }

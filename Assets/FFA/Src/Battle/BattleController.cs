@@ -96,7 +96,8 @@ namespace FFA.Battle
             SwipeMember swipe = playerView.InputSession.GetMember<SwipeMember>();
 
             IDisposable dragDisposable = null;
-
+            IDisposable damageDisposable = null;
+            
             swipe.OnDown
                 .Subscribe(downPosition =>
                 {
@@ -108,11 +109,20 @@ namespace FFA.Battle
                             position += delta;
                             if (otherSideView.RectTransform.Contain(position))
                             {
+                                if (damageDisposable == null)
+                                {
+                                    damageDisposable = Observable.Interval(TimeSpan.FromMilliseconds(500))
+                                        .Subscribe(_ => playerView.PlayerController.SetDamage(1));
+                                    playerView.AddTo(damageDisposable);
+                                }
+                                
                                 playerView.PlayerController.BlockControl(true);
                                 otherSideView.PlayActive();
                             }
                             else
                             {
+                                damageDisposable?.Dispose();
+                                damageDisposable = null;
                                 playerView.PlayerController.BlockControl(false);
                                 otherSideView.PlayBase();
                             }
@@ -124,6 +134,8 @@ namespace FFA.Battle
             swipe.OnUp
                 .Subscribe(_ =>
                 {
+                    damageDisposable?.Dispose();
+                    damageDisposable = null;
                     playerButton.Button.interactable = true;
                     dragDisposable?.Dispose();
                     playerView.PlayerController.BlockControl(false);

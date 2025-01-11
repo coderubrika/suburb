@@ -29,12 +29,17 @@ namespace FFA.Battle.UI
         [SerializeField] private float forceFactor;
         [SerializeField] private float slowFactor;
         [SerializeField] private float anchorFactor;
+        [SerializeField] private float health;
+        [SerializeField] private float damageFactor;
         
         private readonly CompositeDisposable disposables = new();
-        public PlayerController PlayerController {get; private set;}
         
         private RectTransform playerBodyTransform;
+        public PlayerController PlayerController {get; private set;}
 
+        public float DamageFactor => damageFactor;
+        public PlayerHealthIndicator HealthIndicator => healthIndicator;
+        public float Health => health;
         public float AnchorFactor => anchorFactor;
         public float SlowFactor => slowFactor;
         public float ForceFactor => forceFactor;
@@ -44,6 +49,7 @@ namespace FFA.Battle.UI
         public BattleSide Side {get; private set;}
         public RectBasedSession InputSession {get; private set;}
         public PlayerData PlayerData {get; private set;}
+        public CircleCollider2D CircleCollider => circleCollider;
         
         [Inject]
         private void Construct(
@@ -76,6 +82,11 @@ namespace FFA.Battle.UI
             disposables.Add(disposable);
         }
         
+        public void OnCollisionEnter2D(Collision2D other)
+        {
+            PlayerController.CalcContact(other);
+        }
+
         private void Setup(BattleSide side, PlayerData data)
         {
             float dpiFactor = Screen.dpi/500;
@@ -83,6 +94,7 @@ namespace FFA.Battle.UI
             playerBodyTransform.sizeDelta *= dpiFactor;
             PlayerData = data;
             circleCollider.radius = playerBodyTransform.rect.width / 2;
+            
             Side = side;
             healthIndicator.SetHealthPercentage(1);
             
