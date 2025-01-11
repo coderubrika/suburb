@@ -54,7 +54,6 @@ namespace FFA.Battle
 
         private void StartFight()
         {
-            // todo optimize by foreach
             foreach (var playerView in battleService.GetPlayersList(BattleSide.Bottom))
                 SetupPlayer(playerView);
 
@@ -62,13 +61,20 @@ namespace FFA.Battle
                 SetupPlayer(playerView);
         }
 
+        private void StartVictory(BattleSide side)
+        {
+            
+        }
+        
         private void SetupPlayer(PlayerView playerView)
         {
-            var otherSideView = playerView.Side == BattleSide.Bottom
+            BattleSide playerSide = playerView.Side;
+            
+            var otherSideView = playerSide == BattleSide.Bottom
                 ? fightView.GetSideView(BattleSide.Top)
                 : fightView.GetSideView(BattleSide.Bottom);
             
-            var selfSideView = playerView.Side == BattleSide.Bottom
+            var selfSideView = playerSide == BattleSide.Bottom
                 ? fightView.GetSideView(BattleSide.Bottom)
                 : fightView.GetSideView(BattleSide.Top);
 
@@ -152,6 +158,13 @@ namespace FFA.Battle
                 {
                     battleService.DeletePlayer(playerView);
                     playerButtonPool.Despawn(playerButton);
+
+                    if (battleService.GetPlayersList(playerSide).Count == 0)
+                    {
+                        // todo fix standoff bug by wait frame
+                        StartVictory(playerSide == BattleSide.Bottom ? BattleSide.Top : BattleSide.Bottom);
+                    }
+                    
                 })
                 .AddTo(disposables);
             playerView.AddTo(deadDisposable);
