@@ -14,7 +14,6 @@ namespace FFA.Battle.UI
     public class PlayerView : MonoBehaviour
     {
         private BattleService battleService;
-        private InjectCreator injectCreator;
         private LayerOrderer layerOrderer;
         
         [SerializeField] PlayerHealthIndicator healthIndicator;
@@ -33,6 +32,7 @@ namespace FFA.Battle.UI
         [SerializeField] private float damageFactor;
         
         private readonly CompositeDisposable disposables = new();
+        private readonly CompositeDisposable destroyDisposables = new();
         
         private RectTransform playerBodyTransform;
         public PlayerController PlayerController {get; private set;}
@@ -58,7 +58,6 @@ namespace FFA.Battle.UI
             LayerOrderer layerOrderer)
         {
             this.battleService = battleService;
-            this.injectCreator = injectCreator;
             this.layerOrderer = layerOrderer;
             
             InputSession = new RectBasedSession(transform as RectTransform);
@@ -68,11 +67,11 @@ namespace FFA.Battle.UI
             playerBodyTransform = transform as RectTransform;
             var touchCompositor = injectCreator.Create<OneTouchPluginCompositor>();
             InputSession.AddCompositor(touchCompositor)
-                .AddTo(disposables);
+                .AddTo(destroyDisposables);
                     
             var swipeTouchPlugin = injectCreator.Create<OneTouchSwipePlugin>();
             touchCompositor.Link<SwipeMember>(swipeTouchPlugin)
-                .AddTo(disposables);
+                .AddTo(destroyDisposables);
             
             PlayerController = injectCreator.Create<PlayerController>(this);
         }
@@ -87,11 +86,14 @@ namespace FFA.Battle.UI
             PlayerController.CalcContact(other);
         }
 
-        private void Setup(BattleSide side, PlayerData data)
+        private void SetupCreate()
         {
             float dpiFactor = Screen.dpi/500;
-            
             playerBodyTransform.sizeDelta *= dpiFactor;
+        }
+        
+        private void Setup(BattleSide side, PlayerData data)
+        {
             PlayerData = data;
             circleCollider.radius = playerBodyTransform.rect.width / 2;
             
@@ -134,11 +136,23 @@ namespace FFA.Battle.UI
                 item.Setup(side, data);
             }
 
+            protected override void OnCreated(PlayerView item)
+            {
+                base.OnCreated(item);
+                item.SetupCreate();
+            }
+
             protected override void OnDespawned(PlayerView item)
             {
                 item.PlayerController.Clear();
                 item.disposables.Clear();
                 base.OnDespawned(item);
+            }
+
+            protected override void OnDestroyed(PlayerView item)
+            {
+                item.destroyDisposables.Dispose();
+                base.OnDestroyed(item);
             }
         }
     }

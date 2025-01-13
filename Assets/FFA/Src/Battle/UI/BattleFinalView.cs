@@ -57,6 +57,7 @@ namespace FFA.Battle.UI
             canvasGroup.interactable = false;
             canvasGroup.alpha = 0;
             fader.color = UIUtils.GetNewAlpha(fader.color, 0);
+            fader.gameObject.SetActive(false);
         }
     }
 }

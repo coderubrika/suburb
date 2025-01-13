@@ -50,7 +50,8 @@ namespace FFA.Battle.UI
                 touchPluginCompositor.Link<SwipeMember>(swipePlugin)
                     .AddTo(disposables);
 
-                IDisposable sessionDisposable = layerOrderer.ConnectFirst(session);
+                IDisposable sessionDisposable = layerOrderer.ConnectFirst(session)
+                    .AddTo(disposables);
                 SetupSwipeHandling(session.GetMember<SwipeMember>(), sessionDisposable);
             }
             
