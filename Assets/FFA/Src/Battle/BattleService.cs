@@ -1,10 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using FFA.Battle.UI;
-using Suburb.Inputs;
-using Suburb.Utils;
-using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,12 +12,9 @@ namespace FFA.Battle
     
     public class BattleService
     {
-        //private readonly InjectCreator injectCreator;
-        //private readonly LayerOrderer layerOrderer;
         private readonly PlayerView.Pool playersPool;
         
         private readonly BattleSideInfo[] battleSideInfos = new BattleSideInfo[2];
-        //private readonly CompositeDisposable disposables = new();
         private readonly List<PlayerView> topPlayers = new();
         private readonly List<PlayerView> bottomPlayers = new();
         
@@ -30,13 +22,8 @@ namespace FFA.Battle
 
         public RectTransform BattleZone => battleZone;
         
-        public BattleService(
-            InjectCreator injectCreator, 
-            LayerOrderer layerOrderer,
-            PlayerView.Pool playersPool)
+        public BattleService(PlayerView.Pool playersPool)
         {
-            //this.injectCreator = injectCreator;
-            //this.layerOrderer = layerOrderer;
             this.playersPool = playersPool;
         }
         

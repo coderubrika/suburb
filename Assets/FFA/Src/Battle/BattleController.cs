@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FFA.Battle.UI;
 using Suburb.Inputs;
 using Suburb.Utils;
@@ -13,29 +14,47 @@ namespace FFA.Battle
         private readonly BattleService battleService;
         private readonly BattlePreparationView preparationView;
         private readonly BattleFightView fightView;
+        private readonly BattleFinalView finalView;
         private readonly PlayerButton.Pool playerButtonPool;
         
         private readonly CompositeDisposable disposables = new();
 
+        private readonly Dictionary<PlayerView, PlayerButton> viewButtons = new();
+
+        public IObservable<Unit> OnBack => finalView.Back.OnClickAsObservable();
+        
         public BattleController(
             BattleService battleService,
             BattlePreparationView preparationView,
             BattleFightView fightView,
+            BattleFinalView finalView,
             PlayerButton.Pool playerButtonPool)
         {
             this.battleService = battleService;
             this.preparationView = preparationView;
             this.fightView = fightView;
+            this.finalView = finalView;
             this.playerButtonPool = playerButtonPool;
             
             fightView.gameObject.SetActive(false);
             preparationView.gameObject.SetActive(false);
+            finalView.gameObject.SetActive(false);
+
+            finalView.Play.OnClickAsObservable()
+                .Subscribe(_ =>
+                {
+                    this.finalView.PlayHide()
+                        .Subscribe(_ => StartPreparation())
+                        .AddTo(disposables);
+                });
         }
 
         public void StartPreparation()
         {
+            finalView.gameObject.SetActive(false);
             fightView.gameObject.SetActive(true);
             fightView.Init();
+            finalView.Init();
             preparationView.gameObject.SetActive(true);
             preparationView.Show()
                 .ObserveOnMainThread()
@@ -63,7 +82,24 @@ namespace FFA.Battle
 
         private void StartVictory(BattleSide side)
         {
+            ClearPlayers();
+            fightView.Hide();
+            fightView.gameObject.SetActive(false);
+            finalView.gameObject.SetActive(true);
+            finalView.Show(side);
+        }
+
+        private void ClearPlayers()
+        {
+            foreach (var button in viewButtons.Values)
+                playerButtonPool.Despawn(button);
+            viewButtons.Clear();
             
+            foreach (var playerView in battleService.GetPlayersList(BattleSide.Bottom).ToArray())
+                battleService.DeletePlayer(playerView);
+            
+            foreach (var playerView in battleService.GetPlayersList(BattleSide.Top).ToArray())
+                battleService.DeletePlayer(playerView);
         }
         
         private void SetupPlayer(PlayerView playerView)
@@ -80,6 +116,7 @@ namespace FFA.Battle
 
             var playerButton = playerButtonPool.Spawn(playerView.Side, playerView.PlayerData);
             playerView.PlayerController.SetAnchorBackTransform(playerButton.transform);
+            viewButtons.Add(playerView, playerButton);
             
             IDisposable downButtonDisposable = playerButton.Button.OnPointerDownAsObservable()
                 .Subscribe(_ => playerView.PlayerController.SetMoveToAnchorBack(true))
@@ -158,7 +195,7 @@ namespace FFA.Battle
                 {
                     battleService.DeletePlayer(playerView);
                     playerButtonPool.Despawn(playerButton);
-
+                    viewButtons.Remove(playerView);
                     if (battleService.GetPlayersList(playerSide).Count == 0)
                     {
                         // todo fix standoff bug by wait frame
@@ -177,8 +214,10 @@ namespace FFA.Battle
             disposables.Clear();
             preparationView.Hide();
             preparationView.gameObject.SetActive(false);
-            fightView.gameObject.SetActive(false);
             fightView.Hide();
+            fightView.gameObject.SetActive(false);
+            finalView.Hide();
+            finalView.gameObject.SetActive(false);
         }
     }
 }

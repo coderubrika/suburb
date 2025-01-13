@@ -1,12 +1,9 @@
-using System;
-using DG.Tweening;
 using FFA.Battle;
 using Suburb.Inputs;
 using Suburb.Screens;
 using Suburb.Utils;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 using FFA.Battle.UI;
 
@@ -14,32 +11,28 @@ namespace FFA.Screens
 {
     public class BattleScreen : BaseScreen
     {
-        private PlayerView.Pool playersPool;
-        private InjectCreator injectCreator;
-        private LayerOrderer layerOrderer;
         private BattleService battleService;
         
         [SerializeField] private BattlePreparationView battlePreparation;
         [SerializeField] private BattleFightView battleFight;
+        [SerializeField] private BattleFinalView finalView;
         [SerializeField] private RectTransform battleZone;
         
         private readonly CompositeDisposable disposables = new();
         private BattleController battleController;
         [Inject]
         private void Construct(
-            PlayerView.Pool playersPool,
             InjectCreator injectCreator,
-            LayerOrderer layerOrderer,
-            BattleService battleService)
+            BattleService battleService,
+            ScreensService screensService)
         {
-            this.playersPool = playersPool;
-            this.injectCreator = injectCreator;
-            this.layerOrderer = layerOrderer;
             this.battleService = battleService;
             
             battleService.SetBattleZone(battleZone);
-            
             battleController = injectCreator.Create<BattleController>(battlePreparation, battleFight);
+            battleController.OnBack
+                .Subscribe(_ => screensService.GoToPrevious())
+                .AddTo(this);
         }
         
         protected override void Show()
