@@ -4,6 +4,7 @@ using Suburb.Utils;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace FFA.Battle.UI
 {
@@ -15,16 +16,11 @@ namespace FFA.Battle.UI
         [SerializeField] private BattleFinalSide bottomSide;
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private Graphic fader;
-
-        private float faderAlpha;
+        [SerializeField] private float faderAlpha;
         
         public Button Play => play;
         public Button Back => back;
-
-        private void Awake()
-        {
-            faderAlpha = fader.color.a;
-        }
+        
         
         public void Init()
         {
@@ -35,6 +31,7 @@ namespace FFA.Battle.UI
         public void Show(BattleSide side)
         {
             fader.color = UIUtils.GetNewAlpha(fader.color, 0);
+            fader.gameObject.SetActive(true);
             topSide.SetWinSide(side);
             bottomSide.SetWinSide(side);
 

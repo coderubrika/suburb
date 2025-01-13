@@ -29,7 +29,7 @@ namespace FFA.Screens
             this.battleService = battleService;
             
             battleService.SetBattleZone(battleZone);
-            battleController = injectCreator.Create<BattleController>(battlePreparation, battleFight);
+            battleController = injectCreator.Create<BattleController>(battlePreparation, battleFight, finalView);
             battleController.OnBack
                 .Subscribe(_ => screensService.GoToPrevious())
                 .AddTo(this);
