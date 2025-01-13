@@ -1,5 +1,6 @@
 using FFA.Screens;
 using Suburb.Screens;
+using UnityEngine;
 using Zenject;
 
 namespace FFA
@@ -15,6 +16,7 @@ namespace FFA
         
         public void Initialize()
         {
+            Application.targetFrameRate = 120;
             screensService.GoTo<MainScreen>();
         }
     }
