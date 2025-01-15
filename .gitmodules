@@ -1,12 +1,12 @@
-[submodule "Assets/Src/Screens"]
-	path = Assets/Src/Screens
+[submodule "Assets/Plugins/Suburb/Screens"]
+	path = Assets/Plugins/Suburb/Screens
 	url = https://github.com/coderubrika/UnityScreens
-[submodule "Assets/Src/Utils"]
-	path = Assets/Src/Utils
+[submodule "Assets/Plugins/Suburb/Utils"]
+	path = Assets/Plugins/Suburb/Utils
 	url = https://github.com/coderubrika/UnityUtils
-[submodule "Assets/Src/Inputs"]
-	path = Assets/Src/Inputs
+[submodule "Assets/Plugins/Suburb/Inputs"]
+	path = Assets/Plugins/Suburb/Inputs
 	url = https://github.com/coderubrika/UnityInputs
-[submodule "Assets/Src/ExpressRouter"]
-	path = Assets/Src/ExpressRouter
+[submodule "Assets/Plugins/Suburb/ExpressRouter"]
+	path = Assets/Plugins/Suburb/ExpressRouter
 	url = https://github.com/coderubrika/ExpressRouter
