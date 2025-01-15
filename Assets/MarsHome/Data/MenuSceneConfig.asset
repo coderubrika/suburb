@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464cdc4c7cf34b7d90920e0f59cd7ff2, type: 3}
+  m_Name: MenuSceneConfig
+  m_EditorClassIdentifier: 
+  hideTransform:
+    Position: {x: 0, y: -80.1, z: -134.1}
+    Rotation: {x: -105, y: 0, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  centerTransform:
+    Position: {x: 0, y: -59.6, z: -90.6}
+    Rotation: {x: -34.65, y: 0, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  rightTransform:
+    Position: {x: -9.45, y: -32.4, z: -72.1}
+    Rotation: {x: -35.99, y: -32.4, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  startupCameraTransform:
+    Position: {x: 0, y: -14.6, z: -46.7}
+    Rotation: {x: -21.7, y: 0, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  startupProbeTransform:
+    Position: {x: 1.4, y: 0.2, z: 5.4}
+    Rotation: {x: -32.3, y: 0.1, z: 0}
+    Scale: {x: 0, y: 0, z: 0}
+  startCenterAnim:
+    Delay: 0
+    Duration: 10
+    Easing: 15
+  regularCenterAnim:
+    Delay: 0
+    Duration: 2
+    Easing: 15
+  rightSideAnim:
+    Delay: 0
+    Duration: 2
+    Easing: 15
+  startupCameraAnim:
+    Delay: 1
+    Duration: 20
+    Easing: 32
+  startupProbeAnim:
+    Delay: 0
+    Duration: 21
+    Easing: 33

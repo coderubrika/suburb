@@ -1,0 +1,18 @@
+{
+	"new_game": "New Game",
+	"continue": "Continue",
+	"saves": "Saves",
+	"online": "Online",
+	"settings": "Settings",
+	"quit": "Quit",
+	"empty": "Empty",
+	"modal_header_unsave_changes": "There are unsaved changes",
+	"modal_body_unsave_changes": "Do you want to save your changes?",
+	"modal_header_rewrite_save": "Save Overwrite",
+	"modal_body_rewrite_save": "Are you sure you want to overwrite this save?",
+	"modal_header_delete_save": "Deleting the save",
+	"modal_body_delete_save": "Are you sure you want to delete this save?",
+	"yes": "Yes",
+	"no": "No",
+	"save_name_begin": "Begin",
+}
