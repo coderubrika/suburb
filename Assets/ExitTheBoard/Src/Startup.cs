@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
@@ -18,6 +15,7 @@ namespace ExitTheBoard
         [SerializeField] private RectTransform frame;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Transform card;
+        [SerializeField] private LineTrack track;
         
         private readonly CompositeDisposable disposables = new();
 
@@ -63,15 +61,12 @@ namespace ExitTheBoard
                     Vector3 cardPositionStart = UIUtils.TransformScreenToWorld(frame, mainCamera, screenPosition);
                     Vector3 cardPositionEnd = UIUtils.TransformScreenToWorld(frame, mainCamera, newScreenPosition);
                     Vector3 cardDelta = cardPositionEnd - cardPositionStart;
-                    card.transform.position += cardDelta;
-
-                    // Vector3 worldStart = UIUtils.TransformCoords(mapRect, mapCamera.Camera, touchPosition);
-                    // Vector3 worldEnd = UIUtils.TransformCoords(mapRect, mapCamera.Camera, position);
-                    // Vector3 worldDelta = worldEnd - worldStart;
-                    // worldDelta = new Vector3(worldDelta.x, 0, worldDelta.z);
-                    // mapCamera.SetPosition(mapCamera.Camera.transform.position - worldDelta);
-                    // touchPosition = position;
-                    // this.delta = delta;
+                    //card.transform.position += cardDelta;
+                    Vector3 cardPosition = card.transform.position;
+                    Vector3 trackDirection = track.DirectionOne;
+                    float projection = Vector3.Dot(cardDelta, trackDirection);
+                    Vector3 projectedDelta = trackDirection * projection;
+                    card.transform.position += projectedDelta;
                 })
                 .AddTo(disposables);
             
