@@ -1850,6 +1850,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   frame: {fileID: 1519133767}
+  mainCamera: {fileID: 1910190362}
+  card: {fileID: 1076452618}
 --- !u!4 &1855947748
 Transform:
   m_ObjectHideFlags: 0
