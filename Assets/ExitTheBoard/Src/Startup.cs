@@ -16,6 +16,7 @@ namespace ExitTheBoard
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Transform card;
         [SerializeField] private LineTrack track;
+        [SerializeField] private BoxCollider boxCollider;
         
         private readonly CompositeDisposable disposables = new();
 
@@ -61,19 +62,24 @@ namespace ExitTheBoard
                     Vector3 cardPositionStart = UIUtils.TransformScreenToWorld(frame, mainCamera, screenPosition);
                     Vector3 cardPositionEnd = UIUtils.TransformScreenToWorld(frame, mainCamera, newScreenPosition);
                     Vector3 delta = cardPositionEnd - cardPositionStart;
-                    Vector3 pos = card.transform.position;
                     Vector3 dirOne = track.DirectionOne;
+                    float deltaProj = Vector3.Dot(dirOne, delta);
+                    Vector3 pos = card.transform.position;
+
+                    Vector3 dir = deltaProj > 0 ? track.Direction : -track.Direction;
+                    int sign = Vector3.Dot(dir, card.transform.forward) > 0 ? 1 : -1;
+                    Vector3 side = card.transform.forward * boxCollider.size.z * 0.5f * card.transform.localScale.z * sign;
+                    
                     float trackLen = track.Length;
-                    Vector3 objDir = pos - track.StartPoint;
+                    Vector3 objDir = pos + side - track.StartPoint;
                     float objProj = Vector3.Dot(objDir, dirOne);
                     Vector3 objParallel = dirOne * objProj;
                     Vector3 objPerp = objDir - objParallel;
-                    float deltaProj = Vector3.Dot(dirOne, delta);
                     float deltaByObjProj = deltaProj + objProj;
                     float clampedProj = Mathf.Clamp(deltaByObjProj, 0, trackLen);
                     Vector3 newObjParallel = dirOne * clampedProj;
                     Vector3 finalPos = track.StartPoint + newObjParallel + objPerp;
-                    card.transform.position = finalPos;
+                    card.transform.position = finalPos - side;
                 })
                 .AddTo(disposables);
             

@@ -1917,6 +1917,7 @@ MonoBehaviour:
   track:
     StartPoint: {x: 4.39, y: 0, z: -9.19}
     EndPoint: {x: -4.22, y: 0, z: -9.19}
+  boxCollider: {fileID: 1076452615}
 --- !u!4 &1855947748
 Transform:
   m_ObjectHideFlags: 0
