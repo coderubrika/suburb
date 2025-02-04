@@ -21,7 +21,7 @@ namespace ExitTheBoard
 
         private bool isMoved;
         private Vector2 screenPosition;
-        
+        private Vector3 offset;
         private void Awake()
         { 
             layerOrderer = new();
@@ -52,21 +52,28 @@ namespace ExitTheBoard
                 .AddTo(disposables);
             
             swipe.OnDrag
-                .Subscribe(delta =>
+                .Subscribe(screenDelta =>
                 {
                     if (!isMoved)
                         return;
-                    Vector2 newScreenPosition = screenPosition + delta;
+                    Vector2 newScreenPosition = screenPosition + screenDelta;
                     
                     Vector3 cardPositionStart = UIUtils.TransformScreenToWorld(frame, mainCamera, screenPosition);
                     Vector3 cardPositionEnd = UIUtils.TransformScreenToWorld(frame, mainCamera, newScreenPosition);
-                    Vector3 cardDelta = cardPositionEnd - cardPositionStart;
-                    //card.transform.position += cardDelta;
-                    Vector3 cardPosition = card.transform.position;
-                    Vector3 trackDirection = track.DirectionOne;
-                    float projection = Vector3.Dot(cardDelta, trackDirection);
-                    Vector3 projectedDelta = trackDirection * projection;
-                    card.transform.position += projectedDelta;
+                    Vector3 delta = cardPositionEnd - cardPositionStart;
+                    Vector3 pos = card.transform.position;
+                    Vector3 dirOne = track.DirectionOne;
+                    float trackLen = track.Length;
+                    Vector3 objDir = pos - track.StartPoint;
+                    float objProj = Vector3.Dot(objDir, dirOne);
+                    Vector3 objParallel = dirOne * objProj;
+                    Vector3 objPerp = objDir - objParallel;
+                    float deltaProj = Vector3.Dot(dirOne, delta);
+                    float deltaByObjProj = deltaProj + objProj;
+                    float clampedProj = Mathf.Clamp(deltaByObjProj, 0, trackLen);
+                    Vector3 newObjParallel = dirOne * clampedProj;
+                    Vector3 finalPos = track.StartPoint + newObjParallel + objPerp;
+                    card.transform.position = finalPos;
                 })
                 .AddTo(disposables);
             
