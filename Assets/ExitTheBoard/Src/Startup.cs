@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
@@ -14,10 +15,12 @@ namespace ExitTheBoard
         
         [SerializeField] private RectTransform frame;
         [SerializeField] private Camera mainCamera;
-        [SerializeField] private Transform card;
-        [SerializeField] private BoxCollider boxCollider;
         [SerializeField] private PointsAnchorMono pointsAnchor;
+
+        [SerializeField] private Card card;
+        [SerializeField] private Rotator rotator;
         
+        private readonly Dictionary<GameObject, object> interactables = new();
         private readonly CompositeDisposable disposables = new();
         private PointNode pointNode;
         private int endIndex;
@@ -26,9 +29,13 @@ namespace ExitTheBoard
         private bool isMoved;
         private Vector2 screenPosition;
         private Vector3 offset;
+        private IMovable movable;
         
         private void Awake()
         { 
+            interactables.Add(card.gameObject, card);
+            interactables.Add(rotator.gameObject, rotator);
+            
             layerOrderer = new();
             mouseProvider = new();
             mouseResourceDistributor = new(mouseProvider);
@@ -50,9 +57,10 @@ namespace ExitTheBoard
                 .Subscribe(pos =>
                 {
                     Ray ray = mainCamera.ScreenPointToRay(pos);
-                    if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.gameObject.name == card.name)
+                    if (Physics.Raycast(ray, out RaycastHit hit) && interactables.TryGetValue(hit.collider.gameObject, out object interactable))
                     {
-                        isMoved = true;
+                        movable = interactable as IMovable;
+                        isMoved = movable != null;
                         screenPosition = pos;
                     }
                 })
@@ -70,11 +78,11 @@ namespace ExitTheBoard
                     Vector3 delta = cardPositionEnd - cardPositionStart;
                     Vector3 dirOne = track.DirectionOne;
                     float deltaProj = Vector3.Dot(dirOne, delta);
-                    Vector3 pos = card.transform.position;
+                    Vector3 pos = movable.Transform.position;
 
                     Vector3 dir = deltaProj > 0 ? track.Direction : -track.Direction;
-                    int sign = Vector3.Dot(dir, card.transform.forward) > 0 ? 1 : -1;
-                    Vector3 side = card.transform.forward * boxCollider.size.z * 0.5f * card.transform.localScale.z * sign;
+                    int sign = Vector3.Dot(dir, movable.Transform.forward) > 0 ? 1 : -1;
+                    Vector3 side = movable.Transform.forward * movable.BoxCollider.size.z * 0.5f * movable.Transform.localScale.z * sign;
                     
                     float trackLen = track.Length;
                     Vector3 objDir = pos + side - track.StartPoint;
@@ -85,13 +93,14 @@ namespace ExitTheBoard
                     float clampedProj = Mathf.Clamp(deltaByObjProj, 0, trackLen);
                     Vector3 newObjParallel = dirOne * clampedProj;
                     Vector3 finalPos = track.StartPoint + newObjParallel + objPerp;
-                    card.transform.position = finalPos - side;
+                    movable.Transform.position = finalPos - side;
                 })
                 .AddTo(disposables);
             
             swipe.OnUp
                 .Subscribe(pos =>
                 {
+                    movable = null;
                     isMoved = false;
                 })
                 .AddTo(disposables);
