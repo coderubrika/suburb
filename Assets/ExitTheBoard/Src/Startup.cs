@@ -15,23 +15,26 @@ namespace ExitTheBoard
         [SerializeField] private RectTransform frame;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Transform card;
-        [SerializeField] private LineTrack track;
         [SerializeField] private BoxCollider boxCollider;
-        [SerializeField] private PointNodeMono pointNodeMono;
+        [SerializeField] private PointsAnchorMono pointsAnchor;
         
         private readonly CompositeDisposable disposables = new();
-
+        private PointNode pointNode;
+        private int endIndex;
+        private LineTrack track;
+        
         private bool isMoved;
         private Vector2 screenPosition;
         private Vector3 offset;
+        
         private void Awake()
         { 
             layerOrderer = new();
             mouseProvider = new();
             mouseResourceDistributor = new(mouseProvider);
             session = new(frame);
-            
-            // я буду использовать gameobjects чтобы построить точки
+            (pointNode, endIndex) = pointsAnchor.GetStartEndPoints();
+            track = new LineTrack(pointNode.Position, pointNode.NeighboursPoints[endIndex].Position);
         }
 
         private void OnEnable()

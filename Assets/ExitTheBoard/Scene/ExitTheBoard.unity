@@ -2136,11 +2136,8 @@ MonoBehaviour:
   frame: {fileID: 1519133767}
   mainCamera: {fileID: 1910190362}
   card: {fileID: 1076452618}
-  track:
-    StartPoint: {x: 4.39, y: 0, z: -9.19}
-    EndPoint: {x: -4.22, y: 0, z: -9.19}
   boxCollider: {fileID: 1076452615}
-  pointNodeMono: {fileID: 1622264474}
+  pointsAnchor: {fileID: 2064729681}
 --- !u!4 &1855947748
 Transform:
   m_ObjectHideFlags: 0
@@ -2369,6 +2366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2064729680}
+  - component: {fileID: 2064729681}
   m_Layer: 0
   m_Name: Track
   m_TagString: Untagged
@@ -2397,6 +2395,20 @@ Transform:
   - {fileID: 639483941}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2064729681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064729679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472c0b049c1a43bfbf6dcebbceff4a9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPoint: {fileID: 1622264474}
+  endPoint: {fileID: 1272912322}
 --- !u!1 &2082997300
 GameObject:
   m_ObjectHideFlags: 0

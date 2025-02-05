@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace ExitTheBoard
     {
         [SerializeField] private List<PointNodeMono> neighboursPoints = new();
 
+        private PointNode pointNode;
+        
         [ContextMenu("Duplicate")]
         private void Duplicate()
         {
@@ -32,6 +35,22 @@ namespace ExitTheBoard
             neighboursPoints.Add(neighbourPoint);
         }
 
+        public PointNode Scan()
+        {
+            if (pointNode != null) 
+                return pointNode;
+            
+            pointNode = new PointNode(transform.position);
+            
+            PointNode[] pointNodes = neighboursPoints
+                .Select(point => point.Scan())
+                .ToArray();
+            
+            pointNode.SetNeighboursPoints(pointNodes);
+
+            return pointNode;
+        }
+        
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
