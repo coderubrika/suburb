@@ -3,14 +3,14 @@ using Suburb.Inputs;
 using Suburb.Utils;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace ExitTheBoard
 {
     public class Startup : MonoBehaviour
     {
         private LayerOrderer layerOrderer;
-        private MouseProvider mouseProvider;
-        private MouseResourceDistributor mouseResourceDistributor;
+        private InjectCreator injectCreator;
         private RectBasedSession session;
         
         [SerializeField] private RectTransform frame;
@@ -31,22 +31,34 @@ namespace ExitTheBoard
         private Vector3 offset;
         private IMovable movable;
         
-        private void Awake()
-        { 
+        [Inject]
+        private void Construct(
+            LayerOrderer layerOrderer, 
+            InjectCreator injectCreator)
+        {
+            this.layerOrderer = layerOrderer;
+            this.injectCreator = injectCreator;
             interactables.Add(card.gameObject, card);
             interactables.Add(rotator.gameObject, rotator);
-            
-            layerOrderer = new();
-            mouseProvider = new();
-            mouseResourceDistributor = new(mouseProvider);
             session = new(frame);
             (pointNode, endIndex) = pointsAnchor.GetStartEndPoints();
             track = new LineTrack(pointNode.Position, pointNode.NeighboursPoints[endIndex].Position);
+            // но уже сейчас надо подумать о сетапе нужно определить игроков на поле а именно точки
+            // это мы сделали далее все по списку список карт 
+            // но прежде нужно вот что сделать
+            // нужно ограничить линии обьектами которые на них
+            // тоесть если есть линия и на ней есть обьект то этот обьект ограничивает для 
+            // других но не для себя зоны где можно перемещаться что это изменит
+            // это изменит track тоесть мы должны отправлять в сервис 2 точки на которых мы лежим и по
+            // этим точкам сервис должен дать нам track этим я займусь завтра
+            // а еще я должен скрыть логику обрабоки конкретно предметов только посылать им событие
+            // вполне возможно расширить inputs на обработку множества тачей
+            // достаточно написать сервис типо ScreenRaycaster где запрашивать по позиции
         }
 
         private void OnEnable()
         {
-            MouseSwipeCompositor compositor = new(mouseProvider, mouseResourceDistributor, MouseButtonType.Left);
+            MouseSwipeCompositor compositor = injectCreator.Create<MouseSwipeCompositor>(MouseButtonType.Left);
             session.AddCompositor(compositor)
                 .AddTo(disposables);
             layerOrderer.ConnectFirst(session)
@@ -73,8 +85,9 @@ namespace ExitTheBoard
                         return;
                     Vector2 newScreenPosition = screenPosition + screenDelta;
                     
-                    Vector3 cardPositionStart = UIUtils.TransformScreenToWorld(frame, mainCamera, screenPosition);
-                    Vector3 cardPositionEnd = UIUtils.TransformScreenToWorld(frame, mainCamera, newScreenPosition);
+                    Vector3 cardPositionStart = mainCamera.ScreenToWorldPoint(screenPosition);
+                    Vector3 cardPositionEnd = mainCamera.ScreenToWorldPoint(newScreenPosition);
+                    
                     Vector3 delta = cardPositionEnd - cardPositionStart;
                     Vector3 dirOne = track.DirectionOne;
                     float deltaProj = Vector3.Dot(dirOne, delta);
