@@ -17,6 +17,7 @@ namespace ExitTheBoard
         [SerializeField] private Transform card;
         [SerializeField] private LineTrack track;
         [SerializeField] private BoxCollider boxCollider;
+        [SerializeField] private PointNodeMono pointNodeMono;
         
         private readonly CompositeDisposable disposables = new();
 
@@ -29,6 +30,8 @@ namespace ExitTheBoard
             mouseProvider = new();
             mouseResourceDistributor = new(mouseProvider);
             session = new(frame);
+            
+            // я буду использовать gameobjects чтобы построить точки
         }
 
         private void OnEnable()
