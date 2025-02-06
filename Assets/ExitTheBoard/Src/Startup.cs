@@ -11,7 +11,7 @@ namespace ExitTheBoard
     {
         private LayerOrderer layerOrderer;
         private InjectCreator injectCreator;
-        private RectBasedSession session;
+        private GORectSession cardSession;
         
         [SerializeField] private RectTransform frame;
         [SerializeField] private Camera mainCamera;
@@ -40,41 +40,30 @@ namespace ExitTheBoard
             this.injectCreator = injectCreator;
             interactables.Add(card.gameObject, card);
             interactables.Add(rotator.gameObject, rotator);
-            session = new(frame);
+            cardSession = injectCreator.Create<GORectSession>(new GORectSessionParams
+            {
+                Camera = mainCamera,
+                Target = card.gameObject
+            });
             (pointNode, endIndex) = pointsAnchor.GetStartEndPoints();
             track = new LineTrack(pointNode.Position, pointNode.NeighboursPoints[endIndex].Position);
-            // но уже сейчас надо подумать о сетапе нужно определить игроков на поле а именно точки
-            // это мы сделали далее все по списку список карт 
-            // но прежде нужно вот что сделать
-            // нужно ограничить линии обьектами которые на них
-            // тоесть если есть линия и на ней есть обьект то этот обьект ограничивает для 
-            // других но не для себя зоны где можно перемещаться что это изменит
-            // это изменит track тоесть мы должны отправлять в сервис 2 точки на которых мы лежим и по
-            // этим точкам сервис должен дать нам track этим я займусь завтра
-            // а еще я должен скрыть логику обрабоки конкретно предметов только посылать им событие
-            // вполне возможно расширить inputs на обработку множества тачей
-            // достаточно написать сервис типо ScreenRaycaster где запрашивать по позиции
         }
 
         private void OnEnable()
         {
             MouseSwipeCompositor compositor = injectCreator.Create<MouseSwipeCompositor>(MouseButtonType.Left);
-            session.AddCompositor(compositor)
+            cardSession.AddCompositor(compositor)
                 .AddTo(disposables);
-            layerOrderer.ConnectFirst(session)
+            layerOrderer.ConnectFirst(cardSession)
                 .AddTo(disposables);
-
-            SwipeMember swipe = session.GetMember<SwipeMember>();
+            
+            SwipeMember swipe = cardSession.GetMember<SwipeMember>();
             swipe.OnDown
                 .Subscribe(pos =>
                 {
-                    Ray ray = mainCamera.ScreenPointToRay(pos);
-                    if (Physics.Raycast(ray, out RaycastHit hit) && interactables.TryGetValue(hit.collider.gameObject, out object interactable))
-                    {
-                        movable = interactable as IMovable;
-                        isMoved = movable != null;
-                        screenPosition = pos;
-                    }
+                    movable = card;
+                    isMoved = movable != null;
+                    screenPosition = pos;
                 })
                 .AddTo(disposables);
             

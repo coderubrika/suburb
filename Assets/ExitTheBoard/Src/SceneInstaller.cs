@@ -11,6 +11,7 @@ namespace ExitTheBoard
             Container.Bind<InjectCreator>().AsSingle().NonLazy();
             Container.Bind<LayerOrderer>().AsSingle().NonLazy();
             Container.Bind<MouseResourceDistributor>().AsSingle().NonLazy();
+            Container.Bind<ScreenRaycaster>().AsSingle().NonLazy();
         }
     }
 }

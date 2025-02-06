@@ -33,7 +33,6 @@ namespace ExitTheBoard
                 .Subscribe(_ => Clear());
                     
             return true;
-
         }
 
         private void Clear()

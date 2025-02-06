@@ -14,15 +14,12 @@ namespace ExitTheBoard
         
         public GORectSession(
             ScreenRaycaster screenRaycaster,
-            Camera camera,
-            GameObject target,
-            [InjectOptional] RectTransform bounds,
-            [InjectOptional] RectTransform[] excludedRectsTransforms = null) : 
-            base(bounds, excludedRectsTransforms)
+            GORectSessionParams sessionParams) : 
+            base(sessionParams.Bound, sessionParams.ExcludedRectsTransforms)
         {
             this.screenRaycaster = screenRaycaster;
-            this.target = target;
-            this.camera = camera;
+            target = sessionParams.Target;
+            camera = sessionParams.Camera;
             raycastMember = GetMember<RaycastMember>();
         }
 
@@ -33,7 +30,7 @@ namespace ExitTheBoard
             if (!inBounds)
                 return false;
 
-            if (!screenRaycaster.GetHit(out RaycastHit hit, point, camera) && hit.collider.gameObject != target) 
+            if (!screenRaycaster.GetHit(out RaycastHit hit, point, camera) || hit.collider.gameObject != target) 
                 return false;
             
             raycastMember.PutHit(hit);
@@ -45,5 +42,13 @@ namespace ExitTheBoard
         {
             return screenRaycaster.Enable();
         }
+    }
+
+    public struct GORectSessionParams
+    {
+        public Camera Camera;
+        public GameObject Target;
+        public RectTransform Bound;
+        public RectTransform[] ExcludedRectsTransforms;
     }
 }
