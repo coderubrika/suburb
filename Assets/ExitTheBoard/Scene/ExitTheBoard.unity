@@ -923,6 +923,7 @@ GameObject:
   - component: {fileID: 522250027}
   - component: {fileID: 522250031}
   - component: {fileID: 522250030}
+  - component: {fileID: 522250032}
   m_Layer: 0
   m_Name: Rotator
   m_TagString: Untagged
@@ -1031,6 +1032,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &522250032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522250025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3058c41784213a923571af75c0f39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxCollider: {fileID: 522250031}
 --- !u!1 &547626259
 GameObject:
   m_ObjectHideFlags: 0
@@ -2236,11 +2250,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8de6524b45c9d438ea78afadd31cd0ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frame: {fileID: 1519133767}
-  mainCamera: {fileID: 1910190362}
   pointsAnchor: {fileID: 2064729681}
   card: {fileID: 1076452619}
-  rotator: {fileID: 522250030}
+  rotator: {fileID: 522250032}
 --- !u!4 &1855947748
 Transform:
   m_ObjectHideFlags: 0
