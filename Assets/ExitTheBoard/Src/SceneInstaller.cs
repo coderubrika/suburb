@@ -12,6 +12,7 @@ namespace ExitTheBoard
             Container.Bind<LayerOrderer>().AsSingle().NonLazy();
             Container.Bind<MouseResourceDistributor>().AsSingle().NonLazy();
             Container.Bind<ScreenRaycaster>().AsSingle().NonLazy();
+            Container.Bind<UnitsOnRailsStore>().AsSingle().NonLazy();
         }
     }
 }
