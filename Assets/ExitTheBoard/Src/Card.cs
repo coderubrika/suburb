@@ -13,11 +13,13 @@ namespace ExitTheBoard
         private MouseSwipeCompositor mouseSwipeCompositor;
         private SwipeMember swipe;
         private Camera viewCamera;
-        
+
+        [SerializeField] private LineNodeMono lineNodeMono;
         [SerializeField] private BoxCollider boxCollider;
 
         private readonly CompositeDisposable disposables = new();
-        
+
+        private LineNode lineNode;
         private Vector2 screenPosition;
         private LineTrack track;
         
@@ -32,9 +34,6 @@ namespace ExitTheBoard
             this.layerOrderer = layerOrderer;
             viewCamera = Camera.main;
             
-            //tmp for test
-            track = new LineTrack(new Vector3(4.26f, 0, -9.11f), new Vector3(-4.21f, 0, -9.11f));
-            
             inputSession = injectCreator.Create<GORectSession>(new GORectSessionParams
             {
                 Camera = Camera.main,
@@ -48,6 +47,8 @@ namespace ExitTheBoard
         
         public void Activate()
         {
+            lineNode = lineNodeMono.Scan();
+            track = lineNode.GetTrack();
             inputSession.AddCompositor(mouseSwipeCompositor)
                 .AddTo(disposables);
             layerOrderer.ConnectFirst(inputSession)

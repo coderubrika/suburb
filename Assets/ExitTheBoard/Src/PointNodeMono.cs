@@ -27,7 +27,6 @@ namespace ExitTheBoard
             PointNodeMono neighbourPoint = pointGO.GetComponent<PointNodeMono>();
             AddNeighbourPoint(neighbourPoint);
             neighbourPoint.AddNeighbourPoint(this);
-            
         }
 
         public void AddNeighbourPoint(PointNodeMono neighbourPoint)
@@ -49,13 +48,6 @@ namespace ExitTheBoard
             pointNode.SetNeighboursPoints(pointNodes);
 
             return pointNode;
-        }
-        
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            foreach (var point in neighboursPoints)
-                Gizmos.DrawLine(transform.position, point.transform.position);
         }
     }
 }
