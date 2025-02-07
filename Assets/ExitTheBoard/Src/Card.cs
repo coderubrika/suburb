@@ -52,7 +52,7 @@ namespace ExitTheBoard
         public void Activate()
         {
             lineNode = lineNodeMono.Scan();
-            fullTrack = lineNode.GetTrack();
+            fullTrack = lineNode.GetCollinearLineTrack();
             unitsOnRailsStore.SetUnitAtLine(lineNode, id, GetProjection(), GetSize());
             inputSession.AddCompositor(mouseSwipeCompositor)
                 .AddTo(disposables);
