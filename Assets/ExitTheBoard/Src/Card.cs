@@ -6,10 +6,10 @@ using Zenject;
 
 namespace ExitTheBoard
 {
-    public class Card : MonoBehaviour, IMovable
+    public class Card : MonoBehaviour
     {
         private LayerOrderer layerOrderer;
-        private UnitsOnRailsStore unitsOnRailsStore;
+        //private UnitsOnRailsStore unitsOnRailsStore;
         private GORectSession inputSession;
         private MouseSwipeCompositor mouseSwipeCompositor;
         private SwipeMember swipe;
@@ -35,7 +35,7 @@ namespace ExitTheBoard
             InjectCreator injectCreator)
         {
             this.layerOrderer = layerOrderer;
-            this.unitsOnRailsStore = unitsOnRailsStore;
+            //this.unitsOnRailsStore = unitsOnRailsStore;
             viewCamera = Camera.main;
             
             inputSession = injectCreator.Create<GORectSession>(new GORectSessionParams
@@ -53,7 +53,7 @@ namespace ExitTheBoard
         {
             lineNode = lineNodeMono.Scan();
             fullTrack = lineNode.GetCollinearLineTrack();
-            unitsOnRailsStore.SetUnitAtLine(lineNode, id, GetProjection(), GetSize());
+            //unitsOnRailsStore.SetUnitAtLine(lineNode, id, GetProjection(), GetSize());
             inputSession.AddCompositor(mouseSwipeCompositor)
                 .AddTo(disposables);
             layerOrderer.ConnectFirst(inputSession)
@@ -104,7 +104,7 @@ namespace ExitTheBoard
                     Vector3 newObjParallel = dirOne * clampedProj;
                     Vector3 finalPos = fullTrack.StartPoint + newObjParallel + objPerp;
                     Transform.position = finalPos - side;
-                    unitsOnRailsStore.SetUnitAtLine(lineNode, id, GetProjection(), GetSize());
+                    //unitsOnRailsStore.SetUnitAtLine(lineNode, id, GetProjection(), GetSize());
                 })
                 .AddTo(disposables);
         }
@@ -128,27 +128,27 @@ namespace ExitTheBoard
             float min = 0;
             float max = fullTrack.Length;
 
-            var units = unitsOnRailsStore.GetUnits(lineNode);
+            //var units = unitsOnRailsStore.GetUnits(lineNode);
             
-            foreach (var unit in units)
-            {
-                if (unit.Id == id)
-                    continue;
-
-                float half = unit.Size * 0.5f;
-                float minCandidate = unit.Projection - half;
-                float maxCandidate = unit.Projection + half;
-
-                if (minCandidate >= proj)
-                {
-                    max = Mathf.Min(max, minCandidate);
-                }
-
-                if (maxCandidate <= proj)
-                {
-                    min = Mathf.Max(min, maxCandidate);
-                }
-            }
+            // foreach (var unit in units)
+            // {
+            //     if (unit.Id == id)
+            //         continue;
+            //
+            //     float half = unit.Size * 0.5f;
+            //     float minCandidate = unit.Projection - half;
+            //     float maxCandidate = unit.Projection + half;
+            //
+            //     if (minCandidate >= proj)
+            //     {
+            //         max = Mathf.Min(max, minCandidate);
+            //     }
+            //
+            //     if (maxCandidate <= proj)
+            //     {
+            //         min = Mathf.Max(min, maxCandidate);
+            //     }
+            // }
             
             return (min, max);
         }
