@@ -9,28 +9,26 @@ namespace ExitTheBoard
 {
     public class Startup : MonoBehaviour
     {
-        [SerializeField] private LineNodeMono lineNodeMono;
-        [SerializeField] private Card card;
-        [SerializeField] private Card rotator;
+        [SerializeField] private LevelMono levelPrefab;
         
         private readonly CompositeDisposable disposables = new();
+
+        private LevelMono levelMono;
         
         [Inject]
-        private void Construct()
+        private void Construct(InjectCreator injectCreator)
         {
-            lineNodeMono.Scan();
+            levelMono = injectCreator.Create(levelPrefab, null);
         }
         
         private void OnEnable()
         {
-            card.Activate();
-            rotator.Activate();
+            levelMono.Activate();
         }
 
         private void OnDisable()
         {
-            card.Deactivate();
-            rotator.Deactivate();
+            levelMono.Deactivate();
             disposables.Clear();
         }
     }

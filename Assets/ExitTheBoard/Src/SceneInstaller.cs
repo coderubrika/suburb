@@ -13,6 +13,7 @@ namespace ExitTheBoard
             Container.Bind<MouseResourceDistributor>().AsSingle().NonLazy();
             Container.Bind<ScreenRaycaster>().AsSingle().NonLazy();
             Container.Bind<UnitsOnRailsStore>().AsSingle().NonLazy();
+            Container.Bind<RailsNavigator>().AsSingle().NonLazy();
         }
     }
 }

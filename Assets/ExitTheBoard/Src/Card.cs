@@ -15,15 +15,16 @@ namespace ExitTheBoard
         private SwipeMember swipe;
         private Camera viewCamera;
 
-        [SerializeField] private LineNodeMono lineNodeMono;
+        //[SerializeField] private LineNodeMono lineNodeMono;
         [SerializeField] private BoxCollider boxCollider;
-
+        [SerializeField] private RailRider rider;
+        
         private readonly CompositeDisposable disposables = new();
         private readonly string id = GeneralUtils.GetUID();
         
-        private LineNode lineNode;
+        //private LineNode lineNode;
         private Vector2 screenPosition;
-        private LineTrack fullTrack;
+        //private LineTrack fullTrack;
         
         public Transform Transform => transform;
         public BoxCollider BoxCollider => boxCollider;
@@ -51,15 +52,15 @@ namespace ExitTheBoard
         
         public void Activate()
         {
-            lineNode = lineNodeMono.Scan();
-            fullTrack = lineNode.GetCollinearLineTrack();
+            //lineNode = lineNodeMono.Scan();
+            //fullTrack = lineNode.GetCollinearLineTrack();
             //unitsOnRailsStore.SetUnitAtLine(lineNode, id, GetProjection(), GetSize());
             inputSession.AddCompositor(mouseSwipeCompositor)
                 .AddTo(disposables);
             layerOrderer.ConnectFirst(inputSession)
                 .AddTo(disposables);
             
-            SetupInputHandle();
+            //SetupInputHandle();
         }
 
         public void Deactivate()
@@ -82,51 +83,52 @@ namespace ExitTheBoard
                     Vector3 cardPositionEnd = viewCamera.ScreenToWorldPoint(newScreenPosition);
                     
                     Vector3 delta = cardPositionEnd - cardPositionStart;
-                    Vector3 dirOne = fullTrack.DirectionOne;
-                    float deltaProj = Vector3.Dot(dirOne, delta);
-                    Vector3 pos = Transform.position;
+                    rider.Ride(delta);
+                    // Vector3 dirOne = fullTrack.DirectionOne;
+                    // float deltaProj = Vector3.Dot(dirOne, delta);
+                    // Vector3 pos = Transform.position;
 
-                    Vector3 dir = deltaProj > 0 ? fullTrack.Direction : -fullTrack.Direction;
-                    int sign = Vector3.Dot(dir, Transform.forward) > 0 ? 1 : -1;
-                    Vector3 side = Transform.forward * BoxCollider.size.z * 0.5f * Transform.localScale.z * sign;
-                    
-                    Vector3 objDirWithSide = pos + side - fullTrack.StartPoint;
-                    float objProjWithSide = Vector3.Dot(objDirWithSide, dirOne);
-                    Vector3 objParallel = dirOne * objProjWithSide;
-                    Vector3 objPerp = objDirWithSide - objParallel;
-                    float deltaByObjProjWithSide = deltaProj + objProjWithSide;
-                    
-                    float clampMin, clampMax;
-                    float objProj = GetProjection();
-                    float deltaByObjProj = deltaProj + objProj;
-                    (clampMin, clampMax) = GetClamp(deltaByObjProj);
-                    float clampedProj = Mathf.Clamp(deltaByObjProjWithSide, clampMin, clampMax);
-                    Vector3 newObjParallel = dirOne * clampedProj;
-                    Vector3 finalPos = fullTrack.StartPoint + newObjParallel + objPerp;
-                    Transform.position = finalPos - side;
+                    // Vector3 dir = deltaProj > 0 ? fullTrack.Direction : -fullTrack.Direction;
+                    // int sign = Vector3.Dot(dir, Transform.forward) > 0 ? 1 : -1;
+                    // Vector3 side = Transform.forward * BoxCollider.size.z * 0.5f * Transform.localScale.z * sign;
+                    //
+                    // Vector3 objDirWithSide = pos + side - fullTrack.StartPoint;
+                    // float objProjWithSide = Vector3.Dot(objDirWithSide, dirOne);
+                    // Vector3 objParallel = dirOne * objProjWithSide;
+                    // Vector3 objPerp = objDirWithSide - objParallel;
+                    // float deltaByObjProjWithSide = deltaProj + objProjWithSide;
+                    //
+                    // float clampMin, clampMax;
+                    // float objProj = GetProjection();
+                    // float deltaByObjProj = deltaProj + objProj;
+                    // (clampMin, clampMax) = GetClamp(deltaByObjProj);
+                    // float clampedProj = Mathf.Clamp(deltaByObjProjWithSide, clampMin, clampMax);
+                    // Vector3 newObjParallel = dirOne * clampedProj;
+                    // Vector3 finalPos = fullTrack.StartPoint + newObjParallel + objPerp;
+                    // Transform.position = finalPos - side;
                     //unitsOnRailsStore.SetUnitAtLine(lineNode, id, GetProjection(), GetSize());
                 })
                 .AddTo(disposables);
         }
 
-        private float GetSize()
-        {
-            return BoxCollider.size.z * Transform.localScale.z;
-        }
+        // private float GetSize()
+        // {
+        //     return BoxCollider.size.z * Transform.localScale.z;
+        // }
 
-        private float GetProjection()
-        {
-            Vector3 pos = Transform.position;
-            Vector3 objDir = pos - fullTrack.StartPoint;
-            Vector3 dirOne = fullTrack.DirectionOne;
-            float objProj = Vector3.Dot(objDir, dirOne);
-            return objProj;
-        }
+        // private float GetProjection()
+        // {
+        //     Vector3 pos = Transform.position;
+        //     Vector3 objDir = pos - fullTrack.StartPoint;
+        //     Vector3 dirOne = fullTrack.DirectionOne;
+        //     float objProj = Vector3.Dot(objDir, dirOne);
+        //     return objProj;
+        // }
 
-        private (float Min, float Max) GetClamp(float proj)
-        {
-            float min = 0;
-            float max = fullTrack.Length;
+        // private (float Min, float Max) GetClamp(float proj)
+        // {
+        //     float min = 0;
+            //float max = fullTrack.Length;
 
             //var units = unitsOnRailsStore.GetUnits(lineNode);
             
@@ -150,7 +152,7 @@ namespace ExitTheBoard
             //     }
             // }
             
-            return (min, max);
-        }
+            //return (min, max);
+        // }
     }
 }
