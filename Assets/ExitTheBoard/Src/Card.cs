@@ -17,6 +17,17 @@ namespace ExitTheBoard
 
         //[SerializeField] private LineNodeMono lineNodeMono;
         [SerializeField] private BoxCollider boxCollider;
+        // как по мне так этого здесь тоже не надо
+        // да эта штука должна получить vector3 но не от Card
+        // а от кого?
+        // нужна другая херня что то типо HandHandler или UISwipeHandler
+        // где то должен быть код который свяжет UISwipeHandler и карту
+        // вообще я предполагаю что должен быть список сущностей к которым можно применя
+        // эту фичу и вообще можно как в ecs приклеить к сущности свойства
+        // в неком контейнере напротив же должен быть и тот кто сможем менять управление
+        // тут встает вопрос на каком уровне происходит управление
+        // можно представить код уровня который запускает сущности но если кода уровня нет
+        // то что делать тогда
         [SerializeField] private RailRider rider;
         
         private readonly CompositeDisposable disposables = new();
